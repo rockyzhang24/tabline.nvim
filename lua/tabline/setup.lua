@@ -19,6 +19,7 @@ tabline.v = {
 -- user settings
 local settings = {
   filtering = true,
+  show_right_corner = true,
   mode_labels = 'secondary',
   modes = { 'tabs', 'buffers', 'args' },
   scratch_label = '[Scratch]',

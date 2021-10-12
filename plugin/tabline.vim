@@ -4,12 +4,14 @@ endif
 
 augroup tabline
     au!
+    au ColorScheme * lua require'tabline.render.icons'.icons = {}
+    au ColorScheme * call TablineTheme()
 augroup END
 
 fun! TablineTheme() abort
-  hi! link TSelect         PmenuSel
+  hi! link TSelect         Pmenu
   hi! link TVisible        Special
-  hi! link THidden         TabLine
+  hi! link THidden         Normal
   hi! link TExtra          Visual
   hi! link TSpecial        IncSearch
   hi! link TFill           Folded

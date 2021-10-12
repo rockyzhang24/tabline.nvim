@@ -19,15 +19,20 @@ local short_bufname = require'tabline.render.helpers'.short_bufname
 local short_cwd = require'tabline.render.helpers'.short_cwd
 local render_buffers = require'tabline.render.bufline'.render_buffers
 local render_args = require'tabline.render.bufline'.render_args
+local get_buf_icon = require'tabline.render.icons'.get_buf_icon
+local get_tab_icon = require'tabline.render.icons'.get_tab_icon
 
 local hide_tab_number = function() return tabpagenr('$') == 1 or s.tab_number_in_left_corner end
 local tab_buffer = function(tnr) return tabpagebuflist(tnr)[tabpagewinnr(tnr)] end
+
+local tab_num, tab_mod_flag, tab_label, format_right_corner, right_corner_label
+local get_mode_label, tab_hi, format_tab_label, fit_tabline, render_tabs, render
 
 --------------------------------------------------------------------------------
 -- Corner labels
 --------------------------------------------------------------------------------
 
-local function format_right_corner()
+function format_right_corner()
   -- Label for the upper right corner.
   local N = tabpagenr()
 
@@ -42,8 +47,8 @@ local function format_right_corner()
   elseif v.mode == 'tabs' or hide_tab_number() then
     -- no number, just the name or the cwd
     local hi    = '%#TCorner#'
-    local icon  = '%#TNumSel# ' .. get_tab_icon(N, 1)
-    local mod   = tab_mod_flag(N, 1)
+    local icon  = '%#TNumSel# ' .. get_tab_icon(N, true)
+    local mod   = tab_mod_flag(N, true)
     local label = right_corner_label()
     return printf('%s%s %s %s', icon, hi, label, mod)
 
@@ -51,8 +56,8 @@ local function format_right_corner()
     -- tab number in form n/N, plus tab name or cwd
     local hi    = '%#TCorner#'
     local nr    = tab_num(N)
-    local icon  = get_tab_icon(N, 1)
-    local mod   = tab_mod_flag(N, 1)
+    local icon  = get_tab_icon(N, true)
+    local mod   = tab_mod_flag(N, true)
     local label = right_corner_label()
     return printf('%s%s %s%s %s', nr, hi, icon, label, mod)
   end
@@ -67,7 +72,7 @@ end --}}}
 -- 3. the name of the active buffer for this tab ('buffers' mode)
 -- 4. the number/total files in the arglist ('arglist' mode)
 -------------------------------------------------------------------------------
-local function right_corner_label()
+function right_corner_label()
   local N = tabpagenr()
 
   if v.mode == 'tabs' then
@@ -78,7 +83,12 @@ local function right_corner_label()
   end
 end
 
-local function get_mode_label()
+-------------------------------------------------------------------------------
+-- Label for left corner
+--
+-- It's the tabline mode, and it's only shown under certain conditions.
+-------------------------------------------------------------------------------
+function get_mode_label()
   local labels = s.mode_labels
   if labels == 'none' or
         labels == 'secondary' and index(s.modes, v.mode) == 1 or
@@ -101,7 +111,7 @@ end
 -- @param tnr: tab number
 -- Return the formatted tab number
 -------------------------------------------------------------------------------
-local function tab_num(tnr)
+function tab_num(tnr)
 
   if v.mode ~= 'tabs' then
     return printf("%s %d/%d ", "%#TNumSel#", tnr, tabpagenr('$'))
@@ -114,38 +124,12 @@ end
 ----
 -- The highlight group for the tab label
 ----
-local function tab_hi(tnr)
+function tab_hi(tnr)
   if tnr == tabpagenr() then
     return (s.special_tabs and g.buffers[tab_buffer(tnr)].special) and 'Special' or 'Select'
   else
     return 'Hidden'
   end
-end
-
--------------------------------------------------------------------------------
--- The icon for the tab label
---
--- @param tnr: the tab number
--- @param right_corner: if it's for the right corner
--- Return the icon
--------------------------------------------------------------------------------
-local function get_tab_icon(tnr, right_corner)
-  local T = fn.gettabvar(tnr, 'tab')
-  if T.icon then
-    return T.icon .. ' '
-  end
-
-  if right_corner then
-    local icon = s.icons.tab
-
-  else
-    local bnr  = tab_buffer(tnr)
-    local B    = g.buffers[bnr]
-    local buf  = {['nr'] = bnr, ['icon'] = B.icon, ['name'] = B.name}
-    local icon = get_buf_icon(buf)
-  end
-
-  return not icon and '' or type(icon) == 'string' and icon .. ' ' or icon[tnr ~= tabpagenr()] .. ' '
 end
 
 -------------------------------------------------------------------------------
@@ -160,7 +144,7 @@ end
 -- @param tnr: the tab number
 -- Return the formatted tab label
 -------------------------------------------------------------------------------
-local function tab_label(tnr)
+function tab_label(tnr)
 
   local bnr = tab_buffer(tnr)
   local buf = g.buffers[bnr]
@@ -202,7 +186,7 @@ end
 -- @param corner: if the flag is for the right corner
 -- Return the formatted flag
 -------------------------------------------------------------------------------
-local function tab_mod_flag(tnr, corner)
+function tab_mod_flag(tnr, corner)
   for _, buf in ipairs(tabpagebuflist(tnr)) do
     if getbufvar(buf, '&modified') > 0 then
       return corner and '%#TVisibleMod#' .. i.modified
@@ -219,13 +203,13 @@ end
 -- @param tnr: the tab's number
 -- Return a tab 'object' with label and highlight groups
 -------------------------------------------------------------------------------
-local function format_tab_label(tnr)
+function format_tab_label(tnr)
 
   local nr    = '%' .. tnr .. 'T' .. tab_num(tnr)
   local hi    = tab_hi(tnr)
-  local icon  = get_tab_icon(tnr, 0)
+  local icon  = get_tab_icon(tnr, false, hi)
   local label = tab_label(tnr)
-  local mod   = tab_mod_flag(tnr, 0)
+  local mod   = tab_mod_flag(tnr, false)
   local width = 3 + #label + (icon == '' and 0 or 3) + (mod == '' and 0 or 2)
 
   local formatted = printf("%s%%#T%s# %s%s %s", nr, hi, icon, label, mod)
@@ -240,7 +224,7 @@ end
 -- Finalize
 -------------------------------------------------------------------------------
 
-local function fit_tabline(center, tabs)
+function fit_tabline(center, tabs)
   local corner_label = format_right_corner()
   local corner_width = #corner_label
 
@@ -322,7 +306,7 @@ end
 -- Tabline mode
 -------------------------------------------------------------------------------
 
-local function render_tabs()
+function render_tabs()
   local tabs = {}
   for tnr = 1, tabpagenr('$') do
     table.insert(tabs, format_tab_label(tnr))
@@ -331,7 +315,7 @@ local function render_tabs()
 end
 
 
-local function render()
+function render()
   if o.columns < 40 then
     return format_right_corner()
   elseif v.mode == 'tabs' then

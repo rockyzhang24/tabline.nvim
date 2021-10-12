@@ -15,7 +15,7 @@ local printf = string.format
 local index = table.index
 
 local get_bufs = require'tabline.bufs'.get_bufs
-local get_buf_icon = require'tabline.render.helpers'.get_buf_icon
+local get_buf_icon = require'tabline.render.icons'.get_buf_icon
 local short_bufname = require'tabline.render.helpers'.short_bufname
 
 -------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ local function buffer_label(b, mod)  -- {{{1
   local curbuf = winbufnr(0) == b.nr
 
   local hi = printf(' %%#T%s# ', b.hi)
-  local icon = get_buf_icon(b)
+  local icon = get_buf_icon(b, b.hi)
   local bn   = s.buffer_format == 2 and b.n or b.nr
   local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 

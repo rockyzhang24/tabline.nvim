@@ -68,6 +68,8 @@ local function new_buf(bnr)
   return {
     nr = bnr,
     path = fnamemodify(bufname(bnr), ':p'),
+    basename = fnamemodify(bufname(bnr), ':t'),
+    ext = fnamemodify(bufname(bnr), ':e'),
     special = false,
     pinned = false,
     name = nil,
@@ -154,7 +156,7 @@ end
 function M.get_bufs()
   local ix, tbl, wd, all = 1, {}, getcwd(), not s.filtering
   for nr, b in pairs(g.buffers) do
-    if all or validbuf(b, wd) then
+    if (all or validbuf(b, wd)) and not b.special then
       tbl[ix] = nr
       ix = ix + 1
     end
