@@ -156,7 +156,7 @@ function tab_icon(tnr, right_corner, hi)
     local bnr  = tab_buffer(tnr)
     local B    = g.buffers[bnr]
     local buf  = {['nr'] = bnr, ['icon'] = B.icon, ['name'] = B.name}
-    icon = buf_icon(buf, hi)
+    icon = buf_icon(buf, hi, tnr == tabpagenr())
   end
 
   return not icon and '' or type(icon) == 'string' and icon .. ' ' or icon[tnr == tabpagenr() and 1 or 2] .. ' '

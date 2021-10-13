@@ -136,11 +136,11 @@ function buf_path(bnr) -- {{{1
 end
 
 
-function buf_icon(b, hi)  -- {{{1
+function buf_icon(b, hi, curbuf)  -- {{{1
   if b.icon then
     return b.icon .. ' '
   else
-    local devicon = devicon(b, hi)
+    local devicon = devicon(b, hi, curbuf)
     if devicon then
       b.icon = devicon
       return devicon .. ' '
@@ -153,8 +153,8 @@ function buf_label(b, mod)  -- {{{1
   local curbuf = winbufnr(0) == b.nr
 
   local hi = printf(' %%#T%s# ', b.hi)
-  local icon = buf_icon(b, b.hi)
-  local bn   = s.actual_buffer_number and b.n or b.nr
+  local icon = buf_icon(b, b.hi, curbuf)
+  local bn   = s.actual_buffer_number and b.nr or b.n
   local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 
   return number .. hi .. icon .. b.name .. ' ' .. mod

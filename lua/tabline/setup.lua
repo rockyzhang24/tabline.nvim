@@ -22,6 +22,7 @@ local settings = {
   show_right_corner = true,
   tab_number_in_left_corner = true,
   actual_buffer_number = false,
+  dim_inactive_icons = true,
   mode_labels = 'secondary',
   modes = { 'auto', 'buffers', 'args' },
   scratch_label = '[Scratch]',

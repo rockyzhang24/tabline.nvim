@@ -22,6 +22,7 @@ fun! TablineTheme() abort
   let pat = has('gui_running') || &termguicolors ? 'guibg=\S\+' : 'ctermbg=\S\+'
   let bg = matchstr(execute('hi Normal'), pat)
   exe "lua require'tabline.render.icons'.normalbg = " .. string(bg[1:])
+  exe "lua require'tabline.render.icons'.dimfg = " .. string(&bg == 'dark' ? '6c6c6c' : 'a9a9a9')
   try
     exe 'hi TSelectMod'  matchstr(execute('hi PmenuSel'), pat) 'guifg=#af0000 gui=bold cterm=bold'
   catch
