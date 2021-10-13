@@ -18,7 +18,9 @@ local fit_tabline, render
 local format_right_corner = require'tabline.render.corners'.format_right_corner
 local mode_label = require'tabline.render.corners'.mode_label
 
+local function tabs_mode() return v.mode == 'tabs' or v.mode == 'auto' and tabpagenr('$') > 1 end
 local function strwidth(s) return #subst(s, '%%#%w+#', '') end
+local function tabwidth(s) return #subst(subst(s, '%%#%w+#', ''), '%%%d+T', '') end
 
 
 -------------------------------------------------------------------------------
@@ -28,10 +30,7 @@ local function strwidth(s) return #subst(s, '%%#%w+#', '') end
 function render()
   if o.columns < 40 then
     return format_right_corner()
-  elseif v.mode == 'auto' then
-    return tabpagenr('$') > 1 and fit_tabline(render_tabs())
-                              or fit_tabline(render_buffers())
-  elseif v.mode == 'tabs' then
+  elseif tabs_mode() then
     return fit_tabline(render_tabs())
   elseif v.mode == 'args' then
     return fit_tabline(render_args())
@@ -46,9 +45,10 @@ end
 -------------------------------------------------------------------------------
 
 function fit_tabline(center, tabs)
+  local labelwidth = tabs_mode() and tabwidth or strwidth
   local limit = o.columns - 1
   local corner_label = format_right_corner()
-  limit = limit - strwidth(corner_label)
+  limit = limit - labelwidth(corner_label)
 
   local modelabel = mode_label()
   if modelabel ~= '' then
@@ -69,10 +69,10 @@ function fit_tabline(center, tabs)
   -- sum the string lengths for the left and right halves
   local currentside = L
   for _, tab in ipairs(tabs) do
-    tab.width = strwidth(tab.label) - (tab.icon and 2 or 0)
+    tab.width = labelwidth(tab.label) - (tab.icon and 2 or 0)
     if tab.width >= limit then
       tab.label = strsub(tab.label, 1, limit - 1) .. '…'
-      tab.width = strwidth(tab.label) - (tab.icon and 2 or 0)
+      tab.width = labelwidth(tab.label) - (tab.icon and 2 or 0)
     end
     if center == tab.nr then
       local halfwidth = math.floor(tab.width / 2)
@@ -102,8 +102,7 @@ function fit_tabline(center, tabs)
       end
     end
     if left_has_been_cut then
-      local lab = subst(tabs[1].label, '%%#%w+#', '')
-      tabs[1].label = printf('%%#DiffDelete# < %%#T%s#%s', tabs[1].hi, strsub(lab, 4))
+      table.insert(tabs, 1, {['label'] = '%#DiffDelete# < '})
     end
     if right_has_been_cut then
       local ntabs = #tabs
