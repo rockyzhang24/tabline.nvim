@@ -176,11 +176,10 @@ function format_tab_label(tnr)
   local icon  = tab_icon(tnr, false, hi)
   local label = tab_label(tnr)
   local mod   = tab_mod_flag(tnr, false)
-  local width = 3 + #label + (icon == '' and 0 or 3) + (mod == '' and 0 or 2)
 
   local formatted = printf("%s%%#T%s# %s%s %s", nr, hi, icon, label, mod)
 
-  return {['label'] = formatted, ['nr'] = tnr, ['hi'] = hi, ['width'] = width}
+  return {['label'] = formatted, ['nr'] = tnr, ['hi'] = hi, ['icon'] = icon ~= ''}
 end
 
 

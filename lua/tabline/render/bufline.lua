@@ -77,7 +77,6 @@ function format_buffer_labels(bufs, special, other) -- {{{1
       nr = b,
       n = index(bufs, b),
       name = all[b].name or buf_path(b),
-      icon = all[b].icon or all[b].icons,
       hi = (iscur and spc[b])  and 'Special' or
            iscur               and 'Select' or
            (spc[b] or pin[b])  and 'Extra' or
@@ -86,8 +85,6 @@ function format_buffer_labels(bufs, special, other) -- {{{1
 
     buf.himod = spc[b] and buf.hi or buf.hi .. 'Mod'
     buf.label = buf_label(buf, buf_mod(buf, modified))
-    buf.width = 3 + #buf.name + (buf.icon and 3 or 0) + (modified and #i.modified or 0) +
-                (g.pinned[b] and #i.pinned or 0)
 
     if iscur then center = b end
 
@@ -123,7 +120,8 @@ function buf_icon(b, hi)  -- {{{1
   else
     local devicon = devicon(b, hi)
     if devicon then
-      return devicon
+      b.icon = devicon
+      return devicon .. ' '
     end
   end
   return ''

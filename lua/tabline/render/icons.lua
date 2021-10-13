@@ -27,7 +27,7 @@ local function make_icons_hi(color)
       bg = M.normalbg
     end
     vim.cmd(printf('hi T%s%s guibg=#%s guifg=#%s', v, col, bg, col))
-    ret[v] = printf('%%#T%s%s#___%%#T%s# ', v, col, v)
+    ret[v] = printf('%%#T%s%s#___%%#T%s#', v, col, v)
   end
   return ret
 end

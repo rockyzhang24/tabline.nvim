@@ -6,6 +6,8 @@ local tabpagenr = vim.fn.tabpagenr
 
 local remove = table.remove
 local strsub = string.sub
+local subst  = string.gsub
+local printf = string.format
 
 local render_tabs = require'tabline.render.tabline'.render_tabs
 local render_buffers = require'tabline.render.bufline'.render_buffers
@@ -16,6 +18,7 @@ local fit_tabline, render
 local format_right_corner = require'tabline.render.corners'.format_right_corner
 local mode_label = require'tabline.render.corners'.mode_label
 
+local function strwidth(s) return #subst(s, '%%#%w+#', '') end
 
 
 -------------------------------------------------------------------------------
@@ -40,36 +43,36 @@ end
 -------------------------------------------------------------------------------
 
 function fit_tabline(center, tabs)
+  local limit = o.columns - 1
   local corner_label = format_right_corner()
-  local corner_width = #corner_label
+  limit = limit - strwidth(corner_label)
 
   local modelabel = mode_label()
   if modelabel ~= '' then
-    corner_width = corner_width + #modelabel
+    limit = limit - #v.mode - 3
   end
 
   local tabsnums = ''
   if tabpagenr('$') > 1 and s.tab_number_in_left_corner then
-    tabsnums = '%#ErrorMsg# ' .. tabpagenr() .. '/' .. tabpagenr('$') .. ' %#TFill# '
-    corner_width = corner_width + #tabsnums
+    local tn = tabpagenr() .. '/' .. tabpagenr('$')
+    tabsnums = '%#ErrorMsg# ' .. tn .. ' %#TFill# '
+    limit = limit - #tn - 3
   end
 
-  -- limit is the max bufline length
-  local limit = o.columns - corner_width - 1
-
   -- now keep the current buffer center-screen as much as possible
-  local L = { ['lasttab'] =  0, ['cut'] =  '.', ['indicator'] = '<', ['width'] = 0, ['half'] = math.floor(limit / 2) }
-  local R = { ['lasttab'] = -1, ['cut'] = '.$', ['indicator'] = '>', ['width'] = 0, ['half'] = limit - L.half }
+  local L = { ['width'] = 0 }
+  local R = { ['width'] = 0 }
 
   -- sum the string lengths for the left and right halves
   local currentside = L
   for _, tab in ipairs(tabs) do
+    tab.width = strwidth(tab.label) - (tab.icon and 2 or 0)
     if tab.width >= limit then
       tab.label = strsub(tab.label, 1, limit - 1) .. '…'
-      tab.width = limit
+      tab.width = strwidth(tab.label) - (tab.icon and 2 or 0)
     end
     if center == tab.nr then
-      local halfwidth = tab.width / 2
+      local halfwidth = math.floor(tab.width / 2)
       L.width = L.width + halfwidth
       R.width = R.width + tab.width - halfwidth
       currentside = R
@@ -82,8 +85,7 @@ function fit_tabline(center, tabs)
     L.width, R.width = 0, L.width
   end
 
-  local left_has_been_cut = false
-  local right_has_been_cut = false
+  local left_has_been_cut, right_has_been_cut = false, false
 
   if ( L.width + R.width ) > limit then
     while limit - ( L.width + R.width ) < 0 do
@@ -97,10 +99,12 @@ function fit_tabline(center, tabs)
       end
     end
     if left_has_been_cut then
-      tabs[1].label = '%#DiffDelete# < %#TFill#'
+      local lab = subst(tabs[1].label, '%%#%w+#', '')
+      tabs[1].label = printf('%%#DiffDelete# < %%#T%s#%s', tabs[1].hi, strsub(lab, 4))
     end
     if right_has_been_cut then
-      tabs[#tabs].label = '%#DiffDelete# > '
+      local ntabs = #tabs
+      tabs[ntabs].label = printf('%s%%#DiffDelete# > ', strsub(tabs[ntabs].label, 1, #tabs[ntabs].label - 4))
     end
   end
 
