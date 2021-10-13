@@ -13,7 +13,7 @@ fun! TablineTheme() abort
   hi! link TVisible        Special
   hi! link THidden         Comment
   hi! link TExtra          Visual
-  hi! link TSpecial        IncSearch
+  hi! link TSpecial        PmenuSel
   hi! link TFill           Folded
   hi! link TNumSel         TabLineSel
   hi! link TNum            TabLineSel
