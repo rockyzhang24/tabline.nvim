@@ -56,16 +56,8 @@ local function setup(sets)
   end
 end
 
-local function info()
-  print('--- BUFFERS ---')
-  for k, v in pairs(tabline.buffers) do
-    print(string.format('%s   %s', v.nr, vim.inspect(v)))
-  end
-end
-
 return {
   setup = setup,
   tabline = tabline,
   settings = settings,
-  info = info,
 }
