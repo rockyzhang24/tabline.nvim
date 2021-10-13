@@ -57,6 +57,10 @@ function render_args()
   end
 end
 
+-------------------------------------------------------------------------------
+-- Helpers
+-------------------------------------------------------------------------------
+
 function format_buffer_labels(bufs, special, other) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
   local oth, spc, pin = other or {}, special or {}, g.pinned or {}

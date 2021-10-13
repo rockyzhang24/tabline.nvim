@@ -11,7 +11,7 @@ augroup END
 fun! TablineTheme() abort
   hi! link TSelect         Pmenu
   hi! link TVisible        Special
-  hi! link THidden         Normal
+  hi! link THidden         Comment
   hi! link TExtra          Visual
   hi! link TSpecial        IncSearch
   hi! link TFill           Folded
@@ -20,6 +20,8 @@ fun! TablineTheme() abort
   hi! link TCorner         Special
 
   let pat = has('gui_running') || &termguicolors ? 'guibg=\S\+' : 'ctermbg=\S\+'
+  let bg = matchstr(execute('hi Normal'), pat)
+  exe "lua require'tabline.render.icons'.normalbg = " .. string(bg[1:])
   try
     exe 'hi TSelectMod'  matchstr(execute('hi PmenuSel'), pat) 'guifg=#af0000 gui=bold cterm=bold'
   catch

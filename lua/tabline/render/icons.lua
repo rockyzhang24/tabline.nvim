@@ -1,4 +1,4 @@
-local M = { ['icons'] = {} }
+local M = { ['icons'] = {}, ['normalbg'] = nil }
 
 -------------------------------------------------------------------------------
 -- Icons
@@ -23,10 +23,11 @@ local function make_icons_hi(color)
       hi = execute('hi ' .. link)
     end
     local _, _, bg = string.find(hi, 'guibg=#(%x+)')
-    if bg then
-      vim.cmd(printf('hi T%s%s guibg=#%s guifg=#%s', v, col, bg, col))
-      ret[v] = printf('%%#T%s%s#___%%#T%s# ', v, col, v)
+    if not bg then
+      bg = M.normalbg
     end
+    vim.cmd(printf('hi T%s%s guibg=#%s guifg=#%s', v, col, bg, col))
+    ret[v] = printf('%%#T%s%s#___%%#T%s# ', v, col, v)
   end
   return ret
 end
