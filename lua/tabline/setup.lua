@@ -21,6 +21,7 @@ local settings = {
   filtering = true,
   show_right_corner = true,
   tab_number_in_left_corner = true,
+  actual_buffer_number = false,
   mode_labels = 'secondary',
   modes = { 'tabs', 'buffers', 'args' },
   scratch_label = '[Scratch]',

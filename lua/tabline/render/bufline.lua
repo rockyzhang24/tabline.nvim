@@ -1,16 +1,18 @@
-local fn = vim.fn
 local o = vim.o
 local g = require'tabline.setup'.tabline
 local v = g.v
 local s = require'tabline.setup'.settings
 local i = s.indicators
 
-local bufname = fn.bufname
-local getbufvar = fn.getbufvar
-local fnamemodify = fn.fnamemodify
-local winbufnr = fn.winbufnr
-local tabpagebuflist = fn.tabpagebuflist
-local tabpagenr = fn.tabpagenr
+local bufnr = vim.fn.bufnr
+local bufname = vim.fn.bufname
+local getbufvar = vim.fn.getbufvar
+local fnamemodify = vim.fn.fnamemodify
+local winbufnr = vim.fn.winbufnr
+local tabpagebuflist = vim.fn.tabpagebuflist
+local tabpagenr = vim.fn.tabpagenr
+local filereadable = vim.fn.filereadable
+local argv = vim.fn.argv
 local printf = string.format
 local index = table.index
 
@@ -19,7 +21,7 @@ local short_bufname = require'tabline.render.paths'.short_bufname
 local devicon = require'tabline.render.icons'.devicon
 
 local buf_path, buf_icon, buf_label, buf_mod, format_buffer_labels
-local render_buffers, render_args
+local render_buffers, render_args, limit_buffers
 
 -------------------------------------------------------------------------------
 -- Bufferline mode
@@ -38,7 +40,7 @@ function render_buffers()
       end
     end
   end
-  return format_buffer_labels(bufs, special, other)
+  return format_buffer_labels(limit_buffers(bufs), special, other)
 end
 
 -------------------------------------------------------------------------------
@@ -47,19 +49,38 @@ end
 
 function render_args()
   local bufs = table.filter(
-    table.map(fn.argv(), function(k,v) return bufnr(v) end),
+    table.map(argv(), function(k,v) return bufnr(v) end),
     function(k,v) return v > 0 end)
   if #bufs == 0 then  -- if arglist is empty, switch to buffer mode {{{1
     v.mode = 'buffers'
     return render_buffers() -- }}}
   else
-    return format_buffer_labels(bufs)
+    return format_buffer_labels(limit_buffers(bufs))
   end
 end
 
 -------------------------------------------------------------------------------
 -- Helpers
 -------------------------------------------------------------------------------
+
+-- limit the number of buffers to be rendered
+function limit_buffers(bufs)
+  local tot, limit = #bufs, math.floor(o.columns / 15)
+  if tot > limit then
+    local cur, mid = index(bufs, bufnr()), math.floor(limit / 2)
+    if cur > mid then
+      local start, stop = cur - mid + 1, limit + cur - mid
+      if stop > tot then
+        start = start - (stop - tot)
+        stop = tot
+      end
+      bufs = table.slice(bufs, start, stop)
+    else
+      bufs = table.slice(bufs, 1, limit)
+    end
+  end
+  return bufs
+end
 
 function format_buffer_labels(bufs, special, other) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
@@ -99,7 +120,7 @@ function buf_path(bnr) -- {{{1
   local minimal = o.columns < 100 -- window is small
   local scratch = getbufvar(bnr, '&buftype') ~= ''
 
-  if not fn.filereadable(bname) then           -- new files/scratch buffers
+  if not filereadable(bname) then           -- new files/scratch buffers
     return bname == '' and scratch and s.scratch_label or s.unnamed_label
            or scratch and bname
            or minimal and fnamemodify(bname, ':t')
@@ -132,7 +153,7 @@ function buf_label(b, mod)  -- {{{1
 
   local hi = printf(' %%#T%s# ', b.hi)
   local icon = buf_icon(b, b.hi)
-  local bn   = s.buffer_format == 2 and b.n or b.nr
+  local bn   = s.actual_buffer_number and b.n or b.nr
   local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 
   return number .. hi .. icon .. b.name .. ' ' .. mod
