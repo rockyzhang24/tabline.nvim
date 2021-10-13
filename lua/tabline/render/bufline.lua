@@ -69,7 +69,7 @@ function limit_buffers(bufs)
   local tot, limit = #bufs, math.floor(o.columns / 15)
   if tot > limit then
     local cur, mid = index(bufs, bufnr()), math.floor(limit / 2)
-    if cur > mid then
+    if cur and cur > mid then
       local start, stop = cur - mid + 1, limit + cur - mid
       if stop > tot then
         start = start - (stop - tot)
@@ -136,11 +136,11 @@ function buf_path(bnr) -- {{{1
 end
 
 
-function buf_icon(b, hi, curbuf)  -- {{{1
+function buf_icon(b, hi, selected)  -- {{{1
   if b.icon then
     return b.icon .. ' '
   else
-    local devicon = devicon(b, hi, curbuf)
+    local devicon = devicon(b, hi, selected)
     if devicon then
       b.icon = devicon
       return devicon .. ' '
