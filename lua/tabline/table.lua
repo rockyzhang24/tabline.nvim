@@ -17,15 +17,28 @@ function table.copy(tbl)
 end
 
 function table.filter(tbl, func)
-    local new_index = 1
-    local size_orig = #tbl
-    for k, v in ipairs(tbl) do
-        if func(v, k) then
-            tbl[new_index] = v
-            new_index = new_index + 1
-        end
+  local ix, sz = 1, #tbl
+  for k, v in ipairs(tbl) do
+    if func(k, v) then
+      tbl[ix] = v
+      ix = ix + 1
     end
-    for i = new_index, size_orig do tbl[i] = nil end
+  end
+  for i = ix, sz do tbl[i] = nil end
+  return tbl
+end
+
+function table.filternew(tbl, func)
+  local ix, sz, new = 1, #tbl, {}
+  for k,v in pairs(tbl) do new[k] = v end
+  for k, v in ipairs(new) do
+    if func(k, v) then
+      new[ix] = v
+      ix = ix + 1
+    end
+  end
+  for i = ix, sz do new[i] = nil end
+  return new
 end
 
 function table.map(tbl, func)
