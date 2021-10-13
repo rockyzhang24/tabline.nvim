@@ -121,8 +121,8 @@ function buf_path(bnr) -- {{{1
   local minimal = o.columns < 100 -- window is small
   local scratch = getbufvar(bnr, '&buftype') ~= ''
 
-  if not filereadable(bname) then           -- new files/scratch buffers
-    return bname == '' and scratch and s.scratch_label or s.unnamed_label
+  if filereadable(bname) == 0 then           -- new files/scratch buffers
+    return bname == '' and ( scratch and s.scratch_label or s.unnamed_label )
            or scratch and bname
            or minimal and fnamemodify(bname, ':t')
            or short_bufname(bnr)               -- shortened buffer path

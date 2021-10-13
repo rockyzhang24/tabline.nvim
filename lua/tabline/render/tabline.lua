@@ -94,7 +94,7 @@ function tab_label(tnr)
   local fname = bufname(bnr)
   local minimal = not s.tabs_full_path or o.columns < 100      -- window is small
 
-  if not filereadable(fname) then   -- new files/scratch buffers
+  if filereadable(fname) == 0 then   -- new files/scratch buffers
     local scratch = getbufvar(bnr, '&buftype') ~= ''
     return fname == '' and scratch and s.scratch_label or s.unnamed_label
             or scratch and fname
