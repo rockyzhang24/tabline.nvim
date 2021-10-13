@@ -23,6 +23,7 @@ local settings = {
   tab_number_in_left_corner = true,
   actual_buffer_number = false,
   dim_inactive_icons = true,
+  tabs_full_path = false,
   mode_labels = 'secondary',
   modes = { 'auto', 'buffers', 'args' },
   scratch_label = '[Scratch]',
