@@ -52,7 +52,7 @@ function right_corner_label()
     return short_cwd(N)
 
   else
-    return v.user_labels and vim.t.tab.name and vim.t.tab.name or short_cwd(N)
+    return vim.t.tab.name or short_cwd(N)
   end
 end
 

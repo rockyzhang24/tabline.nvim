@@ -1,6 +1,7 @@
 local bufname = vim.fn.bufname
 local fnamemodify = vim.fn.fnamemodify
 local substitute = vim.fn.substitute
+local tabpagewinnr = vim.fn.tabpagewinnr
 local getcwd = vim.fn.getcwd
 local strsub = string.sub
 local strfind = string.find
@@ -18,7 +19,7 @@ function M.short_bufname(bnr)
 end
 
 function M.short_cwd(tnr)
-  local wd = fnamemodify(getcwd(-1, tnr), ':~')
+  local wd = fnamemodify(getcwd(tabpagewinnr(tnr), tnr), ':~')
   if not strfind(wd, '/') then
     return wd
   end
