@@ -44,20 +44,11 @@ end
 -- Tab label formatting
 -------------------------------------------------------------------------------
 
--------------------------------------------------------------------------------
--- Format the tab number, for either the tab label or the right corner.
---
--- @param tnr: tab number
--- Return the formatted tab number
--------------------------------------------------------------------------------
+----
+-- Format the tab number for the tab label.
+----
 function tab_num(tnr)
-
-  if v.mode ~= 'tabs' then
-    return printf("%s %d/%d ", "%#TNumSel#", tnr, tabpagenr('$'))
-  else
-    return tnr == tabpagenr() and printf("%s %d ", "%#TNumSel#", tnr)
-            or printf("%s %d ", "%#TNum#", tnr)
-  end
+  return printf("%%#TNum%s# %d ", tnr == tabpagenr() and 'Sel' or '', tnr)
 end
 
 ----

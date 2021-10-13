@@ -7,7 +7,6 @@ local printf = string.format
 
 local short_cwd = require'tabline.render.paths'.short_cwd
 local tab_icon = require'tabline.render.tabline'.tab_icon
-local tab_num = require'tabline.render.tabline'.tab_num
 local tab_mod_flag = require'tabline.render.tabline'.tab_mod_flag
 
 local hide_tab_number = function() return tabpagenr('$') == 1 or s.tab_number_in_left_corner end
