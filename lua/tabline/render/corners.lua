@@ -23,29 +23,17 @@ function format_right_corner()
   local N = tabpagenr()
 
   if vim.t.tab.corner then
-    -- special right corner with its own label
     return vim.t.tab.corner
 
   elseif not s.show_right_corner then
-    -- no label, just the tab number in form n/N
-    return (v.mode == 'tabs' or hide_tab_number()) and '' or tab_num(N)
+    return ''
 
-  elseif v.mode == 'tabs' or hide_tab_number() then
-    -- no number, just the name or the cwd
+  else
     local hi    = '%#TCorner#'
     local icon  = '%#TNumSel# ' .. tab_icon(N, true)
     local mod   = tab_mod_flag(N, true)
     local label = right_corner_label()
     return printf('%s%s %s %s', icon, hi, label, mod)
-
-  else
-    -- tab number in form n/N, plus tab name or cwd
-    local hi    = '%#TCorner#'
-    local nr    = tab_num(N)
-    local icon  = tab_icon(N, true)
-    local mod   = tab_mod_flag(N, true)
-    local label = right_corner_label()
-    return printf('%s%s %s%s %s', nr, hi, icon, label, mod)
   end
 end --}}}
 
@@ -61,10 +49,10 @@ end --}}}
 function right_corner_label()
   local N = tabpagenr()
 
-  if v.mode == 'tabs' then
+  if v.mode == 'tabs' or v.mode == 'auto' and tabpagenr('$') > 1 then
     return short_cwd(N)
 
-  elseif v.mode == 'buffers' or v.mode == 'arglist' then
+  else
     return v.user_labels and vim.t.tab.name and vim.t.tab.name or short_cwd(N)
   end
 end

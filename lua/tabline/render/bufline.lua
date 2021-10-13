@@ -52,7 +52,8 @@ function render_args()
     table.map(argv(), function(k,v) return bufnr(v) end),
     function(k,v) return v > 0 end)
   if #bufs == 0 then  -- if arglist is empty, switch to buffer mode {{{1
-    v.mode = 'buffers'
+    v.mode = table.filternew(
+      s.modes, function(k,v) return v ~= 'args' end)[1] or 'tabs'
     return render_buffers() -- }}}
   else
     return format_buffer_labels(limit_buffers(bufs))

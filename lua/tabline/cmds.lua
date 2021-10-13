@@ -1,6 +1,7 @@
 local commands
 local s = require'tabline.setup'.settings
 local g = require'tabline.setup'.tabline
+local index = table.index
 
 -------------------------------------------------------------------------------
 -- Main command
@@ -31,7 +32,7 @@ local subcmds = {
 }
 
 local completion = {
-  ['mode'] = { 'tabs', 'buffers', 'args' }
+  ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' }
 }
 
 local function complete(a, c, p)  -- {{{1
@@ -68,10 +69,17 @@ end
 -- Subcommands
 -------------------------------------------------------------------------------
 
-local function set_mode(mode) -- {{{1
-  local modes = { 'tabs', 'buffers', 'args' }
+local function change_mode(mode) -- {{{1
+  local modes = { 'auto', 'tabs', 'buffers', 'args' }
   if table.index(modes, mode[1]) then
     g.v.mode = mode[1]
+  elseif mode[1] == 'next' then
+    local cur = index(s.modes, g.v.mode)
+    if not cur then
+      g.v.mode = s.modes[1]
+    else
+      g.v.mode = s.modes[(cur % #s.modes) + 1]
+    end
   end
   vim.cmd('redrawtabline')
 end
@@ -90,8 +98,12 @@ end
 -------------------------------------------------------------------------------
 
 commands = {
-  ['mode'] = set_mode,
+  ['mode'] = change_mode,
   ['info'] = info,
 }
 
-return { command = command, complete = complete }
+return {
+  command = command,
+  complete = complete,
+  change_mode = change_mode,
+}

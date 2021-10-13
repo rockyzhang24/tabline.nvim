@@ -28,6 +28,9 @@ local function strwidth(s) return #subst(s, '%%#%w+#', '') end
 function render()
   if o.columns < 40 then
     return format_right_corner()
+  elseif v.mode == 'auto' then
+    return tabpagenr('$') > 1 and fit_tabline(render_tabs())
+                              or fit_tabline(render_buffers())
   elseif v.mode == 'tabs' then
     return fit_tabline(render_tabs())
   elseif v.mode == 'args' then

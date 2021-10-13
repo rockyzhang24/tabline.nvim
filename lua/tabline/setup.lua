@@ -12,7 +12,7 @@ local tabline = {
 
 -- internal variables
 tabline.v = {
-  mode = 'tabs',
+  mode = 'auto',
   max_bufs = 10,
 }
 
@@ -23,7 +23,7 @@ local settings = {
   tab_number_in_left_corner = true,
   actual_buffer_number = false,
   mode_labels = 'secondary',
-  modes = { 'tabs', 'buffers', 'args' },
+  modes = { 'auto', 'buffers', 'args' },
   scratch_label = '[Scratch]',
   unnamed_label = '[Unnamed]',
 }
