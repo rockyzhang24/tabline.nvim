@@ -146,6 +146,9 @@ function tab_icon(tnr, right_corner, hi)
   else
     local bnr  = tab_buffer(tnr)
     local B    = g.buffers[bnr]
+
+    if not B then return '' end
+
     local buf  = {['nr'] = bnr, ['icon'] = B.icon, ['name'] = B.name}
     icon = buf_icon(buf, hi, tnr == tabpagenr())
   end
