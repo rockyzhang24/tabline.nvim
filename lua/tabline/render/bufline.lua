@@ -105,13 +105,13 @@ function format_buffer_labels(bufs, special, other) -- {{{1
   for b, _ in pairs(pin) do insert(bufs, 1, b) end
   for b, _ in pairs(spc) do insert(bufs, 1, b) end
 
-  for _, b in ipairs(bufs) do
+  for k, b in pairs(bufs) do
     local iscur = curbuf == b
     local modified = getbufvar(b, '&modified') > 0
 
     local buf = {
       nr = b,
-      n = index(bufs, b),
+      n = k,
       name = all[b].name or buf_path(b),
       hi = (iscur and spc[b])  and 'Special' or
            iscur               and 'Select' or
