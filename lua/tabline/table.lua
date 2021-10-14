@@ -81,24 +81,4 @@ function tbl.uniq(tbl)
   return tbl
 end
 
-function tbl.min(tbl)
-  local mink, minv = 1, math.huge
-  for k, v in pairs(tbl) do
-    if v < minv then
-      mink, minv = k, v
-    end
-  end
-  return minv, mink
-end
-
-function tbl.max(tbl)
-  local maxk, maxv = 1, math.huge * -1
-  for k, v in pairs(tbl) do
-    if v > maxv then
-      maxk, maxv = k, v
-    end
-  end
-  return maxv, maxk
-end
-
 return tbl

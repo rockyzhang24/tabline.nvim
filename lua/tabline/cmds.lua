@@ -13,7 +13,6 @@ local concat = table.concat
 local insert = table.insert
 local index = tbl.index
 local filternew = tbl.filternew
-local min = tbl.min
 --}}}
 
 -------------------------------------------------------------------------------
