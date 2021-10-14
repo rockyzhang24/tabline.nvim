@@ -24,9 +24,9 @@ fun! TablineTheme() abort
   exe "lua require'tabline.render.icons'.normalbg = " .. string(bg[1:])
   exe "lua require'tabline.render.icons'.dimfg = " .. string(&bg == 'dark' ? '6c6c6c' : 'a9a9a9')
   try
-    exe 'hi TSelectMod'  matchstr(execute('hi PmenuSel'), pat) 'guifg=#af0000 gui=bold cterm=bold'
+    exe 'hi TSelectMod'  matchstr(execute('hi Pmenu'), pat) 'guifg=#af0000 gui=bold cterm=bold'
   catch
-    hi! link TSelectMod PmenuSel
+    hi! link TSelectMod Pmenu
   endtry
   try
     exe 'hi TVisibleMod' matchstr(execute('hi Special'), pat) 'guifg=#af0000 gui=bold cterm=bold'
@@ -34,9 +34,9 @@ fun! TablineTheme() abort
     hi! link TVisibleMod Special
   endtry
   try
-    exe 'hi THiddenMod'  matchstr(execute('hi TabLine'), pat) 'guifg=#af0000 gui=bold cterm=bold'
+    exe 'hi THiddenMod'  matchstr(execute('hi Comment'), pat) 'guifg=#af0000 gui=bold cterm=bold'
   catch
-    hi! link THiddenMod TabLine
+    hi! link THiddenMod Comment
   endtry
   try
     exe 'hi TExtraMod'   matchstr(execute('hi Visual'), pat) 'guifg=#af0000 gui=bold cterm=bold'
