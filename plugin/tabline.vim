@@ -12,7 +12,7 @@ fun! TablineTheme() abort   " {{{1
   hi! link TSelect         Pmenu
   hi! link TVisible        Special
   hi! link THidden         Comment
-  hi! link TExtra          Visual
+  hi! link TExtra          Title
   hi! link TSpecial        PmenuSel
   hi! link TFill           Folded
   hi! link TNumSel         TabLineSel
@@ -39,9 +39,9 @@ fun! TablineTheme() abort   " {{{1
     hi! link THiddenMod Comment
   endtry
   try
-    exe 'hi TExtraMod'   matchstr(execute('hi Visual'), pat) 'guifg=#af0000 gui=bold cterm=bold'
+    exe 'hi TExtraMod'   matchstr(execute('hi Title'), pat) 'guifg=#af0000 gui=bold cterm=bold'
   catch
-    hi! link TExtraMod Visual
+    hi! link TExtraMod Title
   endtry
 endfun "}}}
 call TablineTheme()

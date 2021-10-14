@@ -113,7 +113,7 @@ end
 function tab_mod_flag(tnr, corner)
   for _, buf in ipairs(tabpagebuflist(tnr)) do
     if getbufvar(buf, '&modified') > 0 then
-      return corner and '%#TVisibleMod#' .. i.modified
+      return corner and '%#TVisibleMod#' .. i.modified .. ' '
               or tnr == tabpagenr() and '%#TSelectMod#' .. i.modified .. ' '
               or '%#THiddenMod#' .. i.modified .. ' '
     end

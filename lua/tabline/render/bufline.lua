@@ -102,7 +102,7 @@ function format_buffer_labels(bufs, special, other) -- {{{1
   local oth, spc, pin = other or {}, special or {}, g.pinned or {}
 
   for b, _ in pairs(oth) do insert(bufs, 1, b) end
-  for b, _ in pairs(pin) do insert(bufs, 1, b) end
+  for b, _ in pairs(pin) do if not index(bufs, b) then insert(bufs, 1, b) end end
   for b, _ in pairs(spc) do insert(bufs, 1, b) end
 
   if #bufs == 0 and next(all) then
@@ -181,9 +181,9 @@ function buf_label(b, mod)  -- {{{1
 end
 
 function buf_mod(b, modified) -- {{{1
-  local mod = g.pinned[b.nr] and i.pinned or ''
+  local mod = g.pinned[b.nr] and i.pinned .. ' ' or ''
   if modified then
-    mod = mod .. printf('%%#T%s#%s', b.himod, i.modified)
+    mod = mod .. printf('%%#T%s#%s', b.himod, i.modified .. ' ')
   end
   return mod
 end

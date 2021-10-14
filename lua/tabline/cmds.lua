@@ -50,7 +50,7 @@ end
 
 local subcmds = {
   'mode', 'info', 'next', 'prev', 'filtering', 'close',
-  'bufname', 'tabname', 'buficon', 'tabicon',
+  'bufname', 'tabname', 'buficon', 'tabicon', 'pin',
 }
 
 local completion = {
@@ -243,6 +243,17 @@ local function icon_tab(bang, args) -- {{{1
   vim.cmd('redraw!')
 end
 
+local function pin_buffer(bang) -- {{{1
+  if bang then
+    if index(g.pinned, bufnr()) then
+      table.remove(g.pinned, bufnr())
+    end
+  elseif not index(g.pinned, bufnr()) then
+    table.insert(g.pinned, bufnr())
+  end
+  vim.cmd('redraw!')
+end
+
 local function info() -- {{{1
   print('--- BUFFERS ---')
   for k, v in pairs(g.buffers) do
@@ -270,6 +281,7 @@ banged = {
   ['tabname'] = name_tab,
   ['buficon'] = icon_buffer,
   ['tabicon'] = icon_tab,
+  ['pin'] = pin_buffer,
 }
 
 return {
