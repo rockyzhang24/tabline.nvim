@@ -21,7 +21,7 @@ local filternew = tbl.filternew
 -- Main command
 -------------------------------------------------------------------------------
 
-local function command(arg)
+local function command(bang, arg)
   local subcmd, args = nil, {}
   for w in string.gmatch(arg, '(%w+)') do
     if not subcmd then
@@ -30,8 +30,10 @@ local function command(arg)
       insert(args, w)
     end
   end
-  if not commands[subcmd] then
+  if not commands[subcmd] and not banged[subcmd] then
     print('Invalid subcommand: ' .. subcmd)
+  elseif bang and banged[subcmd] then
+    banged[subcmd](bang, args)
   else
     commands[subcmd](args)
   end
@@ -42,11 +44,12 @@ end
 -------------------------------------------------------------------------------
 
 local subcmds = {
-  'mode', 'info', 'next', 'prev',
+  'mode', 'info', 'next', 'prev', 'filtering',
 }
 
 local completion = {
-  ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' }
+  ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
+  ['filtering'] = { 'on', 'off' },
 }
 
 local function complete(a, c, p)  -- {{{1
@@ -140,6 +143,15 @@ local function change_mode(mode) -- {{{1
   vim.cmd('redrawtabline')
 end
 
+local function toggle_filtering(bang, args) -- {{{1
+  if bang then
+    s.filtering = not s.filtering
+  else
+    s.filtering = #args == 0 or args[1] ~= 'off'
+  end
+  vim.cmd('redraw! | echo "buffer filtering turned ' .. (s.filtering and 'on' or 'off') .. '"')
+end
+
 local function info() -- {{{1
   print('--- BUFFERS ---')
   for k, v in pairs(g.buffers) do
@@ -158,6 +170,10 @@ commands = {
   ['info'] = info,
   ['next'] = next_tab,
   ['prev'] = prev_tab,
+}
+
+banged = {
+  ['filtering'] = toggle_filtering,
 }
 
 return {

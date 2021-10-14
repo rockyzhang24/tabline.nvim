@@ -55,7 +55,11 @@ local function winbufs() -- {{{1
 end
 
 local function validbuf(b, wd)  -- {{{1
-  return b.special and has_win(b.nr) or strfind(b.path, wd)
+  if b.special then
+    return has_win(b.nr)
+  else
+    return not s.filtering or strfind(b.path, wd)
+  end
 end
 
 -- }}}
@@ -160,9 +164,9 @@ end
 -- end
 
 function M.get_bufs()
-  local ix, tbl, wd, all = 1, {}, getcwd(), not s.filtering
+  local ix, tbl, wd = 1, {}, getcwd()
   for nr, b in pairs(g.buffers) do
-    if (all or validbuf(b, wd)) and not b.special then
+    if (validbuf(b, wd)) and not b.special then
       tbl[ix] = nr
       ix = ix + 1
     end

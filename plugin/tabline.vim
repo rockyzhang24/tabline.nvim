@@ -52,4 +52,5 @@ lua require'tabline.setup'.setup()
 
 set tabline=%!v:lua.require'tabline'.render()
 
-command! -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete Tabline exe "lua require'tabline.cmds'.command(" . string(<q-args>) . ")"
+command! -bang -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete Tabline
+            \ exe "lua require'tabline.cmds'.command(" . <bang>0 . ',' . string(<q-args>) . ")"
