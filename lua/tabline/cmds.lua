@@ -6,6 +6,8 @@ local h = require'tabline.helpers'
 local CU = vim.api.nvim_replace_termcodes('<C-U>', true, false, true)
 local Esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
 
+local fn = vim.fn
+
 -- table functions {{{1
 local tbl = require'tabline.table'
 local remove = table.remove
@@ -40,7 +42,7 @@ end
 -------------------------------------------------------------------------------
 
 local subcmds = {
-  'mode', 'info'
+  'mode', 'info', 'next', 'prev',
 }
 
 local completion = {
@@ -81,19 +83,46 @@ end
 -- Subcommands
 -------------------------------------------------------------------------------
 
-local function select_tab(cnt)
+local function select_tab(cnt) -- {{{1
   if cnt == 0 then return '' end
   local b
   if h.tabs_mode() then
     return 'gt'
   elseif g.v.mode == 'args' and not h.empty_arglist() then
-    b = bufs[math.min(cnt, #vim.fn.argv())]
+    b = bufs[math.min(cnt, #fn.argv())]
   elseif s.actual_buffer_number then
     b = cnt + 1
   else
     b = g.current_buffers[math.min(cnt, #g.current_buffers)]
   end
   return string.format(':%ssilent! buffer %s\n', CU, b)
+end
+
+local function next_tab(args) -- {{{1
+  local cnt, last = unpack(args)
+  local max = #g.current_buffers
+  if last then
+    vim.cmd('buffer ' .. g.current_buffers[max])
+    return
+  end
+  local cur = index(g.current_buffers, fn.bufnr()) or 1
+  local target = (cur - 1 + (cnt or 1)) % max + 1
+  vim.cmd('buffer ' .. g.current_buffers[target])
+end
+
+local function prev_tab(args) -- {{{1
+  local cnt, first = unpack(args)
+  if first then
+    vim.cmd('buffer ' .. g.current_buffers[1])
+    return
+  end
+  local max = #g.current_buffers
+  local cur = index(g.current_buffers, fn.bufnr()) or 0
+  local target = cur - (cnt or 1)
+  while target <= 0 do
+    target = target + max
+  end
+  vim.cmd('buffer ' .. g.current_buffers[target])
 end
 
 local function change_mode(mode) -- {{{1
@@ -127,6 +156,8 @@ end
 commands = {
   ['mode'] = change_mode,
   ['info'] = info,
+  ['next'] = next_tab,
+  ['prev'] = prev_tab,
 }
 
 return {
