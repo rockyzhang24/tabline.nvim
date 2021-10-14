@@ -1,11 +1,20 @@
 local o = vim.o
 local v = require'tabline.setup'.tabline.v
 local s = require'tabline.setup'.settings
+local h = require'tabline.helpers'
 
+-- vim functions {{{1
 local tabpagenr = vim.fn.tabpagenr
 local strwidth = vim.api.nvim_strwidth
 
+-- table functions {{{1
+local tbl = require'tabline.table'
 local remove = table.remove
+local concat = table.concat
+local insert = table.insert
+local map = tbl.map
+--}}}
+
 local strsub = string.sub
 local subst  = string.gsub
 local printf = string.format
@@ -19,7 +28,6 @@ local fit_tabline, render
 local format_right_corner = require'tabline.render.corners'.format_right_corner
 local mode_label = require'tabline.render.corners'.mode_label
 
-local function tabs_mode() return v.mode == 'tabs' or v.mode == 'auto' and tabpagenr('$') > 1 end
 local function bufwidth(s) s = subst(s, '%%#%w+#', '') return strwidth(s) end
 local function tabwidth(s) s = subst(subst(s, '%%#%w+#', ''), '%%%d+T', '') return strwidth(s) end
 
@@ -30,7 +38,7 @@ local function tabwidth(s) s = subst(subst(s, '%%#%w+#', ''), '%%%d+T', '') retu
 function render()
   if o.columns < 40 then
     return format_right_corner()
-  elseif tabs_mode() then
+  elseif h.tabs_mode() then
     return fit_tabline(render_tabs())
   elseif v.mode == 'args' then
     return fit_tabline(render_args())
@@ -45,7 +53,7 @@ end
 -------------------------------------------------------------------------------
 
 function fit_tabline(center, tabs)
-  local labelwidth = tabs_mode() and tabwidth or bufwidth
+  local labelwidth = h.tabs_mode() and tabwidth or bufwidth
   local limit = o.columns - 1
   local corner_label = format_right_corner()
   limit = limit - labelwidth(corner_label)
@@ -102,7 +110,7 @@ function fit_tabline(center, tabs)
       end
     end
     if left_has_been_cut then
-      table.insert(tabs, 1, {['label'] = '%#DiffDelete# < '})
+      insert(tabs, 1, {['label'] = '%#DiffDelete# < '})
     end
     if right_has_been_cut then
       local ntabs = #tabs
@@ -110,13 +118,13 @@ function fit_tabline(center, tabs)
     end
   end
 
-  local labels = table.map(tabs, function(_,v) return v.label end)
+  local labels = map(tabs, function(_,v) return v.label end)
   if v.mode == 'tabs' then
     for n = 1, #labels do
       labels[n] = '%' .. (n+1) .. 'T' .. labels[n]
     end
   end
-  labels = tabsnums .. modelabel .. table.concat(labels, '')
+  labels = tabsnums .. modelabel .. concat(labels, '')
   return labels .. '%#TFill#%=' .. corner_label .. '%999X'
 end
 

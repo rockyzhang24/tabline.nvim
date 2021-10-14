@@ -1,7 +1,20 @@
 local commands
 local s = require'tabline.setup'.settings
 local g = require'tabline.setup'.tabline
-local index = table.index
+local h = require'tabline.helpers'
+
+local CU = vim.api.nvim_replace_termcodes('<C-U>', true, false, true)
+local Esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
+
+-- table functions {{{1
+local tbl = require'tabline.table'
+local remove = table.remove
+local concat = table.concat
+local insert = table.insert
+local index = tbl.index
+local filternew = tbl.filternew
+local min = tbl.min
+--}}}
 
 -------------------------------------------------------------------------------
 -- Main command
@@ -13,7 +26,7 @@ local function command(arg)
     if not subcmd then
       subcmd = w
     else
-      table.insert(args, w)
+      insert(args, w)
     end
   end
   if not commands[subcmd] then
@@ -51,12 +64,12 @@ local function complete(a, c, p)  -- {{{1
   end
   local res
   if arg and completion[subcmd] then
-    return table.filternew(completion[subcmd],
+    return filternew(completion[subcmd],
                            function(k,v) return string.find(v, '^' .. arg) end)
   elseif subcmd and completion[subcmd] then
     return completion[subcmd]
   elseif subcmd then
-    return table.filternew(subcmds,
+    return filternew(subcmds,
                            function(k,v) return string.find(v, '^' .. subcmd) end)
   else
     return subcmds
@@ -69,9 +82,19 @@ end
 -- Subcommands
 -------------------------------------------------------------------------------
 
+local function select_tab(cnt)
+  if h.tabs_mode() then
+    return 'gt'
+  elseif g.v.mode == 'args' and not h.empty_arglist() then
+    local bufs = vim.fn.argv()
+    local n = math.min(cnt, #bufs)
+    return string.format(':%ssilent! buffer %s\n', CU, bufs[n])
+  end
+end
+
 local function change_mode(mode) -- {{{1
   local modes = { 'auto', 'tabs', 'buffers', 'args' }
-  if table.index(modes, mode[1]) then
+  if index(modes, mode[1]) then
     g.v.mode = mode[1]
   elseif mode[1] == 'next' then
     local cur = index(s.modes, g.v.mode)
@@ -106,4 +129,5 @@ return {
   command = command,
   complete = complete,
   change_mode = change_mode,
+  select_tab = select_tab,
 }

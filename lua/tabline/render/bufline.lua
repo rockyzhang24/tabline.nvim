@@ -4,6 +4,7 @@ local v = g.v
 local s = require'tabline.setup'.settings
 local i = s.indicators
 
+-- vim functions {{{1
 local bufnr = vim.fn.bufnr
 local bufname = vim.fn.bufname
 local getbufvar = vim.fn.getbufvar
@@ -13,8 +14,21 @@ local tabpagebuflist = vim.fn.tabpagebuflist
 local tabpagenr = vim.fn.tabpagenr
 local filereadable = vim.fn.filereadable
 local argv = vim.fn.argv
+
+-- table functions {{{1
+local tbl = require'tabline.table'
+local remove = table.remove
+local concat = table.concat
+local insert = table.insert
+local index = tbl.index
+local filter = tbl.filter
+local filternew = tbl.filternew
+local slice = tbl.slice
+local map = tbl.map
+--}}}
+
+
 local printf = string.format
-local index = table.index
 
 local get_bufs = require'tabline.bufs'.get_bufs
 local short_bufname = require'tabline.render.paths'.short_bufname
@@ -48,11 +62,11 @@ end
 -------------------------------------------------------------------------------
 
 function render_args()
-  local bufs = table.filter(
-    table.map(argv(), function(k,v) return bufnr(v) end),
+  local bufs = filter(
+    map(argv(), function(k,v) return bufnr(v) end),
     function(k,v) return v > 0 end)
   if #bufs == 0 then  -- if arglist is empty, switch to buffer mode {{{1
-    v.mode = table.filternew(
+    v.mode = filternew(
       s.modes, function(k,v) return v ~= 'args' end)[1] or 'tabs'
     return render_buffers() -- }}}
   else
@@ -75,9 +89,9 @@ function limit_buffers(bufs)
         start = start - (stop - tot)
         stop = tot
       end
-      bufs = table.slice(bufs, start, stop)
+      bufs = slice(bufs, start, stop)
     else
-      bufs = table.slice(bufs, 1, limit)
+      bufs = slice(bufs, 1, limit)
     end
   end
   return bufs
@@ -87,9 +101,9 @@ function format_buffer_labels(bufs, special, other) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
   local oth, spc, pin = other or {}, special or {}, g.pinned or {}
 
-  for b, _ in pairs(oth) do table.insert(bufs, 1, b) end
-  for b, _ in pairs(pin) do table.insert(bufs, 1, b) end
-  for b, _ in pairs(spc) do table.insert(bufs, 1, b) end
+  for b, _ in pairs(oth) do insert(bufs, 1, b) end
+  for b, _ in pairs(pin) do insert(bufs, 1, b) end
+  for b, _ in pairs(spc) do insert(bufs, 1, b) end
 
   for _, b in ipairs(bufs) do
     local iscur = curbuf == b
@@ -110,7 +124,7 @@ function format_buffer_labels(bufs, special, other) -- {{{1
 
     if iscur then center = b end
 
-    table.insert(tabs, buf)
+    insert(tabs, buf)
   end
 
   return center, tabs

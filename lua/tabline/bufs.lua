@@ -1,11 +1,17 @@
-local fn = vim.fn
 local g = require'tabline.setup'.tabline
 local s = require'tabline.setup'.settings
-local fnamemodify = fn.fnamemodify
-local bufname = fn.bufname
-local getbufvar = fn.getbufvar
-local buflisted = fn.buflisted
-local getcwd = fn.getcwd
+
+-- vim functions {{{1
+local fnamemodify = vim.fn.fnamemodify
+local bufname = vim.fn.bufname
+local getbufvar = vim.fn.getbufvar
+local buflisted = vim.fn.buflisted
+local getcwd = vim.fn.getcwd
+local tabpagebuflist = vim.fn.tabpagebuflist
+local tabpagenr = vim.fn.tabpagenr
+local bufnr = vim.fn.bufnr
+--}}}
+
 local strfind = string.find
 
 vim.cmd([[
@@ -41,11 +47,11 @@ local special_ft = {
 -------------------------------------------------------------------------------
 
 local function has_win(bnr) -- {{{1
-  return fn.tabpagebuflist(fn.tabpagenr())[bnr]
+  return tabpagebuflist(tabpagenr())[bnr]
 end
 
 local function winbufs() -- {{{1
-  return fn.tabpagebuflist(fn.tabpagenr())
+  return tabpagebuflist(tabpagenr())
 end
 
 local function validbuf(b, wd)  -- {{{1
@@ -118,7 +124,7 @@ end
 --------------------------------------------------------------------------------
 function M.init_bufs()
   g.buffers = {}
-  for i = 1, fn.bufnr('$') do
+  for i = 1, bufnr('$') do
     M.add_buf(i)
   end
 end

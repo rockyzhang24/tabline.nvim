@@ -1,8 +1,11 @@
+-- vim functions {{{1
 local bufname = vim.fn.bufname
 local fnamemodify = vim.fn.fnamemodify
 local substitute = vim.fn.substitute
 local tabpagewinnr = vim.fn.tabpagewinnr
 local getcwd = vim.fn.getcwd
+--}}}
+
 local strsub = string.sub
 local strfind = string.find
 

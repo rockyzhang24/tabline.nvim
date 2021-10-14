@@ -8,7 +8,7 @@ augroup tabline
     au ColorScheme * call TablineTheme()
 augroup END
 
-fun! TablineTheme() abort
+fun! TablineTheme() abort   " {{{1
   hi! link TSelect         Pmenu
   hi! link TVisible        Special
   hi! link THidden         Comment
@@ -43,9 +43,10 @@ fun! TablineTheme() abort
   catch
     hi! link TExtraMod Visual
   endtry
-endfun
+endfun "}}}
 call TablineTheme()
 
+nnoremap <expr><silent> <Plug>(TabSelect) v:lua.require'tabline.cmds'.select_tab(v:count)
 
 lua require'tabline.setup'.setup()
 

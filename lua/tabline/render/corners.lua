@@ -1,8 +1,22 @@
 local v = require'tabline.setup'.tabline.v
 local s = require'tabline.setup'.settings
-local index = table.index
+
+-- vim functions {{{1
 local tabpagenr = vim.fn.tabpagenr
 local tabpagebuflist = vim.fn.tabpagebuflist
+
+-- table functions {{{1
+local tbl = require'tabline.table'
+local remove = table.remove
+local concat = table.concat
+local insert = table.insert
+local index = tbl.index
+local filter = tbl.filter
+local filternew = tbl.filternew
+local slice = tbl.slice
+local map = tbl.map
+--}}}
+
 local printf = string.format
 
 local short_cwd = require'tabline.render.paths'.short_cwd

@@ -1,6 +1,8 @@
+local tbl = {}
+
 local remove = table.remove
 
-function table.slice(tbl, first, last, step)
+function tbl.slice(tbl, first, last, step)
   local sliced = {}
   for i = first or 1, last or #tbl, step or 1 do
     sliced[#sliced+1] = tbl[i]
@@ -8,7 +10,7 @@ function table.slice(tbl, first, last, step)
   return sliced
 end
 
-function table.copy(tbl)
+function tbl.copy(tbl)
   local t2 = {}
   for k,v in pairs(tbl) do
     t2[k] = v
@@ -16,7 +18,7 @@ function table.copy(tbl)
   return t2
 end
 
-function table.filter(tbl, func)
+function tbl.filter(tbl, func)
   local ix, sz = 1, #tbl
   for k, v in ipairs(tbl) do
     if func(k, v) then
@@ -28,7 +30,7 @@ function table.filter(tbl, func)
   return tbl
 end
 
-function table.filternew(tbl, func)
+function tbl.filternew(tbl, func)
   local ix, sz, new = 1, #tbl, {}
   for k,v in pairs(tbl) do new[k] = v end
   for k, v in ipairs(new) do
@@ -41,14 +43,14 @@ function table.filternew(tbl, func)
   return new
 end
 
-function table.map(tbl, func)
+function tbl.map(tbl, func)
   for k, v in pairs(tbl) do
     tbl[k] = func(k,v)
   end
   return tbl
 end
 
-function table.mapnew(tbl, func)
+function tbl.mapnew(tbl, func)
   local new = {}
   for k, v in pairs(tbl) do
     new[k] = func(k,v)
@@ -56,7 +58,7 @@ function table.mapnew(tbl, func)
   return new
 end
 
-function table.index(tbl, val)
+function tbl.index(tbl, val)
   local ix = 1
   for _, v in ipairs(tbl) do
     if v == val then
@@ -67,7 +69,7 @@ function table.index(tbl, val)
   return nil
 end
 
-function table.uniq(tbl)
+function tbl.uniq(tbl)
   local seen = {}
   for k, v in pairs(tbl) do
     if seen[v] then
@@ -78,3 +80,25 @@ function table.uniq(tbl)
   end
   return tbl
 end
+
+function tbl.min(tbl)
+  local mink, minv = 1, math.huge
+  for k, v in pairs(tbl) do
+    if v < minv then
+      mink, minv = k, v
+    end
+  end
+  return minv, mink
+end
+
+function tbl.max(tbl)
+  local maxk, maxv = 1, math.huge * -1
+  for k, v in pairs(tbl) do
+    if v > maxv then
+      maxk, maxv = k, v
+    end
+  end
+  return maxv, maxk
+end
+
+return tbl

@@ -4,7 +4,7 @@ local v = g.v
 local s = require'tabline.setup'.settings
 local i = s.indicators
 
-local index = table.index
+-- vim functions {{{1
 local tabpagenr = vim.fn.tabpagenr
 local tabpagebuflist = vim.fn.tabpagebuflist
 local tabpagewinnr = vim.fn.tabpagewinnr
@@ -13,6 +13,14 @@ local fnamemodify = vim.fn.fnamemodify
 local getbufvar = vim.fn.getbufvar
 local gettabvar = vim.fn.gettabvar
 local filereadable = vim.fn.filereadable
+
+-- table functions {{{1
+local tbl = require'tabline.table'
+local remove = table.remove
+local concat = table.concat
+local insert = table.insert
+local index = tbl.index
+--}}}
 
 local printf = string.format
 
@@ -34,7 +42,7 @@ local tab_num, tab_mod_flag, tab_label, tab_hi, tab_icon, format_tab_label, rend
 function render_tabs()
   local tabs = {}
   for tnr = 1, tabpagenr('$') do
-    table.insert(tabs, format_tab_label(tnr))
+    insert(tabs, format_tab_label(tnr))
   end
   return tabpagenr(), tabs
 end
