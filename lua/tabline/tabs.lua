@@ -15,7 +15,7 @@ au tabline TabNew * lua require'tabline.tabs'.init_tabs()
 -------------------------------------------------------------------------------
 
 local function new_tab(page)  -- {{{1
-  return {}
+  return { ['name'] = false }
 end
 
 --}}}

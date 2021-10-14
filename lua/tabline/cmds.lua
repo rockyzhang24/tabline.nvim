@@ -2,11 +2,16 @@ local commands
 local s = require'tabline.setup'.settings
 local g = require'tabline.setup'.tabline
 local h = require'tabline.helpers'
+local devicons = require'nvim-web-devicons'
 
 local CU = vim.api.nvim_replace_termcodes('<C-U>', true, false, true)
 local Esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
 
 local fn = vim.fn
+
+-- vim functions {{{1
+local getbufvar = vim.fn.getbufvar
+local bufnr = vim.fn.bufnr
 
 -- table functions {{{1
 local tbl = require'tabline.table'
@@ -45,6 +50,7 @@ end
 
 local subcmds = {
   'mode', 'info', 'next', 'prev', 'filtering', 'close',
+  'bufname', 'tabname', 'buficon', 'tabicon',
 }
 
 local completion = {
@@ -108,7 +114,7 @@ local function next_tab(args) -- {{{1
     vim.cmd('buffer ' .. g.current_buffers[max])
     return
   end
-  local cur = index(g.current_buffers, fn.bufnr()) or 1
+  local cur = index(g.current_buffers, bufnr()) or 1
   local target = (cur - 1 + (cnt or 1)) % max + 1
   vim.cmd('buffer ' .. g.current_buffers[target])
 end
@@ -120,7 +126,7 @@ local function prev_tab(args) -- {{{1
     return
   end
   local max = #g.current_buffers
-  local cur = index(g.current_buffers, fn.bufnr()) or 0
+  local cur = index(g.current_buffers, bufnr()) or 0
   local target = cur - (cnt or 1)
   while target <= 0 do
     target = target + max
@@ -153,7 +159,7 @@ local function toggle_filtering(bang, args) -- {{{1
 end
 
 local function close() -- {{{1
-  local cur, alt, bufs = fn.bufnr(), fn.bufnr('#'), g.current_buffers
+  local cur, alt, bufs = bufnr(), bufnr('#'), g.current_buffers
   vim.o.hidden = true
   if alt ~= -1 and index(bufs, alt) then
     vim.cmd('buffer #')
@@ -164,13 +170,77 @@ local function close() -- {{{1
   else
     vim.cmd('bnext')
   end
-  if fn.getbufvar(cur, '&buftype') == 'nofile' then
+  if getbufvar(cur, '&buftype') == 'nofile' then
     vim.cmd('silent! bwipe ' .. cur)
-  elseif fn.getbufvar(cur, '&modified') == 0 then
+  elseif getbufvar(cur, '&modified') == 0 then
     vim.cmd('bdelete ' .. cur)
   else
     vim.cmd('echo "Modified buffer has been hidden"')
   end
+end
+
+local function name_buffer(bang, args) -- {{{1
+  if ( #args == 0 and not bang ) or not g.buffers[bufnr()] then return end
+  local buf = g.buffers[bufnr()]
+  if bang then
+    buf.name = nil
+  else
+    if getbufvar(bufnr(), '&buftype') ~= '' then
+      buf.special = true
+    end
+    buf.name = args[1]
+  end
+  vim.cmd('redraw!')
+end
+
+local function icon_buffer(bang, args) -- {{{1
+  if ( #args == 0 and not bang ) or not g.buffers[bufnr()] then return end
+  local buf, icon = g.buffers[bufnr()], nil
+  if bang then
+    buf.icon = nil
+  elseif s.icons[args[1]] then
+    icon = s.icons[args[1]]
+  else
+    icon = devicons.get_icon(args[1])
+    if not icon then return end
+  end
+  if getbufvar(bufnr(), '&buftype') ~= '' then
+    buf.special = true
+  end
+  buf.icon = icon
+  vim.cmd('redraw!')
+end
+
+local function name_tab(bang, args) -- {{{1
+  if #args == 0 and not bang then return end
+  local t = vim.t.tab
+  if bang and not t.name then
+    return
+  elseif bang then
+    t.name = false
+  else
+    t.name = args[1]
+  end
+  vim.t.tab = t
+  vim.cmd('redraw!')
+end
+
+local function icon_tab(bang, args) -- {{{1
+  if #args == 0 and not bang then return end
+  local t, icon = vim.t.tab, nil
+  if bang and not t.icon then
+    return
+  elseif bang then
+    icon = nil
+  elseif s.icons[args[1]] then
+    icon = s.icons[args[1]]
+  else
+    icon = devicons.get_icon(args[1])
+    if not icon then return end
+  end
+  t.icon = icon
+  vim.t.tab = t
+  vim.cmd('redraw!')
 end
 
 local function info() -- {{{1
@@ -196,6 +266,10 @@ commands = {
 
 banged = {
   ['filtering'] = toggle_filtering,
+  ['bufname'] = name_buffer,
+  ['tabname'] = name_tab,
+  ['buficon'] = icon_buffer,
+  ['tabicon'] = icon_tab,
 }
 
 return {

@@ -157,8 +157,8 @@ end
 
 
 function buf_icon(b, hi, selected)  -- {{{1
-  if b.icon then
-    return b.icon .. ' '
+  if g.buffers[b.nr].icon then
+    return g.buffers[b.nr].icon .. ' '
   else
     local devicon = devicon(b, hi, selected)
     if devicon then
