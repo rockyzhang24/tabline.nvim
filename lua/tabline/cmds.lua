@@ -82,13 +82,18 @@ end
 -------------------------------------------------------------------------------
 
 local function select_tab(cnt)
+  if cnt == 0 then return '' end
+  local b
   if h.tabs_mode() then
     return 'gt'
   elseif g.v.mode == 'args' and not h.empty_arglist() then
-    local bufs = vim.fn.argv()
-    local n = math.min(cnt, #bufs)
-    return string.format(':%ssilent! buffer %s\n', CU, bufs[n])
+    b = bufs[math.min(cnt, #vim.fn.argv())]
+  elseif s.actual_buffer_number then
+    b = cnt + 1
+  else
+    b = g.current_buffers[math.min(cnt, #g.current_buffers)]
   end
+  return string.format(':%ssilent! buffer %s\n', CU, b)
 end
 
 local function change_mode(mode) -- {{{1

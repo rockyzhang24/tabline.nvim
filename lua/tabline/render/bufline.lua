@@ -105,6 +105,8 @@ function format_buffer_labels(bufs, special, other) -- {{{1
   for b, _ in pairs(pin) do insert(bufs, 1, b) end
   for b, _ in pairs(spc) do insert(bufs, 1, b) end
 
+  g.current_buffers = bufs
+
   for k, b in pairs(bufs) do
     local iscur = curbuf == b
     local modified = getbufvar(b, '&modified') > 0
