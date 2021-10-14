@@ -18,6 +18,7 @@ local printf = string.format
 
 local short_bufname = require'tabline.render.paths'.short_bufname
 local buf_icon = require'tabline.render.bufline'.buf_icon
+local buf_path = require'tabline.render.bufline'.buf_path
 
 local tab_buffer = function(tnr) return tabpagebuflist(tnr)[tabpagewinnr(tnr)] end
 
@@ -68,8 +69,8 @@ end
 -- The label can be either:
 -- 1. the shortened cwd
 -- 2. the name of the active special buffer for this tab
--- 3. custom tab or active buffer label (option: user_labels)
--- 4. the name of the active buffer for this tab (option-controlled)
+-- 3. custom tab or active buffer label
+-- 4. the name of the active buffer for this tab
 --
 -- @param tnr: the tab number
 -- Return the formatted tab label
@@ -91,22 +92,7 @@ function tab_label(tnr)
     return buf.name
   end
 
-  local fname = bufname(bnr)
-  local minimal = not s.tabs_full_path or o.columns < 100      -- window is small
-
-  if filereadable(fname) == 0 then   -- new files/scratch buffers
-    local scratch = getbufvar(bnr, '&buftype') ~= ''
-    return fname == '' and scratch and s.scratch_label or s.unnamed_label
-            or scratch and fname
-            or minimal and fnamemodify(fname, ':t')
-            or short_bufname(bnr)
-
-  elseif minimal then
-    return fnamemodify(fname, ':t')
-
-  else
-    return short_bufname(bnr)
-  end
+  return buf_path(bnr, not s.tabs_full_path)
 end
 
 -------------------------------------------------------------------------------

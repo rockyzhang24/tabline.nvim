@@ -116,9 +116,9 @@ function format_buffer_labels(bufs, special, other) -- {{{1
   return center, tabs
 end
 
-function buf_path(bnr) -- {{{1
+function buf_path(bnr, basename) -- {{{1
   local bname = bufname(bnr)
-  local minimal = o.columns < 100 -- window is small
+  local minimal = basename or o.columns < 100 -- window is small
   local scratch = getbufvar(bnr, '&buftype') ~= ''
 
   if filereadable(bname) == 0 then           -- new files/scratch buffers
@@ -176,4 +176,5 @@ return {
   render_buffers = render_buffers,
   render_args = render_args,
   buf_icon = buf_icon,
+  buf_path = buf_path,
 }
