@@ -44,7 +44,7 @@ end
 -------------------------------------------------------------------------------
 
 local subcmds = {
-  'mode', 'info', 'next', 'prev', 'filtering',
+  'mode', 'info', 'next', 'prev', 'filtering', 'close',
 }
 
 local completion = {
@@ -152,6 +152,27 @@ local function toggle_filtering(bang, args) -- {{{1
   vim.cmd('redraw! | echo "buffer filtering turned ' .. (s.filtering and 'on' or 'off') .. '"')
 end
 
+local function close() -- {{{1
+  local cur, alt, bufs = fn.bufnr(), fn.bufnr('#'), g.current_buffers
+  vim.o.hidden = true
+  if alt ~= -1 and index(bufs, alt) then
+    vim.cmd('buffer #')
+  elseif #bufs > 1 or not index(bufs, cur) then
+    next_tab({1})
+  elseif alt > 0 then
+    vim.cmd('buffer #')
+  else
+    vim.cmd('bnext')
+  end
+  if fn.getbufvar(cur, '&buftype') == 'nofile' then
+    vim.cmd('silent! bwipe ' .. cur)
+  elseif fn.getbufvar(cur, '&modified') == 0 then
+    vim.cmd('bdelete ' .. cur)
+  else
+    vim.cmd('echo "Modified buffer has been hidden"')
+  end
+end
+
 local function info() -- {{{1
   print('--- BUFFERS ---')
   for k, v in pairs(g.buffers) do
@@ -170,6 +191,7 @@ commands = {
   ['info'] = info,
   ['next'] = next_tab,
   ['prev'] = prev_tab,
+  ['close'] = close,
 }
 
 banged = {
