@@ -32,8 +32,8 @@ local function command(bang, arg)
   end
   if not commands[subcmd] and not banged[subcmd] then
     print('Invalid subcommand: ' .. subcmd)
-  elseif bang and banged[subcmd] then
-    banged[subcmd](bang, args)
+  elseif banged[subcmd] then
+    banged[subcmd](bang == 1, args)
   else
     commands[subcmd](args)
   end
