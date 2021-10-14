@@ -3,6 +3,7 @@ local v = require'tabline.setup'.tabline.v
 local s = require'tabline.setup'.settings
 
 local tabpagenr = vim.fn.tabpagenr
+local strwidth = vim.api.nvim_strwidth
 
 local remove = table.remove
 local strsub = string.sub
@@ -19,9 +20,8 @@ local format_right_corner = require'tabline.render.corners'.format_right_corner
 local mode_label = require'tabline.render.corners'.mode_label
 
 local function tabs_mode() return v.mode == 'tabs' or v.mode == 'auto' and tabpagenr('$') > 1 end
-local function strwidth(s) return #subst(s, '%%#%w+#', '') end
-local function tabwidth(s) return #subst(subst(s, '%%#%w+#', ''), '%%%d+T', '') end
-
+local function bufwidth(s) s = subst(s, '%%#%w+#', '') return strwidth(s) end
+local function tabwidth(s) s = subst(subst(s, '%%#%w+#', ''), '%%%d+T', '') return strwidth(s) end
 
 -------------------------------------------------------------------------------
 -- Entry point for tabline rendering
@@ -45,14 +45,14 @@ end
 -------------------------------------------------------------------------------
 
 function fit_tabline(center, tabs)
-  local labelwidth = tabs_mode() and tabwidth or strwidth
+  local labelwidth = tabs_mode() and tabwidth or bufwidth
   local limit = o.columns - 1
   local corner_label = format_right_corner()
   limit = limit - labelwidth(corner_label)
 
   local modelabel = mode_label()
   if modelabel ~= '' then
-    limit = limit - #v.mode - 3
+    limit = limit - labelwidth(modelabel)
   end
 
   local tabsnums = ''
@@ -69,10 +69,10 @@ function fit_tabline(center, tabs)
   -- sum the string lengths for the left and right halves
   local currentside = L
   for _, tab in ipairs(tabs) do
-    tab.width = labelwidth(tab.label) - (tab.icon and 2 or 0)
+    tab.width = labelwidth(tab.label)
     if tab.width >= limit then
       tab.label = strsub(tab.label, 1, limit - 1) .. '…'
-      tab.width = labelwidth(tab.label) - (tab.icon and 2 or 0)
+      tab.width = labelwidth(tab.label)
     end
     if center == tab.nr then
       local halfwidth = math.floor(tab.width / 2)

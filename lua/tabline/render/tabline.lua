@@ -159,7 +159,7 @@ function format_tab_label(tnr)
 
   local formatted = printf("%s%%#T%s# %s%s %s", nr, hi, icon, label, mod)
 
-  return {['label'] = formatted, ['nr'] = tnr, ['hi'] = hi, ['icon'] = icon ~= ''}
+  return {['label'] = formatted, ['nr'] = tnr, ['hi'] = hi}
 end
 
 
