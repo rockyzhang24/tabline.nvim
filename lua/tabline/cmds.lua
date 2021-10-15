@@ -92,7 +92,7 @@ end
 -- Subcommands
 -------------------------------------------------------------------------------
 
-local function select_tab(cnt) -- {{{1
+local function select_tab(cnt) -- Select tab {{{1
   if cnt == 0 then return '' end
   local b
   if h.tabs_mode() then
@@ -107,7 +107,7 @@ local function select_tab(cnt) -- {{{1
   return string.format(':%ssilent! buffer %s\n', CU, b)
 end
 
-local function next_tab(args) -- {{{1
+local function next_tab(args) -- Next tab {{{1
   local cnt, last = unpack(args)
   local max = #g.current_buffers
   if last then
@@ -119,7 +119,7 @@ local function next_tab(args) -- {{{1
   vim.cmd('buffer ' .. g.current_buffers[target])
 end
 
-local function prev_tab(args) -- {{{1
+local function prev_tab(args) -- Prev tab {{{1
   local cnt, first = unpack(args)
   if first then
     vim.cmd('buffer ' .. g.current_buffers[1])
@@ -134,7 +134,7 @@ local function prev_tab(args) -- {{{1
   vim.cmd('buffer ' .. g.current_buffers[target])
 end
 
-local function change_mode(mode) -- {{{1
+local function change_mode(mode) -- Change mode {{{1
   local modes = { 'auto', 'tabs', 'buffers', 'args' }
   if index(modes, mode[1]) then
     g.v.mode = mode[1]
@@ -149,7 +149,7 @@ local function change_mode(mode) -- {{{1
   vim.cmd('redrawtabline')
 end
 
-local function toggle_filtering(bang, args) -- {{{1
+local function toggle_filtering(bang, args) -- Toggle filtering {{{1
   if bang then
     s.filtering = not s.filtering
   else
@@ -158,7 +158,7 @@ local function toggle_filtering(bang, args) -- {{{1
   vim.cmd('redraw! | echo "buffer filtering turned ' .. (s.filtering and 'on' or 'off') .. '"')
 end
 
-local function close() -- {{{1
+local function close() -- Close {{{1
   local cur, alt, bufs = bufnr(), bufnr('#'), g.current_buffers
   vim.o.hidden = true
   if alt ~= -1 and index(bufs, alt) then
@@ -179,7 +179,7 @@ local function close() -- {{{1
   end
 end
 
-local function name_buffer(bang, args) -- {{{1
+local function name_buffer(bang, args) -- Name buffer {{{1
   if ( #args == 0 and not bang ) or not g.buffers[bufnr()] then return end
   local buf = g.buffers[bufnr()]
   if bang then
@@ -193,7 +193,7 @@ local function name_buffer(bang, args) -- {{{1
   vim.cmd('redraw!')
 end
 
-local function icon_buffer(bang, args) -- {{{1
+local function icon_buffer(bang, args) -- Icon buffer {{{1
   if ( #args == 0 and not bang ) or not g.buffers[bufnr()] then return end
   local buf, icon = g.buffers[bufnr()], nil
   if bang then
@@ -211,7 +211,7 @@ local function icon_buffer(bang, args) -- {{{1
   vim.cmd('redraw!')
 end
 
-local function name_tab(bang, args) -- {{{1
+local function name_tab(bang, args) -- Name tab {{{1
   if #args == 0 and not bang then return end
   local t = vim.t.tab
   if bang and not t.name then
@@ -225,7 +225,7 @@ local function name_tab(bang, args) -- {{{1
   vim.cmd('redraw!')
 end
 
-local function icon_tab(bang, args) -- {{{1
+local function icon_tab(bang, args) -- Icon tab {{{1
   if #args == 0 and not bang then return end
   local t, icon = vim.t.tab, nil
   if bang and not t.icon then
@@ -243,19 +243,19 @@ local function icon_tab(bang, args) -- {{{1
   vim.cmd('redraw!')
 end
 
-local function reset_buffer() -- {{{1
+local function reset_buffer() -- Reset buffer {{{1
   local buf = g.buffers[bufnr()]
   if not buf then return end
   buf = require'tabline.bufs'.add_buf(bufnr())
   vim.cmd('redraw!')
 end
 
-local function reset_tab() -- {{{1
+local function reset_tab() -- Reset tab {{{1
   vim.t.tab = { ['name'] = false }
   vim.cmd('redraw!')
 end
 
-local function pin_buffer(bang) -- {{{1
+local function pin_buffer(bang) -- Pin buffer {{{1
   if bang then
     if index(g.pinned, bufnr()) then
       table.remove(g.pinned, bufnr())
@@ -266,7 +266,7 @@ local function pin_buffer(bang) -- {{{1
   vim.cmd('redraw!')
 end
 
-local function info() -- {{{1
+local function info() -- Info {{{1
   print('--- BUFFERS ---')
   for k, v in pairs(g.buffers) do
     print(string.format('%s   %s', v.nr, vim.inspect(v)))
