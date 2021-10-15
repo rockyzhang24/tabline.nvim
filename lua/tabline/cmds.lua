@@ -51,6 +51,7 @@ end
 local subcmds = {
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
+  'reopen',
 }
 
 local completion = {
@@ -266,6 +267,10 @@ local function pin_buffer(bang) -- Pin buffer {{{1
   vim.cmd('redraw!')
 end
 
+local function reopen() -- Reopen {{{1
+  require'tabline.tabs'.reopen()
+end
+
 local function info() -- Info {{{1
   print('--- BUFFERS ---')
   for k, v in pairs(g.buffers) do
@@ -287,6 +292,7 @@ commands = {
   ['close'] = close,
   ['bufreset'] = reset_buffer,
   ['tabreset'] = reset_tab,
+  ['reopen'] = reopen,
 }
 
 banged = {

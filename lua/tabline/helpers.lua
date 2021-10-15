@@ -5,6 +5,8 @@ local s = require'tabline.setup'.settings
 -- vim functions {{{1
 local argv = vim.fn.argv
 local tabpagenr = vim.fn.tabpagenr
+local getcwd = vim.fn.getcwd
+local haslocaldir = vim.fn.haslocaldir
 --}}}
 
 local M = {}
@@ -21,6 +23,15 @@ function M.empty_arglist()
   return #argv() == 0
 end
 
+function M.localdir()
+  if haslocaldir() > 0 then
+    return 2
+  elseif haslocaldir(-1, 0) > 0 then
+    return 1
+  else
+    return nil
+  end
+end
 
 
 

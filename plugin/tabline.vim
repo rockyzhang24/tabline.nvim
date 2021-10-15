@@ -6,6 +6,8 @@ augroup tabline
     au!
     au ColorScheme * lua require'tabline.render.icons'.icons = {}
     au ColorScheme * call TablineTheme()
+    au TabLeave    * lua require'tabline.tabs'.store()
+    au TabClosed   * lua require'tabline.tabs'.save()
 augroup END
 
 fun! TablineTheme() abort   " {{{1
