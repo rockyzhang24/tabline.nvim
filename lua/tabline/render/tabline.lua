@@ -87,7 +87,7 @@ function tab_label(tnr)
 
   local bnr = tab_buffer(tnr)
   local buf = g.buffers[bnr]
-  local tab = vim.t.tab or require'tabline.tabs'.new_tab()
+  local tab = gettabvar(tnr, 'tab') or require'tabline.tabs'.new_tab(tnr)
 
   -- custom label
   if buf and buf.special then
