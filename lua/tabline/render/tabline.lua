@@ -27,6 +27,7 @@ local printf = string.format
 local short_bufname = require'tabline.render.paths'.short_bufname
 local buf_icon = require'tabline.render.bufline'.buf_icon
 local buf_path = require'tabline.render.bufline'.buf_path
+local get_tab = require'tabline.tabs'.get_tab
 
 local tab_buffer = function(tnr) return tabpagebuflist(tnr)[tabpagewinnr(tnr)] end
 
@@ -87,7 +88,7 @@ function tab_label(tnr)
 
   local bnr = tab_buffer(tnr)
   local buf = g.buffers[bnr]
-  local tab = gettabvar(tnr, 'tab') or require'tabline.tabs'.new_tab(tnr)
+  local tab = get_tab(tnr)
 
   -- custom label
   if buf and buf.special then

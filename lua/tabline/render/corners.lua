@@ -22,6 +22,7 @@ local printf = string.format
 local short_cwd = require'tabline.render.paths'.short_cwd
 local tab_icon = require'tabline.render.tabline'.tab_icon
 local tab_mod_flag = require'tabline.render.tabline'.tab_mod_flag
+local get_tab = require'tabline.tabs'.get_tab
 
 local hide_tab_number = function() return tabpagenr('$') == 1 or s.tab_number_in_left_corner end
 
@@ -35,7 +36,7 @@ function format_right_corner()
   -- Label for the upper right corner.
   local N = tabpagenr()
 
-  if vim.t.tab.corner then
+  if (vim.t.tab or get_tab()).corner then
     return vim.t.tab.corner
 
   elseif not s.show_right_corner then

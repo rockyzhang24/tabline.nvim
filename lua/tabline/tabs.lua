@@ -15,7 +15,7 @@ au tabline TabNew * lua require'tabline.tabs'.init_tabs()
 -- Tab initializer
 -------------------------------------------------------------------------------
 
-local function new_tab(page)  -- {{{1
+local function new(page)  -- {{{1
   return { ['name'] = false }
 end
 
@@ -25,15 +25,25 @@ function M.init_tabs()
   for i = 1, fn.tabpagenr('$') do
     local t = fn.gettabvar(i, 'tab', nil)
     if t == vim.NIL then
-      fn.settabvar(i, 'tab', new_tab(i))
+      fn.settabvar(i, 'tab', new(i))
     end
   end
 end
 
+function M.get_tab(tnr)
+  local t = tnr or fn.tabpagenr()
+  local tab = fn.gettabvar(t, 'tab', false)
+  if tab then
+    return tab
+  end
+  fn.settabvar(t, 'tab', new(t))
+  return fn.gettabvar(t, 'tab')
+end
+
 function M.new_tab(tnr)
   local t = tnr or fn.tabpagenr()
-  fn.settabvar(t, 'tab', new_tab(t))
-  return fn.gettabvar(tnr, 'tab')
+  fn.settabvar(t, 'tab', new(t))
+  return fn.gettabvar(t, 'tab')
 end
 
 function M.store()
