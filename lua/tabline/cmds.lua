@@ -51,7 +51,7 @@ end
 local subcmds = {
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
-  'reopen',
+  'reopen', 'resetall'
 }
 
 local completion = {
@@ -256,6 +256,13 @@ local function reset_tab() -- Reset tab {{{1
   vim.cmd('redraw!')
 end
 
+local function reset_all() -- Reset all tabs and buffers {{{1
+  for i = 1, fn.tabpagenr('$') do
+    fn.settabvar(i, 'tab', require'tabline.tabs'.new_tab(i))
+  end
+  require'tabline.bufs'.init_bufs()
+end
+
 local function pin_buffer(bang) -- Pin buffer {{{1
   if bang then
     if index(g.pinned, bufnr()) then
@@ -293,6 +300,7 @@ commands = {
   ['bufreset'] = reset_buffer,
   ['tabreset'] = reset_tab,
   ['reopen'] = reopen,
+  ['resetall'] = reset_all,
 }
 
 banged = {
