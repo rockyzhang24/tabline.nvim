@@ -29,4 +29,10 @@ function M.init_tabs()
   end
 end
 
+function M.new_tab()
+  local t = fn.tabpagenr()
+  fn.settabvar(t, 'tab', new_tab(t))
+  return vim.t.tab
+end
+
 return M
