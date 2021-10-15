@@ -49,8 +49,8 @@ end
 -------------------------------------------------------------------------------
 
 local subcmds = {
-  'mode', 'info', 'next', 'prev', 'filtering', 'close',
-  'bufname', 'tabname', 'buficon', 'tabicon', 'pin',
+  'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
+  'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
 }
 
 local completion = {
@@ -243,6 +243,18 @@ local function icon_tab(bang, args) -- {{{1
   vim.cmd('redraw!')
 end
 
+local function reset_buffer() -- {{{1
+  local buf = g.buffers[bufnr()]
+  if not buf then return end
+  buf = require'tabline.bufs'.add_buf(bufnr())
+  vim.cmd('redraw!')
+end
+
+local function reset_tab() -- {{{1
+  vim.t.tab = { ['name'] = false }
+  vim.cmd('redraw!')
+end
+
 local function pin_buffer(bang) -- {{{1
   if bang then
     if index(g.pinned, bufnr()) then
@@ -273,6 +285,8 @@ commands = {
   ['next'] = next_tab,
   ['prev'] = prev_tab,
   ['close'] = close,
+  ['bufreset'] = reset_buffer,
+  ['tabreset'] = reset_tab,
 }
 
 banged = {
