@@ -64,9 +64,9 @@ end
 ----
 -- The highlight group for the tab label
 ----
-function tab_hi(tnr)
+function tab_hi(bnr, tnr)
   if tnr == tabpagenr() then
-    return (s.special_tabs and g.buffers[tab_buffer(tnr)].special) and 'Special' or 'Select'
+    return (s.special_tabs and g.buffers[bnr].special) and 'Special' or 'Select'
   else
     return 'Hidden'
   end
@@ -129,15 +129,13 @@ end
 -- @param right_corner: if it's for the right corner
 -- Return the icon
 -------------------------------------------------------------------------------
-function tab_icon(tnr, hi)
+function tab_icon(bnr, tnr, hi)
   local T, icon = gettabvar(tnr, 'tab'), nil
   if T.icon then
     return T.icon .. ' '
   end
 
-  local bnr  = tab_buffer(tnr)
-  local B    = g.buffers[bnr]
-
+  local B = g.buffers[bnr]
   if not B then return '' end
 
   local buf  = {nr = bnr, hi = hi, icon = B.icon, name = B.name}
@@ -159,12 +157,14 @@ function format_tab_label(tnr)
 
   local bnr   = tab_buffer(tnr)
   local nr    = '%' .. tnr .. 'T' .. tab_num(tnr)
-  local hi    = tab_hi(tnr)
-  local icon  = tab_icon(tnr, hi)
+  local hi    = tab_hi(bnr, tnr)
+  local icon  = tab_icon(bnr, tnr, hi)
   local label = tab_label(bnr, tnr)
   local mod   = tab_mod_flag(tnr, false)
 
-  local formatted = printf("%s%%#T%s# %s%s %s", nr, hi, icon, label, mod)
+  local formatted = g.buffers[bnr] and g.buffers[bnr].doubleicon
+                    and printf("%s%%#T%s# %s%s %s%s", nr, hi, icon, label, icon, mod)
+                    or printf("%s%%#T%s# %s%s %s", nr, hi, icon, label, mod)
 
   return {['label'] = formatted, ['nr'] = tnr, ['hi'] = hi}
 end
@@ -174,7 +174,6 @@ return {
   tab_num = tab_num,
   tab_mod_flag = tab_mod_flag,
   tab_label = tab_label,
-  tab_hi = tab_hi,
   format_tab_label = format_tab_label,
   render_tabs = render_tabs,
 }

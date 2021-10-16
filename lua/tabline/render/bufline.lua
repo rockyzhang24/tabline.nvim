@@ -171,13 +171,16 @@ end
 
 function buf_label(blabel, mod)  -- {{{1
   local curbuf = winbufnr(0) == blabel.nr
+  local icons = g.buffers[blabel.nr].doubleicon
 
   local hi = printf(' %%#T%s# ', blabel.hi)
   local icon = buf_icon(blabel, curbuf)
   local bn   = s.actual_buffer_number and blabel.nr or blabel.n
   local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 
-  return number .. hi .. icon .. blabel.name .. ' ' .. mod
+  return icons
+         and number .. hi .. icon .. blabel.name .. ' ' .. icon .. mod
+         or  number .. hi .. icon .. blabel.name .. ' ' .. mod
 end
 
 function buf_mod(blabel, modified) -- {{{1
