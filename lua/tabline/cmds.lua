@@ -26,11 +26,15 @@ local filternew = tbl.filternew
 -- Main command
 -------------------------------------------------------------------------------
 
-local function command(bang, arg)
-  local subcmd, args = nil, {}
-  for w in string.gmatch(arg, '(%w+)') do
+local function command(arg)
+  local subcmd, bang, args = nil, false, {}
+  for w in string.gmatch(arg, '(%w+!?)') do
     if not subcmd then
       subcmd = w
+      if string.find(w, '!', #w, true) then
+        bang = true
+        subcmd = string.sub(subcmd, 1, #subcmd - 1)
+      end
     else
       insert(args, w)
     end
@@ -38,7 +42,7 @@ local function command(bang, arg)
   if not commands[subcmd] and not banged[subcmd] then
     print('Invalid subcommand: ' .. subcmd)
   elseif banged[subcmd] then
-    banged[subcmd](bang == 1, args)
+    banged[subcmd](bang, args)
   else
     commands[subcmd](args)
   end

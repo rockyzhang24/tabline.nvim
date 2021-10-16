@@ -59,8 +59,8 @@ local function setup(sets)
     settings[k] = v
   end
   vim.cmd([[
-  command! -bang -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]]
-  .. settings['main_cmd_name'] .. [[ exe "lua require'tabline.cmds'.command(" . <bang>0 . ',' . string(<q-args>) . ")"]])
+  command! -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]]
+  .. settings['main_cmd_name'] .. [[ exe "lua require'tabline.cmds'.command(" string(<q-args>) . ")"]])
 end
 
 return {
