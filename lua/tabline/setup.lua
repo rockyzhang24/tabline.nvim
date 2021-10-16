@@ -2,6 +2,8 @@
 -- Initialization
 -------------------------------------------------------------------------------
 
+local define_main_cmd, cmd_mappings
+
 require'tabline.table'
 
 local tabline = { -- internal tables {{{1
@@ -26,6 +28,27 @@ local settings = {  -- user settings {{{1
   modes = { 'auto', 'buffers', 'args' },
   scratch_label = '[Scratch]',
   unnamed_label = '[Unnamed]',
+  mapleader = '<leader><leader>',
+  cmd_mappings = true,
+}
+
+local mappings = { -- mappings {{{1
+  ['mode next'] =  { '<F5>', true },
+  ['next'] =       { ']b', true },
+  ['prev'] =       { '[b', true },
+  ['filtering!'] = { settings.mapleader .. 'f', true },
+  ['close'] =      { settings.mapleader .. 'q', true },
+  ['pin'] =        { settings.mapleader .. 'p', true },
+  ['bufname'] =    { nil, false },
+  ['tabname'] =    { nil, false },
+  ['buficon'] =    { nil, false },
+  ['tabicon'] =    { nil, false },
+  ['bufreset'] =   { nil, true },
+  ['tabreset'] =   { nil, true },
+  ['reopen'] =     { settings.mapleader .. 'u', true },
+  ['resetall'] =   { nil, true },
+  ['purge'] =      { settings.mapleader .. 'x', true },
+  ['cleanup'] =    { settings.mapleader .. 'X', true },
 }
 
 settings.icons = { -- icons {{{1
@@ -58,10 +81,29 @@ local function setup(sets)
   for k, v in pairs(sets or {}) do
     settings[k] = v
   end
+
+  local cmd = define_main_cmd()
+  cmd_mappings(cmd)
+end
+
+function cmd_mappings(cmd) -- Define appings for commands {{{1
+  if not settings.cmd_mappings then return end
+  for k, v in pairs(mappings) do
+    -- print(k, v[1], v[2], vim.fn.mapcheck(v[1]) == '')
+    if v[1] and vim.fn.mapcheck(v[1]) == '' then
+      vim.cmd(string.format('nnoremap %s :<C-u>%s %s%s', v[1], cmd, k, v[2] and '<cr>' or '<space>'))
+    end
+  end
+end
+
+function define_main_cmd() -- Define main command {{{1
   vim.cmd([[
   command! -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]]
-  .. settings['main_cmd_name'] .. [[ exe "lua require'tabline.cmds'.command(" string(<q-args>) . ")"]])
+  .. settings.main_cmd_name .. [[ exe "lua require'tabline.cmds'.command(" string(<q-args>) . ")"]])
+  return settings.main_cmd_name
 end
+
+-- }}}
 
 return {
   setup = setup,
