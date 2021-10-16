@@ -22,7 +22,7 @@ local settings = {  -- user settings {{{1
   tab_number_in_left_corner = true,
   actual_buffer_number = false,
   dim_inactive_icons = true,
-  tabs_full_path = false,
+  show_full_path = false,
   main_cmd_name = 'Tab',
   mode_labels = 'secondary',
   modes = { 'auto', 'buffers', 'args' },
@@ -37,6 +37,7 @@ local mappings = { -- mappings {{{1
   ['next'] =       { ']b', true },
   ['prev'] =       { '[b', true },
   ['filtering!'] = { settings.mapleader .. 'f', true },
+  ['fullpath!'] =  { settings.mapleader .. '/', true },
   ['close'] =      { settings.mapleader .. 'q', true },
   ['pin'] =        { settings.mapleader .. 'p', true },
   ['bufname'] =    { nil, false },
@@ -86,10 +87,9 @@ local function setup(sets)
   cmd_mappings(cmd)
 end
 
-function cmd_mappings(cmd) -- Define appings for commands {{{1
+function cmd_mappings(cmd) -- Define mappings for commands {{{1
   if not settings.cmd_mappings then return end
   for k, v in pairs(mappings) do
-    -- print(k, v[1], v[2], vim.fn.mapcheck(v[1]) == '')
     if v[1] and vim.fn.mapcheck(v[1]) == '' then
       vim.cmd(string.format('nnoremap %s :<C-u>%s %s%s', v[1], cmd, k, v[2] and '<cr>' or '<space>'))
     end

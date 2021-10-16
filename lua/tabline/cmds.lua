@@ -55,12 +55,13 @@ end
 local subcmds = { -- {{{1
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
-  'reopen', 'resetall', 'purge', 'cleanup',
+  'reopen', 'resetall', 'purge', 'cleanup', 'fullpath',
 }
 
 local completion = {  -- {{{1
   ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
   ['filtering'] = { 'on', 'off' },
+  ['fullpath'] = { 'on', 'off' },
 }
 
 local function complete(a, c, p)  -- {{{1
@@ -161,6 +162,15 @@ local function toggle_filtering(bang, args) -- Toggle filtering {{{1
     s.filtering = #args == 0 or args[1] ~= 'off'
   end
   vim.cmd('redraw! | echo "buffer filtering turned ' .. (s.filtering and 'on' or 'off') .. '"')
+end
+
+local function fullpath(bang, args) -- Show full path in labels {{{1
+  if bang then
+    s.show_full_path = not s.show_full_path
+  else
+    s.show_full_path = #args == 0 or args[1] ~= 'off'
+  end
+  vim.cmd('redrawtabline')
 end
 
 local function close() -- Close {{{1
@@ -351,6 +361,7 @@ banged = {  -- {{{1
   ['pin'] = pin_buffer,
   ['cleanup'] = cleanup,
   ['purge'] = purge,
+  ['fullpath'] = fullpath,
 }
 
 -- }}}

@@ -118,7 +118,7 @@ function format_buffer_labels(bufs, special, other) -- {{{1
     local buf = {
       nr = bnr,
       n = k,
-      name = all[bnr].name or buf_path(bnr),
+      name = all[bnr].name or buf_path(bnr, not s.show_full_path),
       hi = (iscur and spc[bnr])   and 'Special' or
            iscur                  and 'Select' or
            (spc[bnr] or pin[bnr]) and 'Extra' or

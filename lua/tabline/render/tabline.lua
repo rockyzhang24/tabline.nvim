@@ -101,7 +101,7 @@ function tab_label(bnr, tnr)
     return buf.name
   end
 
-  return buf_path(bnr, not s.tabs_full_path)
+  return buf_path(bnr, not s.show_full_path)
 end
 
 -------------------------------------------------------------------------------
