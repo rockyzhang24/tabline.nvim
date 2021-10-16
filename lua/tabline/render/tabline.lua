@@ -144,8 +144,8 @@ function tab_icon(tnr, right_corner, hi)
 
     if not B then return '' end
 
-    local buf  = {['nr'] = bnr, ['icon'] = B.icon, ['name'] = B.name}
-    icon = buf_icon(buf, hi, tnr == tabpagenr())
+    local buf  = {nr = bnr, hi = hi, icon = B.icon, name = B.name}
+    icon = buf_icon(buf, tnr == tabpagenr())
   end
 
   return not icon and '' or type(icon) == 'string' and icon .. ' ' or icon[tnr == tabpagenr() and 1 or 2] .. ' '

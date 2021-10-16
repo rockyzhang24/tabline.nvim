@@ -36,7 +36,7 @@ local function make_icons_hi(color)
 end
 
 
-function M.devicon(b, hi, selected)  -- {{{1
+function M.devicon(b, selected)  -- {{{1
   if devicons then
     local buf = g.buffers[b.nr]
     local icon, color = devicons.get_icon_color(buf.basename, buf.ext)
@@ -44,7 +44,7 @@ function M.devicon(b, hi, selected)  -- {{{1
       if not M.icons[color] then
         M.icons[color] = make_icons_hi(color)
       end
-      local hi = M.icons[color][hi]
+      local hi = M.icons[color][b.hi]
       local typ = (selected or not s.dim_inactive_icons) and 'sel' or 'dim'
       return hi and string.gsub(hi[typ], '___', icon) or ''
     end

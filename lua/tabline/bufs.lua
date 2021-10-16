@@ -36,10 +36,10 @@ local special_ft = {
   ['magit']     = { name = 'Magit', icon = s.icons.git },
   ['git']       = { name = 'Git', icon = s.icons.git },
   ['fugitive']  = { name = 'Status', icon = s.icons.git },
-  ['netrw']     = { name = 'Netrw', icons = s.icons.disk },
-  ['dirvish']   = { name = 'Dirvish', icons = s.icons.disk },
-  ['startify']  = { name = 'Startify', icons = s.icons.flag2 },
-  ['ctrlsf']    = { name = 'CtrlSF', icons = s.icons.lens },
+  ['netrw']     = { name = 'Netrw', icon = s.icons.disk, doubleicon = true },
+  ['dirvish']   = { name = 'Dirvish', icon = s.icons.disk, doubleicon = true },
+  ['startify']  = { name = 'Startify', icon = s.icons.flag2, doubleicon = true },
+  ['ctrlsf']    = { name = 'CtrlSF', icon = s.icons.lens, doubleicon = true },
 }
 
 -------------------------------------------------------------------------------
@@ -67,9 +67,7 @@ end
 --------------------------------------------------------------------------------
 -- Function: new_buf
 --
--- Create a new buffer entry. The difference between 'icon' and 'icons' is that
--- 'icons' will display the icon on both sides of the buffer name.
--- 'name' is displayed instead of 'path' if present.
+-- Create a new buffer entry. 'name' is displayed instead of 'path' if present.
 --
 -- @param bnr: the buffer number
 -- @return: a basic buffer object
@@ -84,7 +82,7 @@ local function new_buf(bnr)
     pinned = false,
     name = nil,
     icon = nil,
-    icons = nil,
+    doubleicon = nil,
   }
 end
 
@@ -106,7 +104,7 @@ local function special_or_listed(bnr)
   elseif special_ft[ft] then
     buf.name = special_ft[ft].name
     buf.icon = special_ft[ft].icon
-    buf.icons = special_ft[ft].icons
+    buf.doubleicon = special_ft[ft].doubleicon
     buf.special = true
   end
 

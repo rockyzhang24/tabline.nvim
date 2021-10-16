@@ -111,24 +111,24 @@ function format_buffer_labels(bufs, special, other) -- {{{1
 
   g.current_buffers = bufs
 
-  for k, b in pairs(bufs) do
-    local iscur = curbuf == b
-    local modified = getbufvar(b, '&modified') > 0
+  for k, bnr in pairs(bufs) do
+    local iscur = curbuf == bnr
+    local modified = getbufvar(bnr, '&modified') > 0
 
     local buf = {
-      nr = b,
+      nr = bnr,
       n = k,
-      name = all[b].name or buf_path(b),
-      hi = (iscur and spc[b])  and 'Special' or
-           iscur               and 'Select' or
-           (spc[b] or pin[b])  and 'Extra' or
-           oth[b]              and 'Visible' or 'Hidden'
+      name = all[bnr].name or buf_path(bnr),
+      hi = (iscur and spc[bnr])   and 'Special' or
+           iscur                  and 'Select' or
+           (spc[bnr] or pin[bnr]) and 'Extra' or
+           oth[bnr]               and 'Visible' or 'Hidden'
     }
 
-    buf.himod = spc[b] and buf.hi or buf.hi .. 'Mod'
+    buf.himod = spc[bnr] and buf.hi or buf.hi .. 'Mod'
     buf.label = buf_label(buf, buf_mod(buf, modified))
 
-    if iscur then center = b end
+    if iscur then center = bnr end
 
     insert(tabs, buf)
   end
@@ -156,11 +156,11 @@ function buf_path(bnr, basename) -- {{{1
 end
 
 
-function buf_icon(b, hi, selected)  -- {{{1
+function buf_icon(b, selected)  -- {{{1
   if g.buffers[b.nr].icon then
     return g.buffers[b.nr].icon .. ' '
   else
-    local devicon = devicon(b, hi, selected)
+    local devicon = devicon(b, selected)
     if devicon then
       b.icon = devicon
       return devicon .. ' '
@@ -169,21 +169,21 @@ function buf_icon(b, hi, selected)  -- {{{1
   return ''
 end
 
-function buf_label(b, mod)  -- {{{1
-  local curbuf = winbufnr(0) == b.nr
+function buf_label(blabel, mod)  -- {{{1
+  local curbuf = winbufnr(0) == blabel.nr
 
-  local hi = printf(' %%#T%s# ', b.hi)
-  local icon = buf_icon(b, b.hi, curbuf)
-  local bn   = s.actual_buffer_number and b.nr or b.n
+  local hi = printf(' %%#T%s# ', blabel.hi)
+  local icon = buf_icon(blabel, curbuf)
+  local bn   = s.actual_buffer_number and blabel.nr or blabel.n
   local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 
-  return number .. hi .. icon .. b.name .. ' ' .. mod
+  return number .. hi .. icon .. blabel.name .. ' ' .. mod
 end
 
-function buf_mod(b, modified) -- {{{1
-  local mod = g.pinned[b.nr] and i.pinned .. ' ' or ''
+function buf_mod(blabel, modified) -- {{{1
+  local mod = g.pinned[blabel.nr] and i.pinned .. ' ' or ''
   if modified then
-    mod = mod .. printf('%%#T%s#%s', b.himod, i.modified .. ' ')
+    mod = mod .. printf('%%#T%s#%s', blabel.himod, i.modified .. ' ')
   end
   return mod
 end
