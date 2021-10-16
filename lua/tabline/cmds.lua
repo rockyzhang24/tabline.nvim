@@ -51,7 +51,7 @@ end
 local subcmds = {
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
-  'reopen', 'resetall'
+  'reopen', 'resetall', 'purge',
 }
 
 local completion = {
@@ -278,6 +278,28 @@ local function reopen() -- Reopen {{{1
   require'tabline.tabs'.reopen()
 end
 
+local function purge(wipe) -- Purge {{{1
+  local purged, cmd = {}, wipe and 'bwipe' or 'bdelete'
+
+  for _, buf in ipairs(fn.tabpagebuflist(fn.tabpagenr())) do
+    local unlisted = fn.buflisted(buf) == 0
+    local noma     = fn.getbufvar(buf, "&modifiable") == 0
+    local nofile   = fn.getbufvar(buf, "&buftype") ~= '' and fn.getbufvar(buf, "&modified") == 0
+
+    if unlisted or noma or nofile then
+      table.insert(purged, buf)
+    end
+  end
+
+  if #fn.tabpagebuflist() == 1 and tbl.index(purged, fn.bufnr()) then
+    return
+  end
+
+  for _, buf in ipairs(purged) do
+    vim.cmd(buf .. cmd)
+  end
+end
+
 local function info() -- Info {{{1
   print('--- BUFFERS ---')
   for k, v in pairs(g.buffers) do
@@ -310,6 +332,7 @@ banged = {
   ['buficon'] = icon_buffer,
   ['tabicon'] = icon_tab,
   ['pin'] = pin_buffer,
+  ['purge'] = purge,
 }
 
 return {
