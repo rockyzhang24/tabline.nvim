@@ -1,5 +1,6 @@
 local g = require'tabline.setup'.tabline
 local s = require'tabline.setup'.settings
+local h = require'tabline.helpers'
 
 -- vim functions {{{1
 local fnamemodify = vim.fn.fnamemodify
@@ -13,6 +14,7 @@ local bufnr = vim.fn.bufnr
 --}}}
 
 local strfind = string.find
+local validbuf = h.validbuf
 
 vim.cmd([[
 au tabline BufAdd * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
@@ -41,28 +43,6 @@ local special_ft = {
   ['startify']  = { name = 'Startify', icon = s.icons.flag2, doubleicon = true },
   ['ctrlsf']    = { name = 'CtrlSF', icon = s.icons.lens, doubleicon = true },
 }
-
--------------------------------------------------------------------------------
--- Helpers
--------------------------------------------------------------------------------
-
-local function has_win(bnr) -- {{{1
-  return tabpagebuflist(tabpagenr())[bnr]
-end
-
-local function winbufs() -- {{{1
-  return tabpagebuflist(tabpagenr())
-end
-
-local function validbuf(b, wd)  -- {{{1
-  if b.special then
-    return has_win(b.nr)
-  else
-    return not s.filtering or strfind(b.path, wd)
-  end
-end
-
--- }}}
 
 --------------------------------------------------------------------------------
 -- Function: new_buf
@@ -164,7 +144,7 @@ end
 function M.get_bufs()
   local ix, tbl, wd = 1, {}, getcwd()
   for nr, b in pairs(g.buffers) do
-    if (validbuf(b, wd)) and not b.special then
+    if not b.special and validbuf(b.path, wd) then
       tbl[ix] = nr
       ix = ix + 1
     end

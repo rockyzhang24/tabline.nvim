@@ -51,7 +51,7 @@ end
 local subcmds = {
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
-  'reopen', 'resetall', 'purge',
+  'reopen', 'resetall', 'purge', 'cleanup',
 }
 
 local completion = {
@@ -300,6 +300,19 @@ local function purge(wipe) -- Purge {{{1
   end
 end
 
+local function cleanup(bang) -- Clean up {{{1
+  local del, err = 0, 0
+  if bang then
+    del, err = h.delete_bufs_without_wins()
+  else
+    del, err = h.delete_buffers_out_of_valid_wds()
+  end
+  print('Cleaned up ' .. del .. ' buffers.')
+  if err > 0 then
+    print(err .. ' buffers not removed because of errors (modified?)')
+  end
+end
+
 local function info() -- Info {{{1
   print('--- BUFFERS ---')
   for k, v in pairs(g.buffers) do
@@ -332,6 +345,7 @@ banged = {
   ['buficon'] = icon_buffer,
   ['tabicon'] = icon_tab,
   ['pin'] = pin_buffer,
+  ['cleanup'] = cleanup,
   ['purge'] = purge,
 }
 
