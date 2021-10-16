@@ -4,20 +4,17 @@
 
 require'tabline.table'
 
--- table for internal stuff
-local tabline = {
+local tabline = { -- internal tables {{{1
   closed_tabs = {},
   pinned = {},
 }
 
--- internal variables
-tabline.v = {
+tabline.v = { -- internal variables {{{1
   mode = 'auto',
   max_bufs = 10,
 }
 
--- user settings
-local settings = {
+local settings = {  -- user settings {{{1
   filtering = true,
   show_right_corner = true,
   tab_number_in_left_corner = true,
@@ -30,7 +27,7 @@ local settings = {
   unnamed_label = '[Unnamed]',
 }
 
-settings.icons = {
+settings.icons = { -- icons {{{1
   ['pin'] =      '📌', ['star'] =   '★',   ['book'] =     '📖',  ['lock'] =    '🔒',
   ['hammer'] =   '🔨', ['tick'] =   '✔',   ['cross'] =    '✖',   ['warning'] = '⚠',
   ['menu'] =     '☰',  ['apple'] =  '🍎',  ['linux'] =    '🐧',  ['windows'] = '❖',
@@ -41,12 +38,14 @@ settings.icons = {
   ['tab'] = {"📂", "📁"},
 }
 
-settings.indicators = {
+settings.indicators = { -- indicators {{{1
   ['modified'] = settings.no_icons and '[+]'  or '*',
   ['readonly'] = settings.no_icons and '[RO]' or '🔒',
   ['scratch'] = settings.no_icons and  '[!]'  or '✓',
   ['pinned'] = settings.no_icons and   '[^]'  or '[📌]',
 }
+
+-- }}}
 
 local function setup(sets)
   if not tabline.buffers then

@@ -48,13 +48,13 @@ end
 -- Command completion
 -------------------------------------------------------------------------------
 
-local subcmds = {
+local subcmds = { -- {{{1
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup',
 }
 
-local completion = {
+local completion = {  -- {{{1
   ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
   ['filtering'] = { 'on', 'off' },
 }
@@ -326,7 +326,7 @@ end
 
 -------------------------------------------------------------------------------
 
-commands = {
+commands = {  -- {{{1
   ['mode'] = change_mode,
   ['info'] = info,
   ['next'] = next_tab,
@@ -338,7 +338,7 @@ commands = {
   ['resetall'] = reset_all,
 }
 
-banged = {
+banged = {  -- {{{1
   ['filtering'] = toggle_filtering,
   ['bufname'] = name_buffer,
   ['tabname'] = name_tab,
@@ -348,6 +348,8 @@ banged = {
   ['cleanup'] = cleanup,
   ['purge'] = purge,
 }
+
+-- }}}
 
 return {
   command = command,
