@@ -21,6 +21,7 @@ local settings = {  -- user settings {{{1
   actual_buffer_number = false,
   dim_inactive_icons = true,
   tabs_full_path = false,
+  main_cmd_name = 'Tab',
   mode_labels = 'secondary',
   modes = { 'auto', 'buffers', 'args' },
   scratch_label = '[Scratch]',
@@ -57,6 +58,9 @@ local function setup(sets)
   for k, v in pairs(sets or {}) do
     settings[k] = v
   end
+  vim.cmd([[
+  command! -bang -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]]
+  .. settings['main_cmd_name'] .. [[ exe "lua require'tabline.cmds'.command(" . <bang>0 . ',' . string(<q-args>) . ")"]])
 end
 
 return {

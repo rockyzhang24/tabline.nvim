@@ -62,7 +62,7 @@ local completion = {  -- {{{1
 local function complete(a, c, p)  -- {{{1
   vim.cmd('redraw!')
   local subcmd, arg
-  cmdline = string.sub(c, 9)
+  cmdline = string.sub(c, #s.main_cmd_name + 2)
   -- print(string.format('"%s"', cmdline))
   for w in string.gmatch(cmdline, '(%w+)') do
     if not subcmd then
