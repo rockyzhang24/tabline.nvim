@@ -72,7 +72,7 @@ function tab_hi(tnr)
   end
 end
 
--------------------------------------------------------------------------------
+----
 -- Build the tab label in tabs mode.
 --
 -- The label can be either:
@@ -81,12 +81,12 @@ end
 -- 3. custom tab or active buffer label
 -- 4. the name of the active buffer for this tab
 --
+-- @param bnr: the buffer for the label
 -- @param tnr: the tab number
--- Return the formatted tab label
--------------------------------------------------------------------------------
-function tab_label(tnr)
+-- @return: the formatted tab label
+----
+function tab_label(bnr, tnr)
 
-  local bnr = tab_buffer(tnr)
   local buf = g.buffers[bnr]
   local tab = get_tab(tnr)
 
@@ -129,26 +129,23 @@ end
 -- @param right_corner: if it's for the right corner
 -- Return the icon
 -------------------------------------------------------------------------------
-function tab_icon(tnr, right_corner, hi)
+function tab_icon(tnr, hi)
   local T, icon = gettabvar(tnr, 'tab'), nil
   if T.icon then
     return T.icon .. ' '
   end
 
-  if right_corner then
-    icon = s.icons.tab
+  local bnr  = tab_buffer(tnr)
+  local B    = g.buffers[bnr]
 
-  else
-    local bnr  = tab_buffer(tnr)
-    local B    = g.buffers[bnr]
+  if not B then return '' end
 
-    if not B then return '' end
+  local buf  = {nr = bnr, hi = hi, icon = B.icon, name = B.name}
+  icon = buf_icon(buf, tnr == tabpagenr())
 
-    local buf  = {nr = bnr, hi = hi, icon = B.icon, name = B.name}
-    icon = buf_icon(buf, tnr == tabpagenr())
-  end
-
-  return not icon and '' or type(icon) == 'string' and icon .. ' ' or icon[tnr == tabpagenr() and 1 or 2] .. ' '
+  return not icon and ''
+         or type(icon) == 'string' and icon .. ' '
+         or icon[tnr == tabpagenr() and 1 or 2] .. ' '
 end
 
 
@@ -160,10 +157,11 @@ end
 -------------------------------------------------------------------------------
 function format_tab_label(tnr)
 
+  local bnr   = tab_buffer(tnr)
   local nr    = '%' .. tnr .. 'T' .. tab_num(tnr)
   local hi    = tab_hi(tnr)
-  local icon  = tab_icon(tnr, false, hi)
-  local label = tab_label(tnr)
+  local icon  = tab_icon(tnr, hi)
+  local label = tab_label(bnr, tnr)
   local mod   = tab_mod_flag(tnr, false)
 
   local formatted = printf("%s%%#T%s# %s%s %s", nr, hi, icon, label, mod)
@@ -177,7 +175,6 @@ return {
   tab_mod_flag = tab_mod_flag,
   tab_label = tab_label,
   tab_hi = tab_hi,
-  tab_icon = tab_icon,
   format_tab_label = format_tab_label,
   render_tabs = render_tabs,
 }
