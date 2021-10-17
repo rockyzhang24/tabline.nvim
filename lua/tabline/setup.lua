@@ -2,7 +2,7 @@
 -- Initialization
 -------------------------------------------------------------------------------
 
-local define_main_cmd, cmd_mappings
+local define_main_cmd, cmd_mappings, cd_mappings
 
 require'tabline.table'
 
@@ -30,6 +30,7 @@ local settings = {  -- user settings {{{1
   unnamed_label = '[Unnamed]',
   mapleader = '<leader><leader>',
   cmd_mappings = true,
+  cd_mappings = true,
 }
 
 local mappings = { -- mappings {{{1
@@ -85,13 +86,25 @@ local function setup(sets)
 
   local cmd = define_main_cmd()
   cmd_mappings(cmd)
+  cd_mappings()
+end
+
+function cd_mappings()
+  local cmd = "lua require'tabline.cd'."
+  if not settings.cd_mappings then return end
+  for _, v in ipairs({ 'cdc', 'cdl', 'cdt', 'cdw' }) do
+    if vim.fn.maparg(v) == '' then
+      vim.cmd(string.format('nnoremap <silent> %s :<c-u>%s%s()<cr>', v, cmd, v))
+    end
+  end
+  vim.cmd(string.format('nnoremap <silent> cd? :<c-u>%sinfo()<cr>', cmd))
 end
 
 function cmd_mappings(cmd) -- Define mappings for commands {{{1
   if not settings.cmd_mappings then return end
   for k, v in pairs(mappings) do
     if v[1] and vim.fn.mapcheck(v[1]) == '' then
-      vim.cmd(string.format('nnoremap %s :<C-u>%s %s%s', v[1], cmd, k, v[2] and '<cr>' or '<space>'))
+      vim.cmd(string.format('nnoremap %s :<c-u>%s %s%s', v[1], cmd, k, v[2] and '<cr>' or '<space>'))
     end
   end
 end
