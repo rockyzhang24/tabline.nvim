@@ -10,8 +10,16 @@ local execute = vim.fn.execute
 local g = require'tabline.setup'.tabline
 local s = require'tabline.setup'.settings
 
+-- Load devicons and add custom icons {{{1
 local ok, devicons = pcall(require, 'nvim-web-devicons')
-if not ok then devicons = nil end
+if not ok then
+  devicons = nil
+else
+  devicons.set_icon({
+    fzf = { icon = "🗲", color = "#d0bf41", name = 'fzf' },
+  })
+end
+--}}}
 
 local function make_icons_hi(color)
   local col, ret = string.sub(color, 2), {}
@@ -39,7 +47,7 @@ end
 function M.devicon(b, selected)  -- {{{1
   if devicons then
     local buf = g.buffers[b.nr]
-    local icon, color = devicons.get_icon_color(buf.basename, buf.ext)
+    local icon, color = devicons.get_icon_color(buf.devicon or buf.basename, buf.ext)
     if icon then
       if not M.icons[color] then
         M.icons[color] = make_icons_hi(color)

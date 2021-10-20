@@ -75,7 +75,14 @@ local function special_or_listed(bnr)
     buf.special = true
 
   elseif getbufvar(bnr, '&buftype') == 'terminal' then
-    buf.name = 'TERMINAL'
+    if string.find(buf.path, ';#FZF') then
+      buf.name = 'FZF'
+      buf.devicon = 'fzf'
+      buf.doubleicon = true
+    else
+      local pid = string.match(buf.path, '//(%d+):')
+      buf.name = 'TERMINAL' .. (pid and ' [' .. pid .. ']' or '')
+    end
     buf.special = true
 
   elseif special_ft[ft] then
