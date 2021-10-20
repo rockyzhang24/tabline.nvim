@@ -58,9 +58,10 @@ function fit_tabline(center, tabs)
   local corner_label = format_right_corner()
   limit = limit - labelwidth(corner_label)
 
-  local modelabel = mode_label()
+  local modelabel, mw = mode_label(), 0
   if modelabel ~= '' then
-    limit = limit - labelwidth(modelabel)
+    mw = labelwidth(modelabel)
+    limit = limit - mw
   end
 
   local tabsnums = ''
@@ -68,6 +69,10 @@ function fit_tabline(center, tabs)
     local tn = tabpagenr() .. '/' .. tabpagenr('$')
     tabsnums = '%#ErrorMsg# ' .. tn .. ' %#TFill# '
     limit = limit - #tn - 3
+  end
+
+  if limit < 30 then
+    return '%#TFill#%=' .. corner_label
   end
 
   -- now keep the current buffer center-screen as much as possible
@@ -96,24 +101,31 @@ function fit_tabline(center, tabs)
     L.width, R.width = 0, L.width
   end
 
-  local left_has_been_cut, right_has_been_cut = false, false
+  local left_has_been_cut, right_has_been_cut, arrow = false, false, 0
 
   if ( L.width + R.width ) > limit then
-    while limit - ( L.width + R.width ) < 0 do
+    while limit - ( L.width + R.width + arrow ) < 0 do
       -- remove a tab from the biggest side
       if L.width <= R.width then
         right_has_been_cut = true
         R.width = R.width - remove(tabs, #tabs).width
       else
-        left_has_been_cut = true
+        left_has_been_cut, arrow = true, 3
         L.width = L.width - remove(tabs, 1).width
       end
     end
+    local ntabs = #tabs
     if left_has_been_cut then
-      insert(tabs, 1, {['label'] = '%#DiffDelete# < '})
+      tabs[1].label = '%#DiffDelete# < ' .. tabs[1].label
+    end
+    -- adapt the tabs to the available space
+    local i, used = 1, L.width + R.width + arrow
+    while used < limit do
+      if i > ntabs then i = 1 end
+      tabs[i].label = tabs[i].label .. ' '
+      i, used = i + 1, used + 1
     end
     if right_has_been_cut then
-      local ntabs = #tabs
       tabs[ntabs].label = printf('%s%%#DiffDelete# > ', strsub(tabs[ntabs].label, 1, #tabs[ntabs].label - 4))
     end
   end
