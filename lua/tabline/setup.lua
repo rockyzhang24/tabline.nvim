@@ -20,7 +20,7 @@ local settings = {  -- user settings {{{1
   filtering = true,
   show_right_corner = true,
   tab_number_in_left_corner = true,
-  actual_buffer_number = false,
+  bufline_style = 'order',
   dim_inactive_icons = true,
   show_full_path = false,
   main_cmd_name = 'Tab',
@@ -69,6 +69,11 @@ settings.indicators = { -- indicators {{{1
   ['readonly'] = settings.no_icons and '[RO]' or '🔒',
   ['scratch'] = settings.no_icons and  '[!]'  or '✓',
   ['pinned'] = settings.no_icons and   '[^]'  or '[📌]',
+}
+
+local buflinestyles = {
+  order = 0,
+  bufnr = 1,
 }
 
 -- }}}

@@ -105,7 +105,7 @@ local function select_tab(cnt) -- Select tab {{{1
     return 'gt'
   elseif g.v.mode == 'args' and not h.empty_arglist() then
     b = bufs[math.min(cnt, #fn.argv())]
-  elseif s.actual_buffer_number then
+  elseif s.bufline_style == 'bufnr' then
     b = cnt + 1
   else
     b = bufs[math.min(cnt, #bufs)]

@@ -37,6 +37,7 @@ local devicon = require'tabline.render.icons'.devicon
 local buf_path, buf_icon, buf_label, buf_mod, format_buffer_labels
 local render_buffers, render_args, limit_buffers
 
+
 -------------------------------------------------------------------------------
 -- Bufferline mode
 -------------------------------------------------------------------------------
@@ -99,6 +100,8 @@ end
 
 function format_buffer_labels(bufs, special, other) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
+  local usebnr = s.bufline_style == 'bufnr'
+
   local oth, spc, pin = other or {}, special or {}, g.pinned or {}
 
   for b, _ in pairs(oth) do insert(bufs, 1, b) end
@@ -126,7 +129,7 @@ function format_buffer_labels(bufs, special, other) -- {{{1
     }
 
     buf.himod = spc[bnr] and buf.hi or buf.hi .. 'Mod'
-    buf.label = buf_label(buf, buf_mod(buf, modified))
+    buf.label = buf_label(buf, buf_mod(buf, modified, usebnr))
 
     if iscur then center = bnr end
 
@@ -169,13 +172,13 @@ function buf_icon(b, selected)  -- {{{1
   return ''
 end
 
-function buf_label(blabel, mod)  -- {{{1
+function buf_label(blabel, mod, usebnr)  -- {{{1
   local curbuf = winbufnr(0) == blabel.nr
   local icons = g.buffers[blabel.nr].doubleicon
 
   local hi = printf(' %%#T%s# ', blabel.hi)
   local icon = buf_icon(blabel, curbuf)
-  local bn   = s.actual_buffer_number and blabel.nr or blabel.n
+  local bn   = usebnr and blabel.nr or blabel.n
   local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 
   return icons
