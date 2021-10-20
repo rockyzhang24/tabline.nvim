@@ -57,4 +57,4 @@ call TablineTheme()
 
 nnoremap <expr><silent> <Plug>(TabSelect) v:lua.require'tabline.cmds'.select_tab(v:count)
 
-set tabline=%!v:lua.require'tabline'.render()
+set tabline=%!v:lua.require'tabline.tabline'.render()
