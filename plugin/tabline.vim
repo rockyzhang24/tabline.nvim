@@ -2,10 +2,17 @@ if !has('nvim')
     finish
 endif
 
+lua require'tabline.setup'.setup()
+
 augroup tabline
     au!
     au ColorScheme * lua require'tabline.render.icons'.icons = {}
     au ColorScheme * call TablineTheme()
+    au TabNew      * lua require'tabline.tabs'.init_tabs()
+    au BufAdd      * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
+    au BufUnload   * lua require'tabline.setup'.tabline.buffers[tonumber(vim.fn.expand('<abuf>'))] = nil
+    au OptionSet buf lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
+    au FileType    * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
     au TabLeave    * lua require'tabline.tabs'.store()
     au TabClosed   * lua require'tabline.tabs'.save()
 augroup END
@@ -49,7 +56,5 @@ endfun "}}}
 call TablineTheme()
 
 nnoremap <expr><silent> <Plug>(TabSelect) v:lua.require'tabline.cmds'.select_tab(v:count)
-
-lua require'tabline.setup'.setup()
 
 set tabline=%!v:lua.require'tabline'.render()

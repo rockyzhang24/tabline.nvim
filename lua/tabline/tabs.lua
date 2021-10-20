@@ -7,10 +7,6 @@ local find = string.find
 
 local M, closed, last = {}, {}, nil
 
-vim.cmd([[
-au tabline TabNew * lua require'tabline.tabs'.init_tabs()
-]])
-
 -------------------------------------------------------------------------------
 -- Tab initializer
 -------------------------------------------------------------------------------

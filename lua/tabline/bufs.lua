@@ -16,13 +16,6 @@ local bufnr = vim.fn.bufnr
 local strfind = string.find
 local validbuf = h.validbuf
 
-vim.cmd([[
-au tabline BufAdd * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
-au tabline BufUnload * lua require'tabline.setup'.tabline.buffers[tonumber(vim.fn.expand('<abuf>'))] = nil
-au tabline OptionSet buf lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
-au tabline FileType * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
-]])
-
 -------------------------------------------------------------------------------
 -- Initialize buffers
 --
@@ -76,7 +69,7 @@ end
 local function special_or_listed(bnr)
   local ft, buf = getbufvar(bnr, '&filetype'), new_buf(bnr)
 
-  if ft == 'help' and not getbufvar(bnr, '&modifiable') then
+  if ft == 'help' and getbufvar(bnr, '&modifiable') == 0 then
     buf.name = 'HELP'
     buf.icon = s.icons.book
     buf.special = true

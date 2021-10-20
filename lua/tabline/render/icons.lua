@@ -9,7 +9,7 @@ local execute = vim.fn.execute
 
 local g = require'tabline.setup'.tabline
 local s = require'tabline.setup'.settings
-local devicons = require'nvim-web-devicons'
+local _, devicons = pcall(require, 'nvim-web-devicons')
 
 
 
