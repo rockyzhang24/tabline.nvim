@@ -9,9 +9,9 @@ local execute = vim.fn.execute
 
 local g = require'tabline.setup'.tabline
 local s = require'tabline.setup'.settings
-local _, devicons = pcall(require, 'nvim-web-devicons')
 
-
+local ok, devicons = pcall(require, 'nvim-web-devicons')
+if not ok then devicons = nil end
 
 local function make_icons_hi(color)
   local col, ret = string.sub(color, 2), {}
