@@ -128,6 +128,16 @@ function fit_tabline(center, tabs)
     if right_has_been_cut then
       tabs[ntabs].label = printf('%s%%#DiffDelete# > ', strsub(tabs[ntabs].label, 1, #tabs[ntabs].label - 4))
     end
+  else
+    -- make labels a bit broader as long as there is enough room
+    local i, used, ntabs = 1, L.width + R.width, #tabs
+    while used < limit do
+      if i > ntabs then
+        break
+      end
+      tabs[i].label = tabs[i].label .. ' '
+      i, used = i + 1, used + 1
+    end
   end
 
   local labels = map(tabs, function(_,v) return v.label end)
