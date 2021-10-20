@@ -100,7 +100,7 @@ end
 
 local function select_tab(cnt) -- Select tab {{{1
   if cnt == 0 then return '' end
-  local b
+  local bufs, b = g.current_buffers, nil
   if h.tabs_mode() then
     return 'gt'
   elseif g.v.mode == 'args' and not h.empty_arglist() then
@@ -108,7 +108,7 @@ local function select_tab(cnt) -- Select tab {{{1
   elseif s.actual_buffer_number then
     b = cnt + 1
   else
-    b = g.current_buffers[math.min(cnt, #g.current_buffers)]
+    b = bufs[math.min(cnt, #bufs)]
   end
   return string.format(':%ssilent! buffer %s\n', CU, b)
 end
