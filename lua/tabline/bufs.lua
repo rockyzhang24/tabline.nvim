@@ -136,15 +136,6 @@ function M.add_buf(bnr)
   end
 end
 
--- function M.recent_bufs() -- {{{1
---   local tbl = self.buffers.recent or table.copy(self.buffers.order)
---   if #tbl > v.max_bufs then
---     return table.slice(tbl, 1, v.max_bufs)
---   else
---     return tbl
---   end
--- end
-
 function M.get_bufs()
   local ix, tbl, wd = 1, {}, getcwd()
   for nr, b in pairs(g.buffers) do
