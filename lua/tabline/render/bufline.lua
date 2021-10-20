@@ -182,7 +182,7 @@ function buf_label(blabel, mod, usebnr)  -- {{{1
   local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 
   return icons
-         and number .. hi .. icon .. blabel.name .. ' ' .. icon .. mod
+         and number .. hi .. icon .. ' ' .. blabel.name .. ' ' .. icon .. mod
          or  number .. hi .. icon .. blabel.name .. ' ' .. mod
 end
 
