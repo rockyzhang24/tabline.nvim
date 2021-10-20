@@ -13,6 +13,7 @@ augroup tabline
     au BufUnload   * lua require'tabline.setup'.tabline.buffers[tonumber(vim.fn.expand('<abuf>'))] = nil
     au OptionSet buf lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
     au FileType    * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
+    au TermEnter   * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
     au TabLeave    * lua require'tabline.tabs'.store()
     au TabClosed   * lua require'tabline.tabs'.save()
 augroup END

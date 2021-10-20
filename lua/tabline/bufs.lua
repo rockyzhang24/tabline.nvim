@@ -74,6 +74,10 @@ local function special_or_listed(bnr)
     buf.icon = s.icons.book
     buf.special = true
 
+  elseif getbufvar(bnr, '&buftype') == 'terminal' then
+    buf.name = 'TERMINAL'
+    buf.special = true
+
   elseif special_ft[ft] then
     buf.name = special_ft[ft].name
     buf.icon = special_ft[ft].icon
