@@ -205,7 +205,7 @@ local function name_buffer(bang, args) -- Name buffer {{{1
     end
     buf.name = args[1]
   end
-  vim.cmd('redraw!')
+  vim.cmd('redrawtabline')
 end
 
 local function icon_buffer(bang, args) -- Icon buffer {{{1
@@ -223,7 +223,7 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
     buf.special = true
   end
   buf.icon = icon
-  vim.cmd('redraw!')
+  vim.cmd('redrawtabline')
 end
 
 local function name_tab(bang, args) -- Name tab {{{1
@@ -237,7 +237,7 @@ local function name_tab(bang, args) -- Name tab {{{1
     t.name = args[1]
   end
   vim.t.tab = t
-  vim.cmd('redraw!')
+  vim.cmd('redrawtabline')
 end
 
 local function icon_tab(bang, args) -- Icon tab {{{1
@@ -255,19 +255,19 @@ local function icon_tab(bang, args) -- Icon tab {{{1
   end
   t.icon = icon
   vim.t.tab = t
-  vim.cmd('redraw!')
+  vim.cmd('redrawtabline')
 end
 
 local function reset_buffer() -- Reset buffer {{{1
   local buf = g.buffers[bufnr()]
   if not buf then return end
   buf = require'tabline.bufs'.add_buf(bufnr())
-  vim.cmd('redraw!')
+  vim.cmd('redrawtabline')
 end
 
 local function reset_tab() -- Reset tab {{{1
   vim.t.tab = { ['name'] = false }
-  vim.cmd('redraw!')
+  vim.cmd('redrawtabline')
 end
 
 local function reset_all() -- Reset all tabs and buffers {{{1
@@ -285,7 +285,7 @@ local function pin_buffer(bang) -- Pin buffer {{{1
   elseif not index(g.pinned, bufnr()) then
     table.insert(g.pinned, bufnr())
   end
-  vim.cmd('redraw!')
+  vim.cmd('redrawtabline')
 end
 
 local function reopen() -- Reopen {{{1
@@ -327,10 +327,18 @@ local function cleanup(bang) -- Clean up {{{1
   end
 end
 
-local function info() -- Info {{{1
-  print('--- BUFFERS ---')
-  for k, v in pairs(g.buffers) do
-    print(string.format('%s   %s', v.nr, vim.inspect(v)))
+local function info(bang) -- Info {{{1
+  if not bang then
+    print('--- TABLES ---')
+    print('mode: ' .. g.v.mode)
+    print('valid: ' .. vim.inspect(g.valid))
+    print('recent: ' .. vim.inspect(g.recent))
+    print('order: ' .. vim.inspect(g.order))
+  else
+    print('--- BUFFERS ---')
+    for k, v in pairs(g.buffers) do
+      print(string.format('%s   %s', v.nr, vim.inspect(v)))
+    end
   end
 end
 
@@ -342,7 +350,6 @@ end
 
 commands = {  -- {{{1
   ['mode'] = change_mode,
-  ['info'] = info,
   ['next'] = next_tab,
   ['prev'] = prev_tab,
   ['close'] = close,
@@ -358,6 +365,7 @@ banged = {  -- {{{1
   ['tabname'] = name_tab,
   ['buficon'] = icon_buffer,
   ['tabicon'] = icon_tab,
+  ['info'] = info,
   ['pin'] = pin_buffer,
   ['cleanup'] = cleanup,
   ['purge'] = purge,
