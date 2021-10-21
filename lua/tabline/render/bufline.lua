@@ -2,6 +2,7 @@ local o = vim.o
 local g = require'tabline.setup'.tabline
 local v = g.v
 local s = require'tabline.setup'.settings
+local h = require'tabline.helpers'
 local i = s.indicators
 
 -- vim functions {{{1
@@ -14,6 +15,7 @@ local tabpagebuflist = vim.fn.tabpagebuflist
 local tabpagenr = vim.fn.tabpagenr
 local filereadable = vim.fn.filereadable
 local argv = vim.fn.argv
+local argc = vim.fn.argc
 
 -- table functions {{{1
 local tbl = require'tabline.table'
@@ -62,17 +64,20 @@ end
 -- Arglist mode
 -------------------------------------------------------------------------------
 
-function render_args()
+function render_args(render_tabs)
+  if argc() == 0 then  -- if arglist is empty, switch mode {{{1
+    v.mode = s.modes[(index(s.modes, 'args')) % #s.modes + 1]
+    if h.tabs_mode() then
+      return render_tabs()
+    else
+      return render_buffers()
+    end
+  end -- }}}
   local bufs = filter(
     map(argv(), function(k,v) return bufnr(v) end),
-    function(k,v) return v > 0 end)
-  if #bufs == 0 then  -- if arglist is empty, switch to buffer mode {{{1
-    v.mode = filternew(
-      s.modes, function(k,v) return v ~= 'args' end)[1] or 'tabs'
-    return render_buffers() -- }}}
-  else
-    return format_buffer_labels(limit_buffers(bufs))
-  end
+    function(k,v) return v > 0 end
+  )
+  return format_buffer_labels(limit_buffers(bufs))
 end
 
 -------------------------------------------------------------------------------

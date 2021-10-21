@@ -41,7 +41,7 @@ function render()
   elseif h.tabs_mode() then
     return fit_tabline(render_tabs())
   elseif v.mode == 'args' then
-    return fit_tabline(render_args())
+    return fit_tabline(render_args(render_tabs))
   else
     return fit_tabline(render_buffers())
   end

@@ -140,11 +140,11 @@ local function prev_tab(args) -- Prev tab {{{1
   vim.cmd('buffer ' .. g.current_buffers[target])
 end
 
-local function change_mode(mode) -- Change mode {{{1
-  local modes = { 'auto', 'tabs', 'buffers', 'args' }
-  if index(modes, mode[1]) then
-    g.v.mode = mode[1]
-  elseif mode[1] == 'next' then
+local function change_mode(arg) -- Change mode {{{1
+  local mode = arg[1]
+  if index({ 'auto', 'tabs', 'buffers', 'args' }, mode) then
+    g.v.mode = mode
+  elseif mode == 'next' then
     local cur = index(s.modes, g.v.mode)
     if not cur then
       g.v.mode = s.modes[1]
