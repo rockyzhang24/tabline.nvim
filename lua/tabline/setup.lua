@@ -9,6 +9,9 @@ require'tabline.table'
 local tabline = { -- internal tables {{{1
   closed_tabs = {},
   pinned = {},
+  valid = {},
+  order = { unfiltered = {} },
+  recent = { unfiltered = {} },
 }
 
 tabline.v = { -- internal variables {{{1
@@ -23,6 +26,7 @@ local settings = {  -- user settings {{{1
   bufline_style = 'order',
   dim_inactive_icons = true,
   show_full_path = false,
+  max_recent = 10,
   main_cmd_name = 'Tab',
   mode_labels = 'secondary',
   modes = { 'auto', 'buffers', 'args' },

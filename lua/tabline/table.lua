@@ -3,9 +3,10 @@ local tbl = {}
 local remove = table.remove
 
 function tbl.slice(tbl, first, last, step)
-  local sliced = {}
+  local sliced, n = {}, 0
   for i = first or 1, last or #tbl, step or 1 do
-    sliced[#sliced+1] = tbl[i]
+    n = n + 1
+    sliced[n] = tbl[i]
   end
   return sliced
 end

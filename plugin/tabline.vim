@@ -10,7 +10,8 @@ augroup tabline
     au ColorScheme * call TablineTheme()
     au TabNew      * lua require'tabline.tabs'.init_tabs()
     au BufAdd      * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
-    au BufUnload   * lua require'tabline.setup'.tabline.buffers[tonumber(vim.fn.expand('<abuf>'))] = nil
+    au BufEnter    * lua require'tabline.bufs'.recent_buf(tonumber(vim.fn.expand('<abuf>')))
+    au BufUnload   * lua require'tabline.bufs'.remove_buf(tonumber(vim.fn.expand('<abuf>')))
     au OptionSet buf lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
     au FileType    * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
     au TermEnter   * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))

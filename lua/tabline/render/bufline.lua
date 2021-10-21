@@ -45,19 +45,7 @@ local render_buffers, render_args, limit_buffers
 -------------------------------------------------------------------------------
 
 function render_buffers()
-  local all = g.buffers
-  local bufs, special, other = get_bufs(), {}, {}
-
-  for _, b in ipairs(tabpagebuflist(tabpagenr())) do
-    if all[b] then
-      if all[b].special then
-        special[b] = true
-      elseif not index(bufs, b) then
-        other[b] = true
-      end
-    end
-  end
-  return format_buffer_labels(limit_buffers(bufs), special, other)
+  return format_buffer_labels(get_bufs())
 end
 
 -------------------------------------------------------------------------------
@@ -77,7 +65,16 @@ function render_args(render_tabs)
     map(argv(), function(k,v) return bufnr(v) end),
     function(k,v) return v > 0 end
   )
-  return format_buffer_labels(limit_buffers(bufs))
+  bufs = limit_buffers(bufs)
+  -- set haswin flag for buffers {{{1
+  local pagebufs = tabpagebuflist(tabpagenr())
+  for _, b in ipairs(bufs) do
+    if g.buffers[b] then
+      g.buffers[b].haswin = index(pagebufs, b)
+    end
+  end
+  --}}}
+  return format_buffer_labels(bufs)
 end
 
 -------------------------------------------------------------------------------
@@ -103,15 +100,9 @@ function limit_buffers(bufs)
   return bufs
 end
 
-function format_buffer_labels(bufs, special, other) -- {{{1
+function format_buffer_labels(bufs) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
   local usebnr = s.bufline_style == 'bufnr'
-
-  local oth, spc, pin = other or {}, special or {}, g.pinned or {}
-
-  for b, _ in pairs(oth) do insert(bufs, 1, b) end
-  for b, _ in pairs(pin) do if not index(bufs, b) then insert(bufs, 1, b) end end
-  for b, _ in pairs(spc) do insert(bufs, 1, b) end
 
   if #bufs == 0 and next(all) then
     bufs = { all[bufnr()] and bufnr() or next(all).nr }
@@ -122,18 +113,19 @@ function format_buffer_labels(bufs, special, other) -- {{{1
   for k, bnr in pairs(bufs) do
     local iscur = curbuf == bnr
     local modified = getbufvar(bnr, '&modified') > 0
+    local b = all[bnr]
 
     local buf = {
       nr = bnr,
       n = k,
-      name = all[bnr].name or buf_path(bnr, not s.show_full_path),
-      hi = (iscur and spc[bnr])   and 'Special' or
-           iscur                  and 'Select' or
-           (spc[bnr] or pin[bnr]) and 'Extra' or
-           oth[bnr]               and 'Visible' or 'Hidden'
+      name = b.name or buf_path(bnr, not s.show_full_path),
+      hi = (iscur and b.special)   and 'Special' or
+           iscur                   and 'Select' or
+           (b.special or b.pinned) and 'Extra' or
+           b.haswin                and 'Visible' or 'Hidden'
     }
 
-    buf.himod = spc[bnr] and buf.hi or buf.hi .. 'Mod'
+    buf.himod = b.special and buf.hi or buf.hi .. 'Mod'
     buf.label = buf_label(buf, buf_mod(buf, modified, usebnr))
 
     if iscur then center = bnr end
@@ -192,7 +184,7 @@ function buf_label(blabel, mod, usebnr)  -- {{{1
 end
 
 function buf_mod(blabel, modified) -- {{{1
-  local mod = g.pinned[blabel.nr] and i.pinned .. ' ' or ''
+  local mod = g.buffers[blabel.nr].pinned and i.pinned .. ' ' or ''
   if modified then
     mod = mod .. printf('%%#T%s#%s', blabel.himod, i.modified .. ' ')
   end

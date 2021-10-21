@@ -12,6 +12,7 @@ local fn = vim.fn
 -- vim functions {{{1
 local getbufvar = vim.fn.getbufvar
 local bufnr = vim.fn.bufnr
+local getcwd = vim.fn.getcwd
 
 -- table functions {{{1
 local tbl = require'tabline.table'
@@ -152,6 +153,7 @@ local function change_mode(arg) -- Change mode {{{1
       g.v.mode = s.modes[(cur % #s.modes) + 1]
     end
   end
+  for _, b in ipairs(g.buffers) do b.haswin = false end
   vim.cmd('redrawtabline')
 end
 
@@ -278,12 +280,12 @@ local function reset_all() -- Reset all tabs and buffers {{{1
 end
 
 local function pin_buffer(bang) -- Pin buffer {{{1
+  local b = g.buffers[bufnr()]
+  if not b then return end
   if bang then
-    if index(g.pinned, bufnr()) then
-      table.remove(g.pinned, bufnr())
-    end
-  elseif not index(g.pinned, bufnr()) then
-    table.insert(g.pinned, bufnr())
+    b.pinned = not b.pinned
+  else
+    b.pinned = true
   end
   vim.cmd('redrawtabline')
 end
@@ -332,8 +334,8 @@ local function info(bang) -- Info {{{1
     print('--- TABLES ---')
     print('mode: ' .. g.v.mode)
     print('valid: ' .. vim.inspect(g.valid))
-    print('recent: ' .. vim.inspect(g.recent))
-    print('order: ' .. vim.inspect(g.order))
+    print('recent: ' .. vim.inspect(s.filtering and g.recent[getcwd()] or g.recent.unfiltered))
+    print('order: ' .. vim.inspect(s.filtering and g.order[getcwd()] or g.order.unfiltered))
   else
     print('--- BUFFERS ---')
     for k, v in pairs(g.buffers) do
@@ -342,6 +344,18 @@ local function info(bang) -- Info {{{1
   end
 end
 
+local function testspeed() -- Test speed {{{1
+  local fn = vim.fn
+  local time = fn.reltime()
+  for i = 1, 1000 do
+    vim.cmd('redrawtabline')
+  end
+  print(
+    fn.matchstr(
+      fn.reltimestr(fn.reltime(time)), '.*\\..\\{,3}')
+      .. ' seconds to redraw 1000 times'
+    )
+end
 
 -- }}}
 
@@ -357,6 +371,7 @@ commands = {  -- {{{1
   ['tabreset'] = reset_tab,
   ['reopen'] = reopen,
   ['resetall'] = reset_all,
+  ['testspeed'] = testspeed,
 }
 
 banged = {  -- {{{1
