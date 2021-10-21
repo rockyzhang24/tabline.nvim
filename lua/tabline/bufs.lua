@@ -46,11 +46,17 @@ local special_ft = {
 -- @return: a basic buffer object
 --------------------------------------------------------------------------------
 local function new_buf(bnr)
+  local bname = bufname(bnr)
+  local ext = fnamemodify(bname, ':e')
+  if ext == '' then
+    ext = getbufvar(bnr, '&filetype')
+    if ext == '' then ext = nil end
+  end
   return {
     nr = bnr,
-    path = fnamemodify(bufname(bnr), ':p'),
-    basename = fnamemodify(bufname(bnr), ':t'),
-    ext = fnamemodify(bufname(bnr), ':e'),
+    path = fnamemodify(bname, ':p'),
+    basename = fnamemodify(bname, ':t'),
+    ext = ext,
     special = false,
     pinned = false,
     name = nil,

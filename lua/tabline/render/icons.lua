@@ -17,6 +17,7 @@ if not ok then
 else
   devicons.set_icon({
     fzf = { icon = "🗲", color = "#d0bf41", name = 'fzf' },
+    python = { icon = "", color = "#3572A5", name = 'python' },
   })
 end
 --}}}
