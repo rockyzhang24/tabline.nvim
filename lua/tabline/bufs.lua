@@ -185,7 +185,7 @@ function M.get_bufs()
     return g.order[cwd]
   else
     g.recent.unfiltered = M.recent_bufs()
-    g.order.unfiltered = M.ordered_bufs(g.recent.unfiltered, cwd)
+    g.order.unfiltered = M.ordered_bufs(g.recent.unfiltered)
     return g.order.unfiltered
   end
 end
@@ -249,8 +249,13 @@ end
 -- @return: the ordered buffers table
 -------------------------------------------------------------------------------
 function M.ordered_bufs(recent, cwd)
-  local order = ( cwd and g.order[cwd] or g.order.unfiltered ) or {}
-  filter(order, function(k,v) return index(recent, v) end)
+  local order = {}
+  if cwd and g.order[cwd] then
+    order = g.order[cwd]
+  elseif not cwd then
+    order = g.order.unfiltered
+  end
+  order = filter(order, function(k,v) return index(recent, v) end)
   for _, b in ipairs(recent) do
     if not index(order, b) then
       insert(order, b)
