@@ -17,7 +17,6 @@ local tabline = { -- internal tables {{{1
 tabline.v = { -- internal variables {{{1
   mode = 'auto',
   max_bufs = 10,
-  lastwd = nil,
 }
 
 local settings = {  -- user settings {{{1
