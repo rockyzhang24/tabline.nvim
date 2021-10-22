@@ -3,6 +3,7 @@ if !has('nvim')
 endif
 
 lua require'tabline.setup'.setup()
+lua require'tabline.setup'.mappings()
 
 augroup tabline
     au!

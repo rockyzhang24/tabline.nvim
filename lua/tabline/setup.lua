@@ -2,11 +2,11 @@
 -- Initialization
 -------------------------------------------------------------------------------
 
-local define_main_cmd, cmd_mappings, cd_mappings
+local M, has_done_setup = {}, false
 
-require'tabline.table'
+local tbl = require'tabline.table'
 
-local tabline = { -- internal tables {{{1
+M.tabline = { -- internal tables {{{1
   closed_tabs = {},
   pinned = {},
   valid = {},
@@ -14,12 +14,12 @@ local tabline = { -- internal tables {{{1
   recent = { unfiltered = {} },
 }
 
-tabline.v = { -- internal variables {{{1
+M.tabline.v = { -- internal variables {{{1
   mode = 'auto',
   max_bufs = 10,
 }
 
-local settings = {  -- user settings {{{1
+M.settings = {  -- user settings {{{1
   filtering = true,
   show_right_corner = true,
   tab_number_in_left_corner = true,
@@ -33,34 +33,11 @@ local settings = {  -- user settings {{{1
   scratch_label = '[Scratch]',
   unnamed_label = '[Unnamed]',
   mapleader = '<leader><leader>',
-  cmd_mappings = true,
+  default_mappings = true,
   cd_mappings = true,
 }
 
-local mappings = { -- mappings {{{1
-  ['mode next'] =  { '<F5>', true },
-  ['next'] =       { ']b', true },
-  ['prev'] =       { '[b', true },
-  ['away'] =       { nil, true },
-  ['left'] =       { nil, true },
-  ['right'] =      { nil, true },
-  ['filtering!'] = { settings.mapleader .. 'f', true },
-  ['fullpath!'] =  { settings.mapleader .. '/', true },
-  ['close'] =      { settings.mapleader .. 'q', true },
-  ['pin!'] =       { settings.mapleader .. 'p', true },
-  ['bufname'] =    { nil, false },
-  ['tabname'] =    { nil, false },
-  ['buficon'] =    { nil, false },
-  ['tabicon'] =    { nil, false },
-  ['bufreset'] =   { nil, true },
-  ['tabreset'] =   { nil, true },
-  ['reopen'] =     { settings.mapleader .. 'u', true },
-  ['resetall'] =   { nil, true },
-  ['purge'] =      { settings.mapleader .. 'x', true },
-  ['cleanup'] =    { settings.mapleader .. 'X', true },
-}
-
-settings.icons = { -- icons {{{1
+M.settings.icons = { -- icons {{{1
   ['pin'] =      '📌', ['star'] =   '★',   ['book'] =     '📖',  ['lock'] =    '🔒',
   ['hammer'] =   '🔨', ['tick'] =   '✔',   ['cross'] =    '✖',   ['warning'] = '⚠',
   ['menu'] =     '☰',  ['apple'] =  '🍎',  ['linux'] =    '🐧',  ['windows'] = '❖',
@@ -71,39 +48,56 @@ settings.icons = { -- icons {{{1
   ['tab'] = {"📂", "📁"},
 }
 
-settings.indicators = { -- indicators {{{1
-  ['modified'] = settings.no_icons and '[+]'  or '*',
-  ['readonly'] = settings.no_icons and '[RO]' or '🔒',
-  ['scratch'] = settings.no_icons and  '[!]'  or '✓',
-  ['pinned'] = settings.no_icons and   '[^]'  or '[📌]',
+M.settings.indicators = { -- indicators {{{1
+  ['modified'] = M.settings.no_icons and '[+]'  or '*',
+  ['readonly'] = M.settings.no_icons and '[RO]' or '🔒',
+  ['scratch'] = M.settings.no_icons and  '[!]'  or '✓',
+  ['pinned'] = M.settings.no_icons and   '[^]'  or '[📌]',
 }
 
-local buflinestyles = {
-  order = 0,
-  bufnr = 1,
+local MAPPINGS = { -- default mappings {{{1
+  ['mode next'] =  { '<F5>', true },
+  ['next'] =       { ']b', true },
+  ['prev'] =       { '[b', true },
+  ['away'] =       { nil, true },
+  ['left'] =       { nil, true },
+  ['right'] =      { nil, true },
+  ['filtering!'] = { M.settings.mapleader .. 'f', true },
+  ['fullpath!'] =  { M.settings.mapleader .. '/', true },
+  ['close'] =      { M.settings.mapleader .. 'q', true },
+  ['pin!'] =       { M.settings.mapleader .. 'p', true },
+  ['bufname'] =    { nil, false },
+  ['tabname'] =    { nil, false },
+  ['buficon'] =    { nil, false },
+  ['tabicon'] =    { nil, false },
+  ['bufreset'] =   { nil, true },
+  ['tabreset'] =   { nil, true },
+  ['reopen'] =     { M.settings.mapleader .. 'u', true },
+  ['resetall'] =   { nil, true },
+  ['purge'] =      { M.settings.mapleader .. 'x', true },
+  ['cleanup'] =    { M.settings.mapleader .. 'X', true },
 }
 
 -- }}}
 
-local function setup(sets)
-  if not tabline.buffers then
-    require'tabline.bufs'.init_bufs()
-  end
-  if not tabline.tabs then
-    require'tabline.tabs'.init_tabs()
-  end
-  for k, v in pairs(sets or {}) do
-    settings[k] = v
-  end
+-------------------------------------------------------------------------------
+-- Local functions
+-------------------------------------------------------------------------------
 
-  local cmd = define_main_cmd()
-  cmd_mappings(cmd)
-  cd_mappings()
+local function set_mappings(mappings) -- Define mappings {{{1
+  local c = M.settings.main_cmd_name
+  if c then
+    for k, v in pairs(mappings) do
+      if v[1] and vim.fn.mapcheck(v[1]) == '' then
+        vim.cmd(string.format('nnoremap %s :<c-u>%s %s%s', v[1], c, k, v[2] and '<cr>' or '<space>'))
+      end
+    end
+  end
 end
 
-function cd_mappings()
+local function set_cd_mappings() -- Define cd mappings {{{1
   local cmd = "lua require'tabline.cd'."
-  if not settings.cd_mappings then return end
+  if not M.settings.cd_mappings then return end
   for _, v in ipairs({ 'cdc', 'cdl', 'cdt', 'cdw' }) do
     if vim.fn.maparg(v) == '' then
       vim.cmd(string.format('nnoremap <silent> %s :<c-u>%s%s()<cr>', v, cmd, v))
@@ -112,26 +106,48 @@ function cd_mappings()
   vim.cmd(string.format('nnoremap <silent> cd? :<c-u>%sinfo()<cr>', cmd))
 end
 
-function cmd_mappings(cmd) -- Define mappings for commands {{{1
-  if not settings.cmd_mappings then return end
-  for k, v in pairs(mappings) do
-    if v[1] and vim.fn.mapcheck(v[1]) == '' then
-      vim.cmd(string.format('nnoremap %s :<c-u>%s %s%s', v[1], cmd, k, v[2] and '<cr>' or '<space>'))
-    end
-  end
-end
-
-function define_main_cmd() -- Define main command {{{1
+local function define_main_cmd() -- Define main command {{{1
   vim.cmd([[
-  command! -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]]
-  .. settings.main_cmd_name .. [[ exe "lua require'tabline.cmds'.command(" string(<q-args>) . ")"]])
-  return settings.main_cmd_name
+  command! -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]] ..
+  M.settings.main_cmd_name .. [[ exe "lua require'tabline.cmds'.command(" string(<q-args>) . ")"
+  ]])
 end
 
 -- }}}
 
-return {
-  setup = setup,
-  tabline = tabline,
-  settings = settings,
-}
+
+-------------------------------------------------------------------------------
+-- Module functions
+-------------------------------------------------------------------------------
+
+function M.setup(opts)
+  if not M.tabline.buffers then
+    require'tabline.bufs'.init_bufs()
+  end
+  if not M.tabline.tabs then
+    require'tabline.tabs'.init_tabs()
+  end
+  for k, v in pairs(opts or {}) do
+    M.settings[k] = v
+  end
+
+  define_main_cmd()
+  has_done_setup = true
+end
+
+function M.mappings(maps)
+  if not has_done_setup then
+    return
+  end
+  local mappings = M.settings.default_mappings
+                   and maps and vim.tbl_extend('force', MAPPINGS, maps)
+                   or MAPPINGS or maps
+  if mappings then
+    set_mappings(mappings)
+  end
+  if M.settings.cd_mappings then
+    set_cd_mappings()
+  end
+end
+
+return M
