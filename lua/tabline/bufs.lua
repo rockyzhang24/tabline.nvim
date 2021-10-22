@@ -177,16 +177,26 @@ end
 -- @return: the ordered list of the buffers to render
 -------------------------------------------------------------------------------
 function M.get_bufs()
-  g.valid, g.pinned = M.valid_bufs()
-  if s.filtering then
-    local cwd = getcwd()
-    g.recent[cwd] = M.recent_bufs()
-    g.order[cwd] = M.ordered_bufs(g.recent[cwd], cwd)
-    return g.order[cwd]
+  if not s.filtering then
+    if index(g.recent.unfiltered, bufnr()) then
+      return g.order.unfiltered
+    else
+      g.valid, g.pinned = M.valid_bufs()
+      g.recent.unfiltered = M.recent_bufs()
+      g.order.unfiltered = M.ordered_bufs(g.recent.unfiltered, cwd)
+      return g.order.unfiltered
+    end
   else
-    g.recent.unfiltered = M.recent_bufs()
-    g.order.unfiltered = M.ordered_bufs(g.recent.unfiltered, cwd)
-    return g.order.unfiltered
+    local cwd = getcwd()
+    if cwd == g.v.lastwd and index(g.recent[cwd], bufnr()) then
+      return g.order[cwd]
+    else
+      g.v.lastwd = cwd
+      g.valid, g.pinned = M.valid_bufs()
+      g.recent[cwd] = M.recent_bufs()
+      g.order[cwd] = M.ordered_bufs(g.recent[cwd], cwd)
+      return g.order[cwd]
+    end
   end
 end
 
