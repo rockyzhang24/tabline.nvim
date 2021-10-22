@@ -224,6 +224,7 @@ function M.recent_bufs()
   local recent, cur = copy(g.valid), bufnr()
   if #recent > s.max_recent then
     table.sort(recent, function(a,b) return g.buffers[a].recent > g.buffers[b].recent end)
+    table.sort(recent, function(a,b) return g.buffers[a].nr < g.buffers[b].nr end)
     recent = slice(recent, 1, s.max_recent)
   end
   if g.buffers[cur] and not index(recent, cur) then
