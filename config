@@ -1,0 +1,85 @@
+--------------------------------------------------------------------------------
+-- tabline.nvim configuration
+--------------------------------------------------------------------------------
+-- Save this file where it will be loaded, for example in
+-- ~/.local/share/nvim/site/plugin/lua/tabline_settings.lua
+
+-- Load package
+
+vim.cmd('packadd tabline.nvim') -- remove this if in pack/*/start, or if using a plugin manager
+
+local ok, tabline = pcall(require, 'tabline.setup')
+if not ok then return end
+
+-------------------------------------------------------------------------------
+-- Settings
+-------------------------------------------------------------------------------
+-- These are the default values, if you delete a key, default will still be used
+
+local settings = {
+  main_cmd_name             = 'Tabline',                      -- the ex command name
+  filtering                 = false,                          -- enables bufferline filtering based on cwd
+  show_right_corner         = true,                           -- displays cwd
+  tab_number_in_left_corner = true,                           -- displays current/total tabs
+  bufline_style             = 'order',                        -- see below
+  dim_inactive_icons        = true,                           -- grey icons for inactive buffers
+  show_full_path            = false,                          -- instead of just the basename
+  clickable_bufline         = true,                           -- lmb selects, rmb puts last, s-rmb deletes buffer
+  max_recent                = 10,                             -- number of buffers that can be rendered
+  modes                     = { 'auto', 'buffers', 'args' },  -- see below
+  mode_labels               = nil,                            -- see below
+  mapleader                 = '<leader><leader>',             -- used in the mappings below
+  default_mappings          = false,                          -- will extend the mappings table, instead of replacing it
+  cd_mappings               = false,                          -- enable normal mode mappings that start with 'cd'
+  scratch_label             = '[Scratch]',
+  unnamed_label             = '[Unnamed]',
+}
+
+-- bufline_style: 'order' will show the position in the bufferline, 'bufnr' will
+--                show the actual buffer number
+--
+-- mode:          'auto', 'tabs', 'buffers', 'args', in any order
+--                'auto' will automatically switch to tabs mode if there is more
+--                than one tab, or to 'buffers' mode when there is only one tab
+--                'args' shows the arglist, but will be skipped if this is empty
+--
+-- mode_labels:   if you want the mode label to show a different string.
+--                If nil, default names are used, if a single value is nil it
+--                won't be showed. For example: { buffers = 'B', args = 'A' }
+--                shows single letters for those modes, but no label for tabs
+--                mode.
+
+--------------------------------------------------------------------------------
+-- Mappings
+--------------------------------------------------------------------------------
+
+local L = settings.mapleader
+
+local mappings = {
+  ['mode next']  = '<F5>',   -- change tabline mode
+  ['next']       = ']b',     -- select next buffer/tab
+  ['prev']       = '[b',     -- select previous buffer/tab
+  ['away']       = nil,      -- move current buffer away from sight (put last)
+  ['left']       = nil,      -- move current buffer [count] positions to the left
+  ['right']      = nil,      -- move current buffer [count] positions to the right
+  ['filtering!'] = L .. 'f', -- toggle buffer filtering based on cwd
+  ['fullpath!']  = L .. '/', -- toggle showing the paths/basenames
+  ['close']      = L .. 'q', -- delete the buffer without closing the window
+  ['pin!']       = L .. 'p', -- toggle pin buffer
+  ['bufname']    = nil,      -- give name to current buffer
+  ['tabname']    = nil,      -- give name to current tab
+  ['buficon']    = nil,      -- give icon to current buffer
+  ['tabicon']    = nil,      -- give icon to current tab
+  ['bufreset']   = nil,      -- remove custom name/icon from current buffer
+  ['tabreset']   = nil,      -- remove custom name/icon from current tab
+  ['resetall']   = nil,      -- remove all custom names/icons
+  ['reopen']     = L .. 'u', -- reopen closed tab
+  ['purge']      = L .. 'x', -- close anything in the tabpage that isn't a regular buffer
+  ['cleanup']    = L .. 'X', -- delete all buffers that are unrelated to current directories
+}
+
+-------------------------------------------------------------------------------
+-- Load the setup (don't skip this step...)
+-------------------------------------------------------------------------------
+tabline.setup(settings)
+tabline.mappings(mappings)

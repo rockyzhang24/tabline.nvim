@@ -438,6 +438,10 @@ local function testspeed() -- Test speed {{{1
     )
 end
 
+local function config() -- Configuration buffer {{{1
+  vim.fn['tabline#config']()
+end
+
 -- }}}
 
 
@@ -456,6 +460,7 @@ commands = {  -- {{{1
   ['reopen'] = reopen,
   ['resetall'] = reset_all,
   ['testspeed'] = testspeed,
+  ['config'] = config,
 }
 
 banged = {  -- {{{1

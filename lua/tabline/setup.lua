@@ -20,7 +20,8 @@ M.tabline.v = { -- internal variables {{{1
 }
 
 M.settings = {  -- user settings {{{1
-  filtering = true,
+  main_cmd_name = 'Tabline',
+  filtering = false,
   show_right_corner = true,
   tab_number_in_left_corner = true,
   bufline_style = 'order',
@@ -28,14 +29,13 @@ M.settings = {  -- user settings {{{1
   show_full_path = false,
   clickable_bufline = true,
   max_recent = 10,
-  main_cmd_name = 'Tab',
-  mode_labels = 'secondary',
   modes = { 'auto', 'buffers', 'args' },
+  mode_labels = nil,
   scratch_label = '[Scratch]',
   unnamed_label = '[Unnamed]',
   mapleader = '<leader><leader>',
-  default_mappings = true,
-  cd_mappings = true,
+  default_mappings = false,
+  cd_mappings = false,
 }
 
 M.settings.icons = { -- icons {{{1
@@ -134,15 +134,33 @@ function M.setup(opts)
 
   define_main_cmd()
   has_done_setup = true
+  vim.cmd[[set tabline=%!v:lua.require'tabline.tabline'.render()]]
 end
 
 function M.mappings(maps)
   if not has_done_setup then
     return
   end
-  local mappings = M.settings.default_mappings
-                   and maps and vim.tbl_extend('force', MAPPINGS, maps)
-                   or MAPPINGS or maps
+
+  local mappings
+
+  if maps then
+    for k, v in pairs(maps) do
+      if MAPPINGS[k] then
+        maps[k] = { v, MAPPINGS[k][2] }
+      else
+        maps[k] = nil
+      end
+    end
+    if M.settings.default_mappings then
+      mappings = vim.tbl_extend('force', MAPPINGS, maps)
+    else
+      mappings = maps
+    end
+  elseif M.settings.default_mappings then
+    mappings = MAPPINGS
+  end
+
   if mappings then
     set_mappings(mappings)
   end

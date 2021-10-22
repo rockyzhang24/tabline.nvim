@@ -2,9 +2,6 @@ if !has('nvim')
     finish
 endif
 
-lua require'tabline.setup'.setup()
-lua require'tabline.setup'.mappings()
-
 augroup tabline
     au!
     au ColorScheme * lua require'tabline.render.icons'.icons = {}
@@ -63,5 +60,3 @@ nnoremap <expr><silent> <Plug>(TabSelect) v:lua.require'tabline.cmds'.select_tab
 fun! Buflineclick(nr, clicks, button, mod)
     call v:lua.buflineclick(a:nr, a:clicks, a:button, a:mod)
 endfun
-
-set tabline=%!v:lua.require'tabline.tabline'.render()

@@ -83,18 +83,24 @@ function right_corner_label(N)
 end
 
 -------------------------------------------------------------------------------
--- Label for left corner
---
--- It's the tabline mode, and it's only shown under certain conditions.
+-- Label that shows the current mode.
 -------------------------------------------------------------------------------
 function mode_label()
-  local labels = s.mode_labels
-  if labels == 'none' or
-        labels == 'secondary' and index(s.modes, v.mode) == 1 or
-        labels ~= 'all' and labels ~= 'secondary' and not string.find(labels, v.mode) then
-    return ''
+  local label = s.mode_labels
+  if not label then
+    if v.mode == 'auto' then
+      return tabpagenr('$') == 1 and '%#TExtra# buffers %#TFill# ' or '%#TExtra# tabs %#TFill# '
+    else
+      return printf('%%#TExtra# %s %%#TFill# ', v.mode)
+    end
+  elseif v.mode == 'auto' then
+    if tabpagenr('$') == 1 then
+      return label.buffers and printf('%%#TExtra# %s %%#TFill# ', label.buffers) or ''
+    else
+      return label.tabs and printf('%%#TExtra# %s %%#TFill# ', label.tabs) or ''
+    end
   else
-    return printf('%%#TExtra# %s %%#TFill# ', v.mode)
+    return label[v.mode] and printf('%%#TExtra# %s %%#TFill# ', label[v.mode]) or ''
   end
 end
 
