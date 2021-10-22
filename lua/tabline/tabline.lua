@@ -140,7 +140,7 @@ function fit_tabline(center, tabs)
     end
   end
 
-  if s.clickable_bufline and v.mode == 'buffers' then
+  if s.clickable_bufline and h.buffers_mode() then
     for _, l in ipairs(tabs) do
       l.label = '%' .. l.n .. '@Buflineclick@' .. l.label .. '%X'
     end

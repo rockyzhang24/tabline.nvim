@@ -159,7 +159,7 @@ local function move_left(arg) -- Move current tab N positions to the left {{{1
     else
       vim.cmd('-' .. cnt .. 'tabmove')
     end
-  elseif g.v.mode ~= 'args' then
+  elseif h.buffers_mode() then
     local bufs = get_bufs()
     local nbufs, cur = #bufs, index(bufs, bufnr())
     if not cur or nbufs < 2 then return end
@@ -182,7 +182,7 @@ local function move_right(arg) -- Move current tab N positions to the right {{{1
     else
       vim.cmd('+' .. cnt .. 'tabmove')
     end
-  elseif g.v.mode ~= 'args' then
+  elseif h.buffers_mode() then
     local bufs = get_bufs()
     local nbufs, cur = #bufs, index(bufs, bufnr())
     if not cur or nbufs < 2 then return end
@@ -209,7 +209,7 @@ local function away(arg) -- Move tab to last position {{{1
       vim.cmd('$tabmove')
       vim.cmd('normal! ' .. cur .. 'gt')
     end
-  elseif g.v.mode ~= 'args' then
+  elseif h.buffers_mode() then
     local bufs = get_bufs()
     local cur = nr or index(bufs, bufnr())
     if #bufs then

@@ -23,6 +23,10 @@ function M.tabs_mode() -- {{{1
   return v.mode == 'tabs' or v.mode == 'auto' and tabpagenr('$') > 1
 end
 
+function M.buffers_mode() -- {{{1
+  return v.mode == 'buffers' or v.mode == 'auto' and tabpagenr('$') == 1
+end
+
 function M.empty_arglist() -- {{{1
   return #argv() == 0
 end
