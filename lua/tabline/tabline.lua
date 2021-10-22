@@ -140,10 +140,16 @@ function fit_tabline(center, tabs)
     end
   end
 
+  if s.clickable_bufline and v.mode == 'buffers' then
+    for _, l in ipairs(tabs) do
+      l.label = '%' .. l.n .. '@Buflineclick@' .. l.label .. '%X'
+    end
+  end
+
   local labels = map(tabs, function(_,v) return v.label end)
-  if v.mode == 'tabs' then
-    for n = 1, #labels do
-      labels[n] = '%' .. (n+1) .. 'T' .. labels[n]
+  if h.tabs_mode() then
+    for n, l in ipairs(labels) do
+      labels[n] = '%' .. n .. 'T' .. l
     end
   end
   labels = tabsnums .. modelabel .. concat(labels, '')

@@ -197,14 +197,21 @@ local function move_right(arg) -- Move current tab N positions to the right {{{1
   end
 end
 
-local function away() -- Move tab to last position {{{1
+local function away(arg) -- Move tab to last position {{{1
+  local nr = #arg > 0 and arg[1] or nil
   if h.tabs_mode() then
-    local cur = fn.tabpagenr()
-    vim.cmd('$tabmove')
-    vim.cmd('normal! ' .. cur .. 'gt')
+    if nr then
+      vim.cmd('normal! ' .. nr .. 'gt')
+      vim.cmd('$tabmove')
+      vim.cmd('normal! ' .. nr .. 'gt')
+    else
+      local cur = fn.tabpagenr()
+      vim.cmd('$tabmove')
+      vim.cmd('normal! ' .. cur .. 'gt')
+    end
   elseif g.v.mode ~= 'args' then
     local bufs = get_bufs()
-    local cur = index(bufs, bufnr())
+    local cur = nr or index(bufs, bufnr())
     if #bufs then
       insert(bufs, remove(bufs, cur))
       set_order(bufs)
@@ -471,4 +478,5 @@ return {
   complete = complete,
   change_mode = change_mode,
   select_tab = select_tab,
+  away = away,
 }

@@ -26,6 +26,7 @@ M.settings = {  -- user settings {{{1
   bufline_style = 'order',
   dim_inactive_icons = true,
   show_full_path = false,
+  clickable_bufline = true,
   max_recent = 10,
   main_cmd_name = 'Tab',
   mode_labels = 'secondary',

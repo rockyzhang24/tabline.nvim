@@ -279,4 +279,25 @@ function M.set_order(bufs)
   g.current_buffers = bufs
 end
 
+function M.click(nr, clicks, button, mod)
+  local cmd = require'tabline.cmds'
+  local n = M.get_bufs()[nr]
+  if button == 'r' then
+    if string.find(mod, 's') then
+      if getbufvar(n, '&modified') then
+        print('Cannot delete, buffer is modified')
+      else
+        vim.cmd('bdelete ' .. n)
+      end
+    else
+      cmd.away({nr})
+    end
+  elseif button == 'l' then
+    vim.cmd('buffer ' .. n)
+  end
+end
+
+-- this is global, will be called by vimscript
+buflineclick = M.click
+
 return M

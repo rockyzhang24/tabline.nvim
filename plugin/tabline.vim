@@ -60,4 +60,8 @@ call TablineTheme()
 
 nnoremap <expr><silent> <Plug>(TabSelect) v:lua.require'tabline.cmds'.select_tab(v:count)
 
+fun! Buflineclick(nr, clicks, button, mod)
+    call v:lua.buflineclick(a:nr, a:clicks, a:button, a:mod)
+endfun
+
 set tabline=%!v:lua.require'tabline.tabline'.render()
