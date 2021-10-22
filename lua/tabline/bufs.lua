@@ -209,11 +209,9 @@ function M.valid_bufs()
   local valid, pinned, wd = {}, {}, getcwd()
   local pagebufs = tabpagebuflist(tabpagenr())
   for nr, b in pairs(g.buffers) do
-    b.haswin = false
     if b.pinned then
       insert(pinned, nr)
     elseif index(pagebufs, nr) then
-      b.haswin = not b.special
       insert(valid, nr)
     elseif not b.special and validbuf(b.path, wd) then
       insert(valid, nr)

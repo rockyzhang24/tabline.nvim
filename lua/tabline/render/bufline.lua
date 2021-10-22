@@ -66,14 +66,6 @@ function render_args(render_tabs)
     function(k,v) return v > 0 end
   )
   bufs = limit_buffers(bufs)
-  -- set haswin flag for buffers {{{1
-  local pagebufs = tabpagebuflist(tabpagenr())
-  for _, b in ipairs(bufs) do
-    if g.buffers[b] then
-      g.buffers[b].haswin = index(pagebufs, b)
-    end
-  end
-  --}}}
   return format_buffer_labels(bufs)
 end
 
@@ -103,6 +95,7 @@ end
 function format_buffer_labels(bufs) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
   local usebnr = s.bufline_style == 'bufnr'
+  local pagebufs = tabpagebuflist(tabpagenr())
 
   if #bufs == 0 and next(all) then
     bufs = { all[bufnr()] and bufnr() or next(all).nr }
@@ -114,6 +107,7 @@ function format_buffer_labels(bufs) -- {{{1
     local iscur = curbuf == bnr
     local modified = getbufvar(bnr, '&modified') > 0
     local b = all[bnr]
+    local haswin = index(pagebufs, bnr)
 
     local buf = {
       nr = bnr,
@@ -122,7 +116,7 @@ function format_buffer_labels(bufs) -- {{{1
       hi = (iscur and b.special)   and 'Special' or
            iscur                   and 'Select' or
            (b.special or b.pinned) and 'Extra' or
-           b.haswin                and 'Visible' or 'Hidden'
+           haswin                  and 'Visible' or 'Hidden'
     }
 
     buf.himod = b.special and buf.hi or buf.hi .. 'Mod'

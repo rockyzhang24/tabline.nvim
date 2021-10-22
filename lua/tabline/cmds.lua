@@ -153,7 +153,6 @@ local function change_mode(arg) -- Change mode {{{1
       g.v.mode = s.modes[(cur % #s.modes) + 1]
     end
   end
-  for _, b in ipairs(g.buffers) do b.haswin = false end
   vim.cmd('redrawtabline')
 end
 
