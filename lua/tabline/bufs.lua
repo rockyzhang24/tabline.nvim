@@ -281,7 +281,7 @@ end
 
 function M.click(nr, clicks, button, mod)
   local cmd = require'tabline.cmds'
-  local n = M.get_bufs()[nr]
+  local n, cur = g.current_buffers[nr], bufnr()
   if button == 'r' then
     if string.find(mod, 's') then
       if getbufvar(n, '&modified') then
@@ -291,6 +291,7 @@ function M.click(nr, clicks, button, mod)
       end
     else
       cmd.away({nr})
+      vim.cmd('buffer ' .. cur)
     end
   elseif button == 'l' then
     vim.cmd('buffer ' .. n)
