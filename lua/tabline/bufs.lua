@@ -264,4 +264,19 @@ function M.ordered_bufs(recent, cwd)
   return order
 end
 
+--------------------------------------------------------------------------------
+-- Function: M.set_order
+-- Replace the current list of ordered buffers with a new list.
+--
+-- @param bufs: table of buffer numbers
+--------------------------------------------------------------------------------
+function M.set_order(bufs)
+  if s.filtering then
+    g.order[getcwd()] = bufs
+  else
+    g.order.unfiltered = bufs
+  end
+  g.current_buffers = bufs
+end
+
 return M

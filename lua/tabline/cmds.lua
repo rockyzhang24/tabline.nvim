@@ -3,6 +3,8 @@ local s = require'tabline.setup'.settings
 local g = require'tabline.setup'.tabline
 local h = require'tabline.helpers'
 local devicons = require'nvim-web-devicons'
+local get_bufs = require'tabline.bufs'.get_bufs
+local set_order = require'tabline.bufs'.set_order
 
 local CU = vim.api.nvim_replace_termcodes('<C-U>', true, false, true)
 local Esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
@@ -57,6 +59,7 @@ local subcmds = { -- {{{1
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'fullpath',
+  'away', 'left', 'right',
 }
 
 local completion = {  -- {{{1
@@ -99,7 +102,7 @@ end
 -- Subcommands
 -------------------------------------------------------------------------------
 
-local function select_tab(cnt) -- Select tab {{{1
+local function select_tab(cnt, cmdline) -- Select tab {{{1
   if cnt == 0 then return '' end
   local bufs, b = g.current_buffers, nil
   if h.tabs_mode() then
@@ -111,7 +114,11 @@ local function select_tab(cnt) -- Select tab {{{1
   else
     b = bufs[math.min(cnt, #bufs)]
   end
-  return string.format(':%ssilent! buffer %s\n', CU, b)
+  if cmdline then
+    vim.cmd('buffer ' .. b)
+  else
+    return string.format(':%ssilent! buffer %s\n', CU, b)
+  end
 end
 
 local function next_tab(args) -- Next tab {{{1
@@ -139,6 +146,74 @@ local function prev_tab(args) -- Prev tab {{{1
     target = target + max
   end
   vim.cmd('buffer ' .. g.current_buffers[target])
+end
+
+local function move_left(arg) -- Move current tab N positions to the left {{{1
+  local cnt = tonumber(arg[1]) or 1
+  if h.tabs_mode() then
+    local n = fn.tabpagenr()
+    if n == 1 then
+      return
+    elseif cnt >= n then
+      vim.cmd('0tabmove')
+    else
+      vim.cmd('-' .. cnt .. 'tabmove')
+    end
+  elseif g.v.mode ~= 'args' then
+    local bufs = get_bufs()
+    local nbufs, cur = #bufs, index(bufs, bufnr())
+    if not cur or nbufs < 2 then return end
+    local new = cur - cnt
+    while new < 1 do
+      new = new + nbufs
+    end
+    insert(bufs, new, remove(bufs, cur))
+    set_order(bufs)
+    vim.cmd('redrawtabline')
+    select_tab(new, true)
+  end
+end
+
+local function move_right(arg) -- Move current tab N positions to the right {{{1
+  local cnt = tonumber(arg[1]) or 1
+  if h.tabs_mode() then
+    if fn.tabpagenr() + cnt >= fn.tabpagenr('$') then
+      vim.cmd('$tabmove')
+    else
+      vim.cmd('+' .. cnt .. 'tabmove')
+    end
+  elseif g.v.mode ~= 'args' then
+    local bufs = get_bufs()
+    local nbufs, cur = #bufs, index(bufs, bufnr())
+    if not cur or nbufs < 2 then return end
+    local new = cur + cnt
+    while new > nbufs do
+      new = new - nbufs
+    end
+    insert(bufs, new, remove(bufs, cur))
+    set_order(bufs)
+    vim.cmd('redrawtabline')
+    select_tab(new, true)
+  end
+end
+
+local function away() -- Move tab to last position {{{1
+  if h.tabs_mode() then
+    local cur = fn.tabpagenr()
+    vim.cmd('$tabmove')
+    vim.cmd('normal! ' .. cur .. 'gt')
+  elseif g.v.mode ~= 'args' then
+    local bufs = get_bufs()
+    local cur = index(bufs, bufnr())
+    if #bufs then
+      insert(bufs, remove(bufs, cur))
+      set_order(bufs)
+    end
+    vim.cmd('redrawtabline')
+    if cur then
+      select_tab(cur, true)
+    end
+  end
 end
 
 local function change_mode(arg) -- Change mode {{{1
@@ -302,7 +377,7 @@ local function purge(wipe) -- Purge {{{1
     local nofile   = fn.getbufvar(buf, "&buftype") ~= '' and fn.getbufvar(buf, "&modified") == 0
 
     if unlisted or noma or nofile then
-      table.insert(purged, buf)
+      insert(purged, buf)
     end
   end
 
@@ -365,6 +440,9 @@ commands = {  -- {{{1
   ['mode'] = change_mode,
   ['next'] = next_tab,
   ['prev'] = prev_tab,
+  ['away'] = away,
+  ['left'] = move_left,
+  ['right'] = move_right,
   ['close'] = close,
   ['bufreset'] = reset_buffer,
   ['tabreset'] = reset_tab,
