@@ -1,5 +1,10 @@
-if !has('nvim')
+if !has('nvim') || exists('g:loaded_tabline_nvim')
     finish
+endif
+let g:loaded_tabline_nvim = 1
+
+if luaeval("require'tabline.setup'.run_once") == v:false
+    command! -bar TablineConfig call tabline#config()
 endif
 
 augroup tabline

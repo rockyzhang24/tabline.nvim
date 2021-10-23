@@ -2,7 +2,7 @@
 -- Initialization
 -------------------------------------------------------------------------------
 
-local M, has_done_setup = {}, false
+local M = { run_once = false }
 
 local tbl = require'tabline.table'
 
@@ -159,12 +159,12 @@ function M.setup(opts)
 
   define_main_cmd()
   M.load_theme()
-  has_done_setup = true
+  M.run_once = true
   vim.cmd[[set tabline=%!v:lua.require'tabline.tabline'.render()]]
 end
 
 function M.mappings(maps)
-  if not has_done_setup then
+  if not M.run_once then
     return
   end
 

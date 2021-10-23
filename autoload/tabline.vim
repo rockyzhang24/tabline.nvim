@@ -6,6 +6,7 @@ function! tabline#config()
     exe 'read' s:file
     setfiletype lua
     1d _
+    silent! delcommand TablineConfig
 endfunction
 
 function! tabline#default_theme()

@@ -3,6 +3,6 @@ Work in progress.
 
 For now you can run:
 
-    :Tabline config
+    :TablineConfig
 
 and follow instructions.
