@@ -16,8 +16,8 @@ function! tabline#default_theme()
   hi! link TExtra          Title
   hi! link TSpecial        PmenuSel
   hi! link TFill           Folded
-  hi! link TNumSel         TabLineSel
-  hi! link TNum            TabLineSel
+  hi! link TNumSel         CursorLine
+  hi! link TNum            CursorLine
   hi! link TCorner         Special
 
   let pat = has('gui_running') || &termguicolors ? 'guibg=\S\+' : 'ctermbg=\S\+'
