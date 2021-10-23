@@ -5,6 +5,7 @@ local h = require'tabline.helpers'
 local devicons = require'nvim-web-devicons'
 local get_bufs = require'tabline.bufs'.get_bufs
 local set_order = require'tabline.bufs'.set_order
+local themes = require'tabline.themes'
 
 local CU = vim.api.nvim_replace_termcodes('<C-U>', true, false, true)
 local Esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
@@ -59,13 +60,14 @@ local subcmds = { -- {{{1
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'fullpath',
-  'away', 'left', 'right',
+  'away', 'left', 'right', 'theme',
 }
 
 local completion = {  -- {{{1
   ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
   ['filtering'] = { 'on', 'off' },
   ['fullpath'] = { 'on', 'off' },
+  ['theme'] = themes.available,
 }
 
 local function complete(a, c, p)  -- {{{1
@@ -442,6 +444,15 @@ local function config() -- Configuration buffer {{{1
   vim.fn['tabline#config']()
 end
 
+local function theme(arg) -- Set theme {{{1
+  s.theme = arg[1]
+  if not index(themes.available, s.theme) then
+    print('Theme not available')
+  else
+    require'tabline.setup'.load_theme(true)
+  end
+end
+
 -- }}}
 
 
@@ -461,6 +472,7 @@ commands = {  -- {{{1
   ['resetall'] = reset_all,
   ['testspeed'] = testspeed,
   ['config'] = config,
+  ['theme'] = theme,
 }
 
 banged = {  -- {{{1

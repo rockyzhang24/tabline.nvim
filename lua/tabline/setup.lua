@@ -36,6 +36,7 @@ M.settings = {  -- user settings {{{1
   mapleader = '<leader><leader>',
   default_mappings = false,
   cd_mappings = false,
+  theme = 'default',
 }
 
 M.settings.icons = { -- icons {{{1
@@ -114,6 +115,30 @@ local function define_main_cmd() -- Define main command {{{1
   ]])
 end
 
+function M.load_theme(reload) -- Load theme {{{1
+  if M.settings.theme then
+    if M.settings.theme == 'default' then
+      vim.fn['tabline#default_theme']()
+    else
+      local themes = require'tabline.themes'
+      if themes[M.settings.theme] then
+        themes.apply(M.settings.theme)
+      else
+        local loaded, theme = pcall(require, 'tabline.themes.' .. M.settings.theme)
+        if not loaded then
+          print('Error while loading theme, using default')
+          vim.fn['tabline#default_theme']()
+        else
+          themes.apply(theme)
+        end
+      end
+    end
+  end
+  if reload then
+    require'tabline.render.icons'.icons = {}
+  end
+end
+
 -- }}}
 
 
@@ -133,6 +158,7 @@ function M.setup(opts)
   end
 
   define_main_cmd()
+  M.load_theme()
   has_done_setup = true
   vim.cmd[[set tabline=%!v:lua.require'tabline.tabline'.render()]]
 end

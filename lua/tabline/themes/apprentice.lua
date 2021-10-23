@@ -1,0 +1,17 @@
+return {
+  TSelect =     { 'Pmenu', true },
+  TVisible =    { 'Special', true },
+  THidden =     { 'Comment', true },
+  TExtra =      { 'StatusLineNc', true },
+  TSpecial =    { 'PmenuSel', true },
+  TFill =       { 'Folded', true },
+  TNumSel =     { 'TabLineSel', true },
+  TNum =        { 'TabLineSel', true },
+  TCorner =     { 'Special', true },
+  TSelectMod =  { 'cterm=bold gui=bold guifg=#af0000 guibg=#444444', false },
+  TVisibleMod = { 'cterm=bold gui=bold guifg=#af0000', false },
+  THiddenMod =  { 'cterm=bold gui=bold guifg=#af0000', false },
+  TExtraMod =   { 'cterm=bold gui=bold guifg=#af0000', false },
+  normalbg =    '262626',
+  dimfg =       '6c6c6c',
+}
