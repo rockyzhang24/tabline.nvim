@@ -1,5 +1,5 @@
 local o = vim.o
-local v = require'tabline.setup'.tabline.v
+local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
 local h = require'tabline.helpers'
 

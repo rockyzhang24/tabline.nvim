@@ -1,6 +1,7 @@
 local commands
 local s = require'tabline.setup'.settings
-local g = require'tabline.setup'.tabline
+local g = require'tabline.setup'.global
+local v = require'tabline.setup'.variables
 local h = require'tabline.helpers'
 local devicons = require'nvim-web-devicons'
 local get_bufs = require'tabline.bufs'.get_bufs
@@ -109,7 +110,7 @@ local function select_tab(cnt, cmdline) -- Select tab {{{1
   local bufs, b = g.current_buffers, nil
   if h.tabs_mode() then
     return 'gt'
-  elseif g.v.mode == 'args' and not h.empty_arglist() then
+  elseif v.mode == 'args' and not h.empty_arglist() then
     b = bufs[math.min(cnt, #fn.argv())]
   elseif s.bufline_style == 'bufnr' then
     b = cnt + 1
@@ -228,13 +229,13 @@ end
 local function change_mode(arg) -- Change mode {{{1
   local mode = arg[1]
   if index({ 'auto', 'tabs', 'buffers', 'args' }, mode) then
-    g.v.mode = mode
+    v.mode = mode
   elseif mode == 'next' then
-    local cur = index(s.modes, g.v.mode)
+    local cur = index(s.modes, v.mode)
     if not cur then
-      g.v.mode = s.modes[1]
+      v.mode = s.modes[1]
     else
-      g.v.mode = s.modes[(cur % #s.modes) + 1]
+      v.mode = s.modes[(cur % #s.modes) + 1]
     end
   end
   vim.cmd('redrawtabline')
@@ -415,7 +416,7 @@ end
 local function info(bang) -- Info {{{1
   if not bang then
     print('--- TABLES ---')
-    print('mode: ' .. g.v.mode)
+    print('mode: ' .. v.mode)
     print('valid: ' .. vim.inspect(g.valid))
     print('recent: ' .. vim.inspect(s.filtering and g.recent[getcwd()] or g.recent.unfiltered))
     print('order: ' .. vim.inspect(s.filtering and g.order[getcwd()] or g.order.unfiltered))

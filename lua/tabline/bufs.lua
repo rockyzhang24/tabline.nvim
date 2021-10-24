@@ -1,6 +1,8 @@
-local g = require'tabline.setup'.tabline
+local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
 local h = require'tabline.helpers'
+
+local icons = require'tabline.setup'.icons
 
 -- vim functions {{{1
 local fnamemodify = vim.fn.fnamemodify
@@ -32,15 +34,15 @@ local validbuf = h.validbuf
 local M = {}
 
 local special_ft = {
-  ['GV']        = { name = 'GV', icon = s.icons.git },
-  ['gitcommit'] = { name = 'Commit', icon = s.icons.git },
-  ['magit']     = { name = 'Magit', icon = s.icons.git },
-  ['git']       = { name = 'Git', icon = s.icons.git },
-  ['fugitive']  = { name = 'Status', icon = s.icons.git },
-  ['netrw']     = { name = 'Netrw', icon = s.icons.disk, doubleicon = true },
-  ['dirvish']   = { name = 'Dirvish', icon = s.icons.disk, doubleicon = true },
-  ['startify']  = { name = 'Startify', icon = s.icons.flag2, doubleicon = true },
-  ['ctrlsf']    = { name = 'CtrlSF', icon = s.icons.lens, doubleicon = true },
+  ['GV']        = { name = 'GV', icon = icons.git },
+  ['gitcommit'] = { name = 'Commit', icon = icons.git },
+  ['magit']     = { name = 'Magit', icon = icons.git },
+  ['git']       = { name = 'Git', icon = icons.git },
+  ['fugitive']  = { name = 'Status', icon = icons.git },
+  ['netrw']     = { name = 'Netrw', icon = icons.disk, doubleicon = true },
+  ['dirvish']   = { name = 'Dirvish', icon = icons.disk, doubleicon = true },
+  ['startify']  = { name = 'Startify', icon = icons.flag2, doubleicon = true },
+  ['ctrlsf']    = { name = 'CtrlSF', icon = icons.lens, doubleicon = true },
 }
 
 --------------------------------------------------------------------------------
@@ -84,7 +86,7 @@ local function special_or_listed(bnr) -- {{{1
 
   if ft == 'help' and getbufvar(bnr, '&modifiable') == 0 then
     buf.name = 'HELP'
-    buf.icon = s.icons.book
+    buf.icon = icons.book
     buf.special = true
 
   elseif getbufvar(bnr, '&buftype') == 'terminal' then

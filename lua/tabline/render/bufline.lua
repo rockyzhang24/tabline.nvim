@@ -1,9 +1,9 @@
 local o = vim.o
-local g = require'tabline.setup'.tabline
-local v = g.v
+local g = require'tabline.setup'.global
+local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
+local i = require'tabline.setup'.indicators
 local h = require'tabline.helpers'
-local i = s.indicators
 
 -- vim functions {{{1
 local bufnr = vim.fn.bufnr
@@ -105,7 +105,6 @@ function format_buffer_labels(bufs) -- {{{1
 
   for k, bnr in pairs(bufs) do
     local iscur = curbuf == bnr
-    local modified = getbufvar(bnr, '&modified') > 0
     local b = all[bnr]
     local haswin = index(pagebufs, bnr)
 
@@ -120,7 +119,7 @@ function format_buffer_labels(bufs) -- {{{1
     }
 
     buf.himod = b.special and buf.hi or buf.hi .. 'Mod'
-    buf.label = buf_label(buf, buf_mod(buf, modified, usebnr))
+    buf.label = buf_label(buf, buf_mod(buf, usebnr))
 
     if iscur then center = bnr end
 

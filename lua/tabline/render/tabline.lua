@@ -1,8 +1,8 @@
 local o = vim.o
-local g = require'tabline.setup'.tabline
-local v = g.v
+local g = require'tabline.setup'.global
+local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
-local i = s.indicators
+local i = require'tabline.setup'.indicators
 
 -- vim functions {{{1
 local tabpagenr = vim.fn.tabpagenr

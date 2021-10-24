@@ -7,7 +7,7 @@ local M = { ['icons'] = {}, ['normalbg'] = nil, ['dimfg'] = nil }
 local printf = string.format
 local execute = vim.fn.execute
 
-local g = require'tabline.setup'.tabline
+local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
 
 -- Load devicons and add custom icons {{{1

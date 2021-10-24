@@ -1,5 +1,8 @@
-local v = require'tabline.setup'.tabline.v
+local g = require'tabline.setup'.global
+local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
+
+local icons = require'tabline.setup'.icons
 
 -- vim functions {{{1
 local tabpagenr = vim.fn.tabpagenr
@@ -59,7 +62,7 @@ end --}}}
 -- Return the icon
 -------------------------------------------------------------------------------
 function right_corner_icon(tnr)
-  local T, icon = gettabvar(tnr, 'tab'), s.icons.tab
+  local T, icon = gettabvar(tnr, 'tab'), icons.tab
   if T.icon then
     return T.icon .. ' '
   end

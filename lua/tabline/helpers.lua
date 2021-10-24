@@ -1,5 +1,5 @@
-local g = require'tabline.setup'.tabline
-local v = g.v
+local g = require'tabline.setup'.global
+local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
 
 -- vim functions {{{1

@@ -1,6 +1,6 @@
 local fn = vim.fn
 local o = vim.o
-local g = require'tabline.setup'.tabline
+local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
 local h = require'tabline.helpers'
 local find = string.find

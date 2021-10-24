@@ -6,7 +6,7 @@ local M = { run_once = false }
 
 local tbl = require'tabline.table'
 
-M.tabline = { -- internal tables {{{1
+M.global = { -- internal tables {{{1
   closed_tabs = {},
   pinned = {},
   valid = {},
@@ -14,7 +14,7 @@ M.tabline = { -- internal tables {{{1
   recent = { unfiltered = {} },
 }
 
-M.tabline.v = { -- internal variables {{{1
+M.variables = { -- internal variables {{{1
   mode = 'auto',
   max_bufs = 10,
 }
@@ -39,7 +39,7 @@ M.settings = {  -- user settings {{{1
   theme = 'default',
 }
 
-M.settings.icons = { -- icons {{{1
+M.icons = { -- icons {{{1
   ['pin'] =      '📌', ['star'] =   '★',   ['book'] =     '📖',  ['lock'] =    '🔒',
   ['hammer'] =   '🔨', ['tick'] =   '✔',   ['cross'] =    '✖',   ['warning'] = '⚠',
   ['menu'] =     '☰',  ['apple'] =  '🍎',  ['linux'] =    '🐧',  ['windows'] = '❖',
@@ -50,11 +50,10 @@ M.settings.icons = { -- icons {{{1
   ['tab'] = {"📂", "📁"},
 }
 
-M.settings.indicators = { -- indicators {{{1
-  ['modified'] = M.settings.no_icons and '[+]'  or '*',
-  ['readonly'] = M.settings.no_icons and '[RO]' or '🔒',
-  ['scratch'] = M.settings.no_icons and  '[!]'  or '✓',
-  ['pinned'] = M.settings.no_icons and   '[^]'  or '[📌]',
+M.indicators = { -- indicators {{{1
+  ['modified'] = M.settings.no_icons and '[+]'  or '●',
+  ['readonly'] = M.settings.no_icons and '[RO]' or ' 🔒',
+  ['pinned'] = M.settings.no_icons and   '[^]'  or ' 📌',
 }
 
 local MAPPINGS = { -- default mappings {{{1
@@ -147,10 +146,10 @@ end
 -------------------------------------------------------------------------------
 
 function M.setup(opts)
-  if not M.tabline.buffers then
+  if not M.global.buffers then
     require'tabline.bufs'.init_bufs()
   end
-  if not M.tabline.tabs then
+  if not M.global.tabs then
     require'tabline.tabs'.init_tabs()
   end
   for k, v in pairs(opts or {}) do
