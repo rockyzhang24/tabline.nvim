@@ -45,8 +45,9 @@ local settings = {
 --                'args' shows the arglist, but will be skipped if this is empty
 --
 -- mode_labels:   if you want the mode label to show a different string.
---                If nil, default names are used, if a single value is nil it
---                won't be showed. For example: { buffers = 'B', args = 'A' }
+--                If nil, default names are used, if a single value is nil or an
+--                empty string it won't be showed. E.g.
+--                For example: { buffers = 'B', args = 'A' }
 --                shows single letters for those modes, but no label for tabs
 --                mode.
 

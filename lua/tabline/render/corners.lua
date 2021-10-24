@@ -94,13 +94,18 @@ function mode_label()
       return printf('%%#TExtra# %s %%#TFill# ', v.mode)
     end
   elseif v.mode == 'auto' then
-    if tabpagenr('$') == 1 then
-      return label.buffers and printf('%%#TExtra# %s %%#TFill# ', label.buffers) or ''
+    if label.auto then
+      return label.auto ~= '' and printf('%%#TExtra# %s %%#TFill# ', label.auto) or ''
+    elseif tabpagenr('$') == 1 then
+      return label.buffers and label.buffers ~= ''
+      and printf('%%#TExtra# %s %%#TFill# ', label.buffers) or '' or ''
     else
-      return label.tabs and printf('%%#TExtra# %s %%#TFill# ', label.tabs) or ''
+      return label.tabs and label.tabs ~= ''
+      and printf('%%#TExtra# %s %%#TFill# ', label.tabs) or '' or ''
     end
   else
-    return label[v.mode] and printf('%%#TExtra# %s %%#TFill# ', label[v.mode]) or ''
+    return label[v.mode] and label[v.mode] ~= ''
+    and printf('%%#TExtra# %s %%#TFill# ', label[v.mode]) or '' or ''
   end
 end
 
