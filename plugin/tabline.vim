@@ -9,7 +9,6 @@ endif
 
 augroup tabline
     au!
-    au ColorScheme * lua require'tabline.render.icons'.icons = {}
     au ColorScheme * lua require'tabline.setup'.load_theme(true)
     au TabNew      * lua require'tabline.tabs'.init_tabs()
     au BufAdd      * lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))

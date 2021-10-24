@@ -36,6 +36,7 @@ local get_bufs = require'tabline.bufs'.get_bufs
 local short_bufname = require'tabline.render.paths'.short_bufname
 local devicon = require'tabline.render.icons'.devicon
 
+local buf_order, buf_bufnr, buf_sep
 local buf_path, buf_icon, buf_label, buf_mod, format_buffer_labels
 local render_buffers, render_args, limit_buffers
 
@@ -94,8 +95,16 @@ end
 
 function format_buffer_labels(bufs) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
-  local usebnr = s.bufline_style == 'bufnr'
   local pagebufs = tabpagebuflist(tabpagenr())
+
+  local buf_nr
+  if s.label_style == 'bufnr' then
+    buf_nr = buf_bufnr
+  elseif s.label_style == 'order' then
+    buf_nr = buf_order
+  else
+    buf_nr = buf_sep
+  end
 
   if #bufs == 0 and next(all) then
     bufs = { all[bufnr()] and bufnr() or next(all).nr }
@@ -119,7 +128,7 @@ function format_buffer_labels(bufs) -- {{{1
     }
 
     buf.himod = b.special and buf.hi or buf.hi .. 'Mod'
-    buf.label = buf_label(buf, buf_mod(buf, usebnr))
+    buf.label = buf_nr(curbuf, buf) .. buf_label(buf, buf_mod(buf))
 
     if iscur then center = bnr end
 
@@ -162,23 +171,36 @@ function buf_icon(b, selected)  -- {{{1
   return ''
 end
 
-function buf_label(blabel, mod, usebnr)  -- {{{1
+function buf_bufnr(curbuf, label) -- {{{1
+  return curbuf and ("%#TNumSel# " .. label.nr) or ("%#TNum# " .. label.nr)
+end
+
+function buf_order(curbuf, label) -- {{{1
+  return curbuf and ("%#TNumSel# " .. label.n) or ("%#TNum# " .. label.n)
+end
+
+function buf_sep(curbuf, label) -- {{{1
+  return "%#T" .. label.hi .. "Sep#▎"
+end
+
+function buf_label(blabel, mod)  -- {{{1
   local curbuf = winbufnr(0) == blabel.nr
   local icons = g.buffers[blabel.nr].doubleicon
 
   local hi = printf(' %%#T%s# ', blabel.hi)
   local icon = buf_icon(blabel, curbuf)
-  local bn   = usebnr and blabel.nr or blabel.n
-  local number = curbuf and ("%#TNumSel# " .. bn) or ("%#TNum# " .. bn)
 
   return icons
-         and number .. hi .. icon .. ' ' .. blabel.name .. ' ' .. icon .. mod
-         or  number .. hi .. icon .. blabel.name .. ' ' .. mod
+         and hi .. icon .. ' ' .. blabel.name .. ' ' .. icon .. mod
+         or  hi .. icon .. blabel.name .. ' ' .. mod
 end
 
-function buf_mod(blabel, modified) -- {{{1
+function buf_mod(blabel) -- {{{1
   local mod = g.buffers[blabel.nr].pinned and i.pinned .. ' ' or ''
-  if modified then
+  if getbufvar(blabel.nr, '&readonly') > 0 then
+    mod = mod .. printf('%%#T%sDim#%s', blabel.hi, i.readonly .. ' ')
+  end
+  if getbufvar(blabel.nr, '&modified') > 0 then
     mod = mod .. printf('%%#T%s#%s', blabel.himod, i.modified .. ' ')
   end
   return mod

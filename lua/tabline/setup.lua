@@ -24,7 +24,7 @@ M.settings = {  -- user settings {{{1
   filtering = false,
   show_right_corner = true,
   tab_number_in_left_corner = true,
-  bufline_style = 'order',
+  label_style = 'order',
   dim_inactive_icons = true,
   show_full_path = false,
   clickable_bufline = true,
@@ -116,25 +116,23 @@ end
 
 function M.load_theme(reload) -- Load theme {{{1
   if M.settings.theme then
-    if M.settings.theme == 'default' then
-      vim.fn['tabline#default_theme']()
+    local themes = require'tabline.themes'
+    if themes[M.settings.theme] then
+      themes.apply(M.settings.theme)
     else
-      local themes = require'tabline.themes'
-      if themes[M.settings.theme] then
-        themes.apply(M.settings.theme)
+      local loaded, theme = pcall(require, 'tabline.themes.' .. M.settings.theme)
+      if not loaded then
+        M.settings.theme = 'default'
+        M.load_theme(reload)
+        return
       else
-        local loaded, theme = pcall(require, 'tabline.themes.' .. M.settings.theme)
-        if not loaded then
-          print('Error while loading theme, using default')
-          vim.fn['tabline#default_theme']()
-        else
-          themes.apply(theme)
-        end
+        themes.apply(theme.theme())
       end
     end
   end
   if reload then
     require'tabline.render.icons'.icons = {}
+    require'tabline.render.icons'.normalbg = nil
   end
 end
 

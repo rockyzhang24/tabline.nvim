@@ -1,20 +1,13 @@
+local h = require'tabline.helpers'
+
 local M = {}
 
 M.themes = {}
 M.available = { 'default', 'apprentice' }
 
 function M.apply(theme)
-  local icons = require'tabline.render.icons'
-  icons.normalbg = theme.normalbg
-  icons.dimfg = theme.dimfg
-  theme.normalbg = nil
-  theme.dimfg = nil
   for k, v in pairs(theme) do
-    if v[2] then
-      vim.cmd(string.format('hi! link %s %s', k, v[1]))
-    else
-      vim.cmd(string.format('hi %s %s', k, v[1]))
-    end
+    vim.cmd(string.format('hi! ' .. v, k))
   end
 end
 

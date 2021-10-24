@@ -1,14 +1,14 @@
-local M = { ['icons'] = {}, ['normalbg'] = nil, ['dimfg'] = nil }
+local M = { icons = {}, normalbg = nil }
 
 -------------------------------------------------------------------------------
 -- Icons
 -------------------------------------------------------------------------------
 
 local printf = string.format
-local execute = vim.fn.execute
 
 local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
+local h = require'tabline.helpers'
 
 -- Load devicons and add custom icons {{{1
 local ok, devicons = pcall(require, 'nvim-web-devicons')
@@ -25,18 +25,13 @@ end
 local function make_icons_hi(color)
   local col, ret = string.sub(color, 2), {}
   local groups = { 'Special', 'Select', 'Extra', 'Visible', 'Hidden' }
+  local gui = vim.o.termguicolors and 'gui' or 'cterm'
+  if not M.normalbg then
+    M.normalbg = h.get_hi_color('Normal', gui, 'bg', '000000')
+  end
   for _, v in ipairs(groups) do
-    local hi = execute('hi T' .. v)
-    local _, _, link = string.find(hi, 'links to (%w+)')
-    if link then
-      hi = execute('hi ' .. link)
-    end
-    local _, _, bg = string.find(hi, 'guibg=#(%x+)')
-    if not bg then
-      bg = M.normalbg
-    end
-    vim.cmd(printf('hi T%s%s guibg=#%s guifg=#%s', v, col, bg, col))
-    vim.cmd(printf('hi T%sDim guibg=#%s guifg=#%s', v, bg, M.dimfg))
+    local bg = h.get_hi_color('T' .. v, gui, 'bg', M.normalbg)
+    vim.cmd(printf('hi T%s%s %sbg=#%s %sfg=#%s', v, col, gui, bg, gui, col))
     ret[v] = {}
     ret[v].sel = printf('%%#T%s%s#___%%#T%s#', v, col, v)
     ret[v].dim = printf('%%#T%sDim#___%%#T%s#', v, v)
@@ -55,6 +50,7 @@ function M.devicon(b, selected)  -- {{{1
       end
       local hi = M.icons[color][b.hi]
       local typ = (selected or not s.dim_inactive_icons) and 'sel' or 'dim'
+      -- TODO don't use string.gsub
       return hi and string.gsub(hi[typ], '___', icon) or ''
     end
   end

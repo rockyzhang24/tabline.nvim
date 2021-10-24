@@ -61,7 +61,7 @@ local subcmds = { -- {{{1
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'fullpath',
-  'away', 'left', 'right', 'theme',
+  'away', 'left', 'right', 'theme', 'labelstyle',
 }
 
 local completion = {  -- {{{1
@@ -69,6 +69,7 @@ local completion = {  -- {{{1
   ['filtering'] = { 'on', 'off' },
   ['fullpath'] = { 'on', 'off' },
   ['theme'] = themes.available,
+  ['labelstyle'] = { 'order', 'bufnr', 'sep' },
 }
 
 local function complete(a, c, p)  -- {{{1
@@ -112,8 +113,8 @@ local function select_tab(cnt, cmdline) -- Select tab {{{1
     return 'gt'
   elseif v.mode == 'args' and not h.empty_arglist() then
     b = bufs[math.min(cnt, #fn.argv())]
-  elseif s.bufline_style == 'bufnr' then
-    b = cnt + 1
+  elseif s.label_style == 'bufnr' then
+    b = cnt
   else
     b = bufs[math.min(cnt, #bufs)]
   end
@@ -445,6 +446,11 @@ local function config() -- Configuration buffer {{{1
   vim.fn['tabline#config']()
 end
 
+local function labelstyle(arg) -- Labels style {{{1
+  s.label_style = arg[1]
+  vim.cmd('redrawtabline')
+end
+
 local function theme(arg) -- Set theme {{{1
   s.theme = arg[1]
   if not index(themes.available, s.theme) then
@@ -474,6 +480,7 @@ commands = {  -- {{{1
   ['testspeed'] = testspeed,
   ['config'] = config,
   ['theme'] = theme,
+  ['labelstyle'] = labelstyle,
 }
 
 banged = {  -- {{{1

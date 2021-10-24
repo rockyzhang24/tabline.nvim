@@ -9,15 +9,30 @@ local tabpagenr = vim.fn.tabpagenr
 local tabpagebuflist = vim.fn.tabpagebuflist
 local getcwd = vim.fn.getcwd
 local haslocaldir = vim.fn.haslocaldir
+local execute = vim.fn.execute
 --}}}
 
-local strfind = string.find
+local find = string.find
 
 local M = {}
 
 --------------------------------------------------------------------------------
 -- Generic helpers
 --------------------------------------------------------------------------------
+
+function M.get_hi_color(hi, gui, typ, fallback)
+  local hi, col = execute('hi ' .. hi)
+  local _, _, link = find(hi, 'links to (%w+)')
+  if link then
+    hi = execute('hi ' .. link)
+  end
+  if gui == 'gui' then
+    _, _, col = find(hi, gui .. typ .. '=#(%x+)')
+  else
+    _, _, col = find(hi, gui .. typ .. '=(%d+)')
+  end
+  return col or fallback
+end
 
 function M.tabs_mode() -- {{{1
   return v.mode == 'tabs' or v.mode == 'auto' and tabpagenr('$') > 1
@@ -50,7 +65,7 @@ function M.tabbufs(tnr) -- {{{1
 end
 
 function M.validbuf(b, wd)  -- {{{1
-  return not s.filtering or strfind(b, wd)
+  return not s.filtering or find(b, wd)
 end
 
 function M.delete_bufs_without_wins() -- {{{1
