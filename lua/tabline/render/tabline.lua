@@ -31,6 +31,7 @@ local get_tab = require'tabline.tabs'.get_tab
 
 local tab_buffer = function(tnr) return tabpagebuflist(tnr)[tabpagewinnr(tnr)] end
 
+local sepactive, sepinactive
 local tab_nr, tab_num, tab_sep, tab_mod_flag, tab_label, tab_hi, tab_icon
 local format_tab_label, render_tabs
 
@@ -44,6 +45,7 @@ local format_tab_label, render_tabs
 function render_tabs()
   -- set function that renders the tabs number/separator
   tab_nr = s.label_style == 'sep' and tab_sep or tab_num
+  sepactive, sepinactive = unpack(s.separators)
 
   local tabs = {}
   for tnr = 1, tabpagenr('$') do
@@ -66,7 +68,8 @@ function tab_num(tnr, hi)
 end
 
 function tab_sep(tnr, hi)
-  return tnr == tabpagenr() and "%#T" .. hi .. "Mod#▎" or "%#T" .. hi .. "Dim#▎"
+  return tnr == tabpagenr() and "%#T" .. hi .. "Mod#" .. sepactive
+                             or "%#T" .. hi .. "Dim#" .. sepinactive
 end
 
 ----
@@ -138,6 +141,9 @@ end
 -- Return the icon
 -------------------------------------------------------------------------------
 function tab_icon(bnr, tnr, hi)
+  if not s.show_icons then
+    return ' '
+  end
   local T, icon = gettabvar(tnr, 'tab'), nil
   if T.icon then
     return T.icon .. ' '
@@ -165,7 +171,7 @@ function format_tab_label(tnr)
 
   local bnr   = tab_buffer(tnr)
   local hi    = tab_hi(bnr, tnr)
-  local nr    = '%' .. tnr .. 'T' .. tab_nr(tnr, hi)
+  local nr    = '%' .. tnr .. 'T' .. ( s.ascii_only and '' or tab_nr(tnr, hi) )
   local icon  = tab_icon(bnr, tnr, hi)
   local label = tab_label(bnr, tnr)
   local mod   = tab_mod_flag(tnr, false)

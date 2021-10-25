@@ -23,6 +23,7 @@ M.settings = {  -- user settings {{{1
   main_cmd_name = 'Tabline',
   filtering = false,
   cwd_badge = true,
+  mode_badge = nil,
   tabs_badge = { fraction = true, left = true, visibility = {'buffers'} },
   label_style = 'sep',
   dim_inactive_icons = true,
@@ -30,13 +31,16 @@ M.settings = {  -- user settings {{{1
   clickable_bufline = true,
   max_recent = 10,
   modes = { 'auto', 'buffers', 'args' },
-  mode_badge = nil,
   scratch_label = '[Scratch]',
   unnamed_label = '[Unnamed]',
   mapleader = '<leader><leader>',
   default_mappings = false,
   cd_mappings = false,
   theme = 'default',
+  ascii_only = false,
+  show_icons = true,
+  separators = {'▎', '▏'}
+  -- separator = '▏'
 }
 
 M.icons = { -- icons {{{1
@@ -51,9 +55,9 @@ M.icons = { -- icons {{{1
 }
 
 M.indicators = { -- indicators {{{1
-  ['modified'] = M.settings.no_icons and '[+]'  or '●',
-  ['readonly'] = M.settings.no_icons and '[RO]' or ' 🔒',
-  ['pinned'] = M.settings.no_icons and   '[^]'  or ' 📌',
+  ['modified'] = M.settings.ascii_only and '[+]'  or '●',
+  ['readonly'] = M.settings.ascii_only and '[RO]' or ' 🔒',
+  ['pinned'] = M.settings.ascii_only and   '[^]'  or ' 📌',
 }
 
 local MAPPINGS = { -- default mappings {{{1
@@ -152,6 +156,10 @@ function M.setup(opts)
   end
   for k, v in pairs(opts or {}) do
     M.settings[k] = v
+  end
+  if M.settings.ascii_only then
+    M.settings.show_icons = false
+    M.settings.separator = ' '
   end
 
   M.variables.mode = M.settings.modes[1]

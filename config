@@ -36,6 +36,8 @@ local settings = {
   default_mappings          = false,                          -- will extend the mappings table, instead of replacing it
   cd_mappings               = false,                          -- enable normal mode mappings that start with 'cd'
   theme                     = 'default',                      -- if nil, no theme will be loaded, then use your highlight
+  show_icons                = true,                           -- icons from nvim-web-devincons
+  ascii_only                = false,                          -- avoid any kind of non-ascii character
   scratch_label             = '[Scratch]',
   unnamed_label             = '[Unnamed]',
 }

@@ -60,6 +60,9 @@ end --}}}
 -- Return the icon
 -------------------------------------------------------------------------------
 function right_corner_icon(tnr)
+  if not s.show_icons then
+    return 'CWD '
+  end
   local T, icon = gettabvar(tnr, 'tab'), icons.tab
   if T.icon then
     return T.icon .. ' '
