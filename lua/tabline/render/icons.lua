@@ -29,12 +29,16 @@ local function make_icons_hi(color)
   if not M.normalbg then
     M.normalbg = h.get_hi_color('Normal', gui, 'bg', '000000')
   end
+  if not M.normalfg then
+    M.normalfg = h.get_hi_color('Normal', gui, 'fg', 'bcbcbc')
+  end
   for _, v in ipairs(groups) do
     local bg = h.get_hi_color('T' .. v, gui, 'bg', M.normalbg)
     vim.cmd(printf('hi T%s%s %sbg=#%s %sfg=#%s', v, col, gui, bg, gui, col))
     ret[v] = {}
     ret[v].sel = printf('%%#T%s%s#___%%#T%s#', v, col, v)
     ret[v].dim = printf('%%#T%sDim#___%%#T%s#', v, v)
+    ret[v].ncl = printf('%%#T%s#___%%#T%s#', v, v)
   end
   return ret
 end
@@ -52,7 +56,8 @@ function M.devicon(b, selected)  -- {{{1
         M.icons[color] = make_icons_hi(color)
       end
       local hi = M.icons[color][b.hi]
-      local typ = (selected or not s.dim_inactive_icons) and 'sel' or 'dim'
+      local typ = (selected or not s.dim_inactive_icons)
+                  and (not s.colored_icons and 'ncl' or 'sel') or 'dim'
       -- TODO don't use string.gsub
       return hi and string.gsub(hi[typ], '___', icon) or ''
     end

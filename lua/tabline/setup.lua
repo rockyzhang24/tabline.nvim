@@ -39,6 +39,7 @@ M.settings = {  -- user settings {{{1
   theme = 'default',
   ascii_only = false,
   show_icons = true,
+  colored_icons = true,
   separators = {'▎', '▏'}
   -- separator = '▏'
 }
@@ -136,6 +137,7 @@ function M.load_theme(reload) -- Load theme {{{1
   end
   if reload then
     require'tabline.render.icons'.icons = {}
+    require'tabline.render.icons'.normalfg = nil
     require'tabline.render.icons'.normalbg = nil
   end
 end
