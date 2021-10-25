@@ -8,22 +8,22 @@ local getcwd = vim.fn.getcwd
 
 local strsub = string.sub
 local strfind = string.find
+local gsub = string.gsub
 
 local M = {}
 
-local pathpat = vim.fn.has('win32') == 1 and '\\v%((\\.?[^\\/])[^\\/]*)?[\\/](\\.?[^\\/])[^\\/]*'
-                                         or '\\v%((\\.?[^/])[^/]*)?/(\\.?[^/])[^/]*'
+local pathpat = vim.fn.has('win32') == 1 and '([/\\]?%.?[^/\\])[^/\\]-[/\\]'
+                                         or '(/?%.?[^/])[^/]-/'
 
-local slash = vim.fn.has('win32') == 1 and '\\' or '/'
+local slash = vim.fn.has('win32') == 1 and '[/\\]' or '/'
+local slashchar = vim.fn.has('win32') == 1 and '\\' or '/'
 
 function M.short_bufname(bnr)
   local name = fnamemodify(bufname(bnr), ':~:.')
   if not strfind(name, slash) then
     return name
   end
-  local path = substitute(name, pathpat, '\\1/\\2', 'g')
-  local _,_,root = strfind(path, '(.*[\\/])')
-  return root .. fnamemodify(name, ':t')
+  return gsub(name, pathpat, '%1' .. slashchar)
 end
 
 function M.short_cwd(tnr)
@@ -31,8 +31,7 @@ function M.short_cwd(tnr)
   if not strfind(wd, slash) then
     return wd
   end
-  local path = substitute(wd, pathpat, '\\1/\\2', 'g')
-  return strsub(path, 1, #path - 1) .. fnamemodify(wd, ':t')
+  return gsub(wd, pathpat, '%1' .. slashchar)
 end
 
 return M
