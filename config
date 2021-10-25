@@ -31,7 +31,7 @@ local settings = {
   clickable_bufline         = true,                           -- lmb selects, rmb puts last, s-rmb deletes buffer
   max_recent                = 10,                             -- number of buffers that can be rendered
   modes                     = { 'auto', 'buffers', 'args' },  -- see below
-  mode_labels               = nil,                            -- see below
+  mode_badge                = nil,                            -- see below
   mapleader                 = '<leader><leader>',             -- used in the mappings below
   default_mappings          = false,                          -- will extend the mappings table, instead of replacing it
   cd_mappings               = false,                          -- enable normal mode mappings that start with 'cd'
@@ -55,11 +55,12 @@ local settings = {
 --              than one tab, or to 'buffers' mode when there is only one tab
 --              'args' shows the arglist, but will be skipped if this is empty
 --
--- mode_labels: for example: { buffers = 'B', args = 'A' }
---              If nil, default names are used; within a table, if a single
---              value is nil or an empty string it won't be showed.
---              'auto' shows the actual mode instead of itself, unless you
---              define it in this table.
+-- mode_badge:  for example: { buffers = 'B', args = 'A', 'auto' = '' }
+--              If nil or false, the badge is not shown.
+--              If true, default names are used.
+--              If it's a table, and value is nil or an empty string it won't be
+--              showed. 'auto' shows the actual mode instead of itself, unless
+--              you define it in this table.
 
 --------------------------------------------------------------------------------
 -- Mappings

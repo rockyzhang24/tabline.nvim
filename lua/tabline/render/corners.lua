@@ -87,8 +87,10 @@ end
 -- Label that shows the current mode.
 -------------------------------------------------------------------------------
 function mode_label()
-  local label = s.mode_labels
+  local label = s.mode_badge
   if not label then
+    return ''
+  elseif label == true then
     if v.mode == 'auto' then
       return tabpagenr('$') == 1 and '%#TExtra# buffers %#TFill# ' or '%#TExtra# tabs %#TFill# '
     else
