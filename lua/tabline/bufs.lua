@@ -54,16 +54,20 @@ local special_ft = {
 -- @return: a basic buffer object
 --------------------------------------------------------------------------------
 local function new_buf(bnr) -- {{{1
-  local bname = bufname(bnr)
-  local ext = fnamemodify(bname, ':e')
-  if ext == '' then
-    ext = getbufvar(bnr, '&filetype')
-    if ext == '' then ext = nil end
+  local bname, ext, path, basename = bufname(bnr)
+  if bname ~= '' then
+    ext = fnamemodify(bname, ':e')
+    if ext == '' then
+      ext = getbufvar(bnr, '&filetype')
+      if ext == '' then ext = nil end
+    end
+    path = fnamemodify(bname, ':p')
+    basename = fnamemodify(bname, ':t')
   end
   return {
     nr = bnr,
-    path = fnamemodify(bname, ':p'),
-    basename = fnamemodify(bname, ':t'),
+    path = path,
+    basename = basename,
     ext = ext,
     special = false,
     pinned = false,
@@ -152,6 +156,10 @@ function M.add_buf(bnr)
   end
 end
 
+function M.add_file(file)
+  M.add_buf(bufnr(file))
+end
+
 -------------------------------------------------------------------------------
 -- Function: M.remove_buf
 --
@@ -224,8 +232,8 @@ function M.recent_bufs()
   local recent, cur = copy(g.valid), bufnr()
   if #recent > s.max_recent then
     table.sort(recent, function(a,b) return g.buffers[a].recent > g.buffers[b].recent end)
-    table.sort(recent, function(a,b) return g.buffers[a].nr < g.buffers[b].nr end)
     recent = slice(recent, 1, s.max_recent)
+    table.sort(recent, function(a,b) return g.buffers[a].nr < g.buffers[b].nr end)
   end
   if g.buffers[cur] and not index(recent, cur) then
     insert(recent, cur)
@@ -286,7 +294,7 @@ function M.click(nr, clicks, button, mod)
   local n, cur = g.current_buffers[nr], bufnr()
   if button == 'r' then
     if string.find(mod, 's') then
-      if getbufvar(n, '&modified') then
+      if getbufvar(n, '&modified') == 1 then
         print('Cannot delete, buffer is modified')
       else
         vim.cmd('bdelete ' .. n)

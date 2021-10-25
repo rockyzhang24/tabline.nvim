@@ -43,6 +43,9 @@ end
 function M.devicon(b, selected)  -- {{{1
   if devicons then
     local buf = g.buffers[b.nr]
+    if not buf.basename then
+      return ''
+    end
     local icon, color = devicons.get_icon_color(buf.devicon or buf.basename, buf.ext)
     if icon then
       if not M.icons[color] then
