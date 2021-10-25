@@ -97,14 +97,8 @@ function format_buffer_labels(bufs) -- {{{1
   local curbuf, tabs, all = winbufnr(0), {}, g.buffers
   local pagebufs = tabpagebuflist(tabpagenr())
 
-  local buf_nr
-  if s.label_style == 'bufnr' then
-    buf_nr = buf_bufnr
-  elseif s.label_style == 'order' then
-    buf_nr = buf_order
-  else
-    buf_nr = buf_sep
-  end
+  -- set function that renders the buffers number/separator
+  local buf_nr = ({ bufnr = buf_bufnr, order = buf_order, sep = buf_sep })[s.label_style]
 
   if #bufs == 0 and next(all) then
     bufs = { all[bufnr()] and bufnr() or next(all).nr }

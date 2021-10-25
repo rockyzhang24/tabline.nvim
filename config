@@ -19,9 +19,13 @@ if not ok then return end
 local settings = {
   main_cmd_name             = 'Tabline',                      -- the ex command name
   filtering                 = false,                          -- enables bufferline filtering based on cwd
-  show_right_corner         = true,                           -- displays cwd
-  tab_number_in_left_corner = true,                           -- displays current/total tabs
-  label_style               = 'order',                        -- see below
+  cwd_badge                 = true,                           -- displays cwd in the right corner
+  tabs_badge                = {                               -- see below
+    fraction = true,
+    left = true,
+    visibility = {'buffers'}
+  },
+  label_style               = 'sep',                          -- see below
   dim_inactive_icons        = true,                           -- grey icons for inactive buffers
   show_full_path            = false,                          -- instead of just the basename
   clickable_bufline         = true,                           -- lmb selects, rmb puts last, s-rmb deletes buffer
@@ -36,21 +40,26 @@ local settings = {
   unnamed_label             = '[Unnamed]',
 }
 
--- label_style: 'order', 'bufnr' or 'sep'
+-- tabs_badge:  Displays current tab number. Set to false (not nil) to disable.
+--              'visibility' is a list of modes that show it.
+--              'fraction' is the badge style
+--              'left' is the position in the tabline
+--
+-- label_style: 'sep', 'order' or 'bufnr'
 --              'order' will show the position in the bufferline, 'bufnr' will
 --              show the actual buffer number, 'sep' a simple colored separator
+--              (with a different color in tabs and buffers mode).
 --
 -- mode:        'auto', 'tabs', 'buffers', 'args', in any order
 --              'auto' will automatically switch to tabs mode if there is more
 --              than one tab, or to 'buffers' mode when there is only one tab
 --              'args' shows the arglist, but will be skipped if this is empty
 --
--- mode_labels:   if you want the mode label to show a different string.
---                If nil, default names are used, if a single value is nil or an
---                empty string it won't be showed. E.g.
---                For example: { buffers = 'B', args = 'A' }
---                shows single letters for those modes, but no label for tabs
---                mode.
+-- mode_labels: for example: { buffers = 'B', args = 'A' }
+--              If nil, default names are used; within a table, if a single
+--              value is nil or an empty string it won't be showed.
+--              'auto' shows the actual mode instead of itself, unless you
+--              define it in this table.
 
 --------------------------------------------------------------------------------
 -- Mappings

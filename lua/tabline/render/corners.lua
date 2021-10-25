@@ -28,8 +28,6 @@ local tab_mod_flag = require'tabline.render.tabline'.tab_mod_flag
 local get_tab = require'tabline.tabs'.get_tab
 local tabs_mode = require'tabline.helpers'.tabs_mode
 
-local hide_tab_number = function() return tabpagenr('$') == 1 or s.tab_number_in_left_corner end
-
 local format_right_corner, right_corner_icon, right_corner_label, mode_label
 
 --------------------------------------------------------------------------------
@@ -43,7 +41,7 @@ function format_right_corner()
   if (vim.t.tab or get_tab()).corner then
     return vim.t.tab.corner
 
-  elseif not s.show_right_corner then
+  elseif not s.cwd_badge then
     return ''
 
   else

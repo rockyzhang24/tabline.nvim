@@ -22,9 +22,9 @@ M.variables = { -- internal variables {{{1
 M.settings = {  -- user settings {{{1
   main_cmd_name = 'Tabline',
   filtering = false,
-  show_right_corner = true,
-  tab_number_in_left_corner = true,
-  label_style = 'order',
+  cwd_badge = true,
+  tabs_badge = { fraction = true, left = true, visibility = {'buffers'} },
+  label_style = 'sep',
   dim_inactive_icons = true,
   show_full_path = false,
   clickable_bufline = true,
@@ -153,6 +153,8 @@ function M.setup(opts)
   for k, v in pairs(opts or {}) do
     M.settings[k] = v
   end
+
+  M.variables.mode = M.settings.modes[1]
 
   define_main_cmd()
   M.load_theme()

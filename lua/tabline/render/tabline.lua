@@ -31,7 +31,8 @@ local get_tab = require'tabline.tabs'.get_tab
 
 local tab_buffer = function(tnr) return tabpagebuflist(tnr)[tabpagewinnr(tnr)] end
 
-local tab_num, tab_mod_flag, tab_label, tab_hi, tab_icon, format_tab_label, render_tabs
+local tab_nr, tab_num, tab_sep, tab_mod_flag, tab_label, tab_hi, tab_icon
+local format_tab_label, render_tabs
 
 
 
@@ -41,6 +42,9 @@ local tab_num, tab_mod_flag, tab_label, tab_hi, tab_icon, format_tab_label, rend
 -------------------------------------------------------------------------------
 
 function render_tabs()
+  -- set function that renders the tabs number/separator
+  tab_nr = s.label_style == 'sep' and tab_sep or tab_num
+
   local tabs = {}
   for tnr = 1, tabpagenr('$') do
     insert(tabs, format_tab_label(tnr))
@@ -57,8 +61,12 @@ end
 ----
 -- Format the tab number for the tab label.
 ----
-function tab_num(tnr)
+function tab_num(tnr, hi)
   return printf("%%#TNum%s# %d ", tnr == tabpagenr() and 'Sel' or '', tnr)
+end
+
+function tab_sep(tnr, hi)
+  return tnr == tabpagenr() and "%#T" .. hi .. "Mod#▎" or "%#T" .. hi .. "Dim#▎"
 end
 
 ----
@@ -156,8 +164,8 @@ end
 function format_tab_label(tnr)
 
   local bnr   = tab_buffer(tnr)
-  local nr    = '%' .. tnr .. 'T' .. tab_num(tnr)
   local hi    = tab_hi(bnr, tnr)
+  local nr    = '%' .. tnr .. 'T' .. tab_nr(tnr, hi)
   local icon  = tab_icon(bnr, tnr, hi)
   local label = tab_label(bnr, tnr)
   local mod   = tab_mod_flag(tnr, false)

@@ -13,6 +13,7 @@ local remove = table.remove
 local concat = table.concat
 local insert = table.insert
 local map = tbl.map
+local index = tbl.index
 --}}}
 
 local strsub = string.sub
@@ -52,27 +53,46 @@ end
 -- Make all tabs fit
 -------------------------------------------------------------------------------
 
+local function tabs_badge() -- Tabs badge {{{1
+  local bdg = s.tabs_badge
+  if not bdg or bdg.visibility and not index(bdg.visibility, v.mode) then
+    return ''
+  end
+  if not bdg.fraction then
+    local ret = '%#THidden#'
+    for i = 1, tabpagenr('$') do
+      if tabpagenr() == i then
+        ret = ret .. '%#TSelect# ' .. i .. ' %#THidden#'
+      else
+        ret = ret .. ' ' .. i .. ' '
+      end
+    end
+    return ret .. '%#TFill# '
+  elseif tabpagenr('$') > 1 then
+    local tn = tabpagenr() .. '/' .. tabpagenr('$')
+    return '%#ErrorMsg# ' .. tn .. ' %#TFill# ', #tn + 3
+  else
+    return ''
+  end
+end
+
+-- }}}
+
 function fit_tabline(center, tabs)
   local labelwidth = h.tabs_mode() and tabwidth or bufwidth
   local limit = o.columns - 1
-  local corner_label = format_right_corner()
-  limit = limit - labelwidth(corner_label)
 
-  local modelabel, mw = mode_label(), 0
-  if modelabel ~= '' then
-    mw = labelwidth(modelabel)
-    limit = limit - mw
-  end
+  local cwdbadge = format_right_corner()
+  limit = limit - labelwidth(cwdbadge)
 
-  local tabsnums = ''
-  if tabpagenr('$') > 1 and s.tab_number_in_left_corner then
-    local tn = tabpagenr() .. '/' .. tabpagenr('$')
-    tabsnums = '%#ErrorMsg# ' .. tn .. ' %#TFill# '
-    limit = limit - #tn - 3
-  end
+  local modebadge = mode_label(), 0
+  limit = limit - labelwidth(modebadge)
+
+  local tabsbadge = tabs_badge()
+  limit = limit - labelwidth(tabsbadge)
 
   if limit < 30 then
-    return '%#TFill#%=' .. corner_label
+    return '%#TFill#%=' .. cwdbadge
   end
 
   -- now keep the current buffer center-screen as much as possible
@@ -152,8 +172,12 @@ function fit_tabline(center, tabs)
       labels[n] = '%' .. n .. 'T' .. l
     end
   end
-  labels = tabsnums .. modelabel .. concat(labels, '')
-  return labels .. '%#TFill#%=' .. corner_label .. '%999X'
+  labels = concat(labels, '')
+  if s.tabs_badge.left then
+    return tabsbadge .. modebadge .. labels .. '%#TFill#%=' .. cwdbadge .. '%999X'
+  else
+    return modebadge .. labels .. '%#TFill#%=' .. tabsbadge .. cwdbadge .. '%999X'
+  end
 end
 
 -- }}}
