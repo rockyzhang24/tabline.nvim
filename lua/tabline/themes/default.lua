@@ -50,6 +50,8 @@ end
 
 function theme()
   return {
+    name = 'default',
+
     TSelect =     'link %s Pmenu',
     TVisible =    'link %s Special',
     THidden =     'link %s Comment',

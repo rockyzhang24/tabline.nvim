@@ -1,5 +1,7 @@
 function theme()
   return {
+    name = 'apprentice',
+
     TSelect =     '%s cterm=NONE gui=NONE ctermfg=250 ctermbg=238 guifg=#bcbcbc guibg=#444444',
     TVisible =    '%s cterm=NONE gui=NONE ctermfg=65  ctermbg=235  guifg=#5f875f guibg=#262626',
     THidden =     '%s cterm=NONE gui=NONE ctermfg=242 ctermbg=235  guifg=#6c6c6c guibg=#262626',
