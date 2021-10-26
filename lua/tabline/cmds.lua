@@ -58,7 +58,7 @@ end
 -------------------------------------------------------------------------------
 
 local subcmds = { -- {{{1
-  'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
+  'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin', 'unpin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'minimize', 'fullpath',
   'away', 'left', 'right', 'theme', 'labelstyle',
@@ -129,7 +129,7 @@ local function select_tab_with_char() -- Select tab with character {{{1
   if h.tabs_mode() then
     return
   end
-  local oldstyle, bufs, selbuf, selnr, selaz, _ = s.label_style, g.current_buffers
+  local oldstyle, bufs, selbuf, selnr, selaz = s.label_style, g.current_buffers
   s.label_style = 'sel'
   vim.cmd('redrawtabline')
   selbuf = fn.nr2char(fn.getchar())
@@ -394,6 +394,17 @@ local function pin_buffer(bang) -- Pin buffer {{{1
   vim.cmd('redrawtabline')
 end
 
+local function unpin_buffer(bang) -- Unpin buffer(s) {{{1
+  if bang then
+    for _, b in pairs(g.buffers) do
+      b.pinned = false
+    end
+  elseif g.buffers[bufnr()] then
+    g.buffers[bufnr()].pinned = false
+  end
+  vim.cmd('redrawtabline')
+end
+
 local function reopen() -- Reopen {{{1
   require'tabline.tabs'.reopen()
 end
@@ -509,6 +520,7 @@ banged = {  -- {{{1
   ['tabicon'] = icon_tab,
   ['info'] = info,
   ['pin'] = pin_buffer,
+  ['unpin'] = unpin_buffer,
   ['purge'] = purge,
   ['fullpath'] = fullpath,
 }
