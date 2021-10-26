@@ -63,13 +63,14 @@ local MAPPINGS = { -- default mappings {{{1
   ['mode next'] =  { '<F5>', true },
   ['next'] =       { ']b', true },
   ['prev'] =       { '[b', true },
-  ['away'] =       { nil, true },
+  ['away'] =       { M.settings.mapleader .. 'a', true },
   ['left'] =       { nil, true },
   ['right'] =      { nil, true },
   ['filtering!'] = { M.settings.mapleader .. 'f', true },
   ['fullpath!'] =  { M.settings.mapleader .. '/', true },
   ['close'] =      { M.settings.mapleader .. 'q', true },
   ['pin!'] =       { M.settings.mapleader .. 'p', true },
+  ['unpin!'] =     { nil, true },
   ['bufname'] =    { nil, false },
   ['tabname'] =    { nil, false },
   ['buficon'] =    { nil, false },
@@ -80,6 +81,7 @@ local MAPPINGS = { -- default mappings {{{1
   ['resetall'] =   { nil, true },
   ['purge'] =      { M.settings.mapleader .. 'x', true },
   ['cleanup'] =    { M.settings.mapleader .. 'X', true },
+  ['minimize'] =   { nil, true },
 }
 
 -- }}}
@@ -177,7 +179,7 @@ function M.mappings(maps)
 
   local mappings
 
-  if maps then
+  if type(maps) == 'table' then
     for k, v in pairs(maps) do
       if MAPPINGS[k] then
         maps[k] = { v, MAPPINGS[k][2] }
@@ -190,7 +192,7 @@ function M.mappings(maps)
     else
       mappings = maps
     end
-  elseif M.settings.default_mappings then
+  elseif maps or M.settings.default_mappings then
     mappings = MAPPINGS
   end
 

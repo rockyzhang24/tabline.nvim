@@ -6,63 +6,45 @@
 
 -- Load package
 
-vim.cmd('packadd tabline.nvim') -- remove this if in pack/*/start, or if using a plugin manager
+vim.cmd('packadd tabline.nvim') -- remove this line if in pack/*/start,
+                                -- or if using a plugin manager
 
 local ok, tabline = pcall(require, 'tabline.setup')
 if not ok then return end
+
 
 -------------------------------------------------------------------------------
 -- Settings
 -------------------------------------------------------------------------------
 -- These are the default values, if you delete a key, default will still be used
+-- To know what the settings do, read :help tnv-settings
 
 local settings = {
-  main_cmd_name             = 'Tabline',                      -- the ex command name
-  filtering                 = false,                          -- enables bufferline filtering based on cwd
-  cwd_badge                 = true,                           -- displays cwd in the right corner
-  tabs_badge                = {                               -- see below
+  main_cmd_name             = 'Tabline',
+  filtering                 = false,
+  cwd_badge                 = true,
+  tabs_badge                = {
     fraction = true,
     left = true,
     visibility = {'buffers'}
   },
-  label_style               = 'sep',                          -- see below
-  show_full_path            = false,                          -- instead of just the basename
-  clickable_bufline         = true,                           -- lmb selects, rmb puts last, s-rmb deletes buffer
-  max_recent                = 10,                             -- number of buffers that can be rendered
-  modes                     = { 'auto', 'buffers', 'args' },  -- see below
-  mode_badge                = nil,                            -- see below
-  mapleader                 = '<leader><leader>',             -- used in the mappings below
-  default_mappings          = false,                          -- will extend the mappings table, instead of replacing it
-  cd_mappings               = false,                          -- enable normal mode mappings that start with 'cd'
-  theme                     = 'default',                      -- if nil, no theme will be loaded, then use your highlight
-  show_icons                = true,                           -- icons from nvim-web-devincons
+  label_style               = 'sep',
+  show_full_path            = false,
+  clickable_bufline         = true,
+  max_recent                = 10,
+  modes                     = { 'auto', 'buffers', 'args' },
+  mode_badge                = nil,
+  mapleader                 = '<leader><leader>',
+  default_mappings          = false,
+  cd_mappings               = false,
+  theme                     = 'default',
+  show_icons                = true,
   colored_icons             = true,
-  ascii_only                = false,                          -- avoid any kind of non-ascii character
+  ascii_only                = false,
   scratch_label             = '[Scratch]',
   unnamed_label             = '[Unnamed]',
 }
 
--- tabs_badge:  Displays current tab number. Set to false (not nil) to disable.
---              'visibility' is a list of modes that show it.
---              'fraction' is the badge style
---              'left' is the position in the tabline
---
--- label_style: 'sep', 'order' or 'bufnr'
---              'order' will show the position in the bufferline, 'bufnr' will
---              show the actual buffer number, 'sep' a simple colored separator
---              (with a different color in tabs and buffers mode).
---
--- mode:        'auto', 'tabs', 'buffers', 'args', in any order
---              'auto' will automatically switch to tabs mode if there is more
---              than one tab, or to 'buffers' mode when there is only one tab
---              'args' shows the arglist, but will be skipped if this is empty
---
--- mode_badge:  for example: { buffers = 'B', args = 'A', 'auto' = '' }
---              If nil or false, the badge is not shown.
---              If true, default names are used.
---              If it's a table, and value is nil or an empty string it won't be
---              showed. 'auto' shows the actual mode instead of itself, unless
---              you define it in this table.
 
 --------------------------------------------------------------------------------
 -- Mappings
@@ -74,13 +56,14 @@ local mappings = {
   ['mode next']  = '<F5>',   -- change tabline mode
   ['next']       = ']b',     -- select next buffer/tab
   ['prev']       = '[b',     -- select previous buffer/tab
-  ['away']       = nil,      -- move current buffer away from sight (put last)
+  ['away']       = L .. 'a', -- move current buffer away from sight (put last)
   ['left']       = nil,      -- move current buffer [count] positions to the left
   ['right']      = nil,      -- move current buffer [count] positions to the right
   ['filtering!'] = L .. 'f', -- toggle buffer filtering based on cwd
   ['fullpath!']  = L .. '/', -- toggle showing the paths/basenames
   ['close']      = L .. 'q', -- delete the buffer without closing the window
   ['pin!']       = L .. 'p', -- toggle pin buffer
+  ['unpin!']     = nil,      -- unpin all pinned buffers
   ['bufname']    = nil,      -- give name to current buffer
   ['tabname']    = nil,      -- give name to current tab
   ['buficon']    = nil,      -- give icon to current buffer
@@ -91,6 +74,7 @@ local mappings = {
   ['reopen']     = L .. 'u', -- reopen closed tab
   ['purge']      = L .. 'x', -- close anything in the tabpage that isn't a regular buffer
   ['cleanup']    = L .. 'X', -- delete all buffers that are unrelated to current directories
+  ['minimize']   = nil,      -- delete all buffers except the ones in their own window
 }
 
 -------------------------------------------------------------------------------

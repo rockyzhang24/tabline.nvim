@@ -1,0 +1,241 @@
+TABLINE-NVIM - TABLE OF CONTENTS                                *tabline-nvim*
+==============================================================================
+
+  Features                                                |tnv-features|
+  Quick start                                             ||tnv-quick-start|
+  Tabline rendering                                       |tnv-rendering|
+  Settings                                                |tnv-init|
+  Main command                                            |tnv-command|
+  Mappings                                                |tnv-mappings|
+  Credits                                                 |tnv-credits|
+  License                                                 |tnv-license|
+
+
+
+FEATURES                                                        *tnv-features*
+==============================================================================
+
+The main features of the plugin are:
+
+  * three tabline modes: tabs, buffers, |arglist|              |tnv-rendering|
+  * clickable and reorderable bufferline
+  * rename tabs/buffers
+  * optional buffer filtering on the base of the CWD
+
+Also:
+
+  * `nvim-web-devicons` {1} support {2}
+  * tab CWD/name can be shown in the right corner of the tabline
+  * commands to quickly set/change (tab/window) working directory
+  * reopen closed tabs
+  * clean up buffers across all tabs and other commands
+  * session management
+
+  {1} https://github.com/kyazdani42/nvim-web-devicons
+  {2} with a font that supports them, for example https://www.nerdfonts.com/
+
+
+
+
+QUICK START                                                  *tnv-quick-start*
+==============================================================================
+
+Add to your vimrc (or run in command line):
+>
+  lua require'tabline.setup'.setup()
+
+to load plugin with default settings. If you want default mappings, also add:
+>
+  lua require'tabline.setup'.mappings(true)
+
+If you want to customize the settings, execute:
+>
+  :Tabline config
+
+Consult |tnv-settings| to understand the meaning of the different settings.
+
+
+
+
+TABLINE RENDERING                                              *tnv-rendering*
+==============================================================================
+
+The tabline can be rendered in different modes:
+
+  `tabs`     similar to default, but only showing buffer basenames
+  `args`     buffers contained in the arglist
+  `buffers`  show N (default 10) most recently accessed buffers
+  `auto`     `tabs` if there is more than one tab, otherwise `buffers`
+
+Default order is `{ 'auto', 'buffers', 'arglist' }`
+                                                               *tnv-filtering*
+
+  Buffer filtering makes sense if local working directories are being used,
+  either via |:tcd| or |:lcd|. When enabled, only buffers whose path is within
+  the current CWD will be showed in the tabline.
+
+
+
+
+
+SETTINGS                                                        *tnv-settings*
+==============================================================================
+
+Settings can be passed in a table to the `setup()` function when the plugin is
+initialized. For the default value, run `:Tabline config`
+
+------------------------------------------------------------------------------
+  Setting               Description~
+------------------------------------------------------------------------------
+  |main_cmd_name|         the ex command name
+  |modes|                 see below
+  |filtering|             enables bufferline filtering based on CWD
+  |cwd_badge|             displays CWD in the right corner
+  |mode_badge|            see below
+  |tabs_badge|            see below
+  |label_style|           see below
+  |show_full_path|        shortened full path, for example `~/.l/s/n/s/file.ext`
+  |clickable_bufline|     LMB selects, RMB puts last, S-RMB deletes buffer
+  |max_recent|            number of buffers that can be rendered (most recent)
+  |scratch_label|         label for scratch buffers
+  |unnamed_label|         label for unnamed regular buffers
+  |mapleader|             used in the mappings below
+  |default_mappings|      apply default mappings before any mapping you set
+  |cd_mappings|           enable normal mode mappings that start with `cd`
+  |theme|                 if nil, no theme will be loaded, then use your highlight
+  |ascii_only|            avoid any kind of non-ascii character
+  |show_icons|            icons from nvim-web-devincons
+  |colored_icons|         will use normal bg if false
+  |separators|            for active and inactive tabs/buffers
+
+
+  |mode|         'auto', 'tabs', 'buffers', 'args', in any order
+               `auto` will automatically switch to tabs mode if there is more
+               than one tab, or to `buffers` mode when there is only one tab
+               `args` shows the arglist, but will be skipped if this is empty
+
+  |mode_badge|   for example: `{ buffers = 'B', args = 'A', auto = '' }`
+               If `nil` or `false`, the badge is not shown.
+               If `true`, default names are used.
+               If it's a table, and value is nil or an empty string it won't be
+               showed. `auto` shows the actual mode instead of itself, unless
+               you define it in this table.
+
+  |tabs_badge|   Displays current tab number. Set to false (not nil) to disable.
+               `visibility` is a list of modes that show it.
+               `fraction` is the badge style
+               `left` is the position in the tabline
+
+  |label_style|  'sep', 'order' or 'bufnr'
+               `order` will show the position in the bufferline, `bufnr` will
+               show the actual buffer number, `sep` a simple colored separator
+               (with a different color in tabs and buffers mode).
+
+
+
+
+MAIN COMMAND                                                     *tnv-command*
+==============================================================================
+
+There is a single command, that accepts a series of subcommands, possibly with
+extra arguments. Default name for the command is `:Tabline`, but it can be
+changed in the settings.
+
+Some subcommands can be <bang>ed, to toggle setting, for example:
+>
+  :Tabline filtering!
+  :Tabline pin!
+<
+------------------------------------------------------------------------------
+  Subcommand    Arguments      Description~
+------------------------------------------------------------------------------
+
+  mode          next, {mode}   change tabline mode
+  next          {count}        select next tab/buffer
+  prev          {count}        select previous tab/buffer
+  away                         move current buffer to the last position
+  left          {count}        move current buffer to the left
+  right         {count}        move current buffer to the right
+  close                        delete buffer, but keep window
+  filtering     off, !         enable/toggle buffer filtering
+  pin           !              pin current buffer, or toggle(!)
+  unpin         !              unpin current buffer or all(!) buffers
+  reopen                       reopen last closed tab
+  fullpath      off, !         toggle basename/shortened full paths
+  theme         {theme}        set a theme
+  bufname       {name}         give a name to current buffer
+  tabname       {name}         ,,      ,,             tab
+  buficon       {icon}         give an icon to current buffer
+  tabicon       {icon}         ,,      ,,             tab
+  bufreset                     remove buffer customizations (name, icon)
+  tabreset                     ,,     tab    ,,
+  resetall                     reset all customizations
+  cleanup                      delete buffers unrelated to any of the CWDs
+  minimize                     delete buffers without a window in any tabpage
+  purge         !              delete/wipe(!) non-regular buffers in tabpage
+  config                       open buffer with sample configuration
+
+
+
+
+
+MAPPINGS                                                        *tnv-mappings*
+==============================================================================
+
+To enable default mappings, set the relative option in the settings.
+Otherwise define a mappings table (get it from `:Tabline config`), then in
+your vimrc:
+>
+  local mappings = { your mappings }
+  lua require'tabline.setup'.mappings(mappings)
+
+You can also define them by mapping directly `:Tabline` with the appropriate
+subcommand and arguments.
+
+------------------------------------------------------------------------------
+                                                                      *tnv-cd*
+There is also a set of mappings to quickly change the CWD, that start with
+`cd`. These can be also be enabled with a setting, but are not customizable.
+
+The default directory is either a git repository or the directory of the
+current file. In the command line, use <C-j> to change type (`cd`, `tcd`, `lcd`).
+
+Mapping~
+   cdw     set the global working directory
+   cdl     set a window-local working directory
+   cdt     set a tab-local working directory
+   cdc     |:cd| to `[count]` parent directory of current buffer
+   cd?     show cwd (global/local/tab), git dir, tags
+
+------------------------------------------------------------------------------
+                                                                   *tnv-plugs*
+Finally there are two <Plug>s available, to select a buffer (or tab) in the
+tabline. You have to map them yourself. For example:
+>
+  " select a tab by with count, or execute another command
+  nmap <expr> <BS> v:count ? "\<Plug>(TabSelect)" : ":Buffers\r"
+
+  " press key, then type a character to go to corresponding buffer
+  nmap        <BS> <Plug>(TabSelect?)
+
+The second may be better if you use a style with separators, instead of
+numbers.
+
+
+
+
+CREDITS                                                           *tnv-credits*
+==============================================================================
+
+Bram Moolenaar for Vim
+barbar.nvim for inspiration               https://github.com/romgrk/barbar.nvim
+
+
+
+LICENSE                                                           *tnv-license*
+==============================================================================
+
+MIT
+
+
+vim:tw=78:et:sw=2:ts=2:ft=help:nowrap:

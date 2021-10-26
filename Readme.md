@@ -1,8 +1,20 @@
+### tabline.nvim
 
-Work in progress.
+Add to your vimrc (or run in command line):
 
-For now you can run:
+    lua require'tabline.setup'.setup()
 
-    :TablineConfig
+to load plugin with default settings. If you want default mappings, also add:
 
-and follow instructions.
+    lua require'tabline.setup'.mappings(true)
+
+If you want to customize the settings, execute:
+
+    :Tabline config
+
+General documentation:
+
+    :help tabline-nvim
+
+Consult `:help tnv-settings` to understand the meaning of the different
+settings.
