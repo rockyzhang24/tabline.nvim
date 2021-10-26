@@ -26,7 +26,6 @@ M.settings = {  -- user settings {{{1
   mode_badge = nil,
   tabs_badge = { fraction = true, left = true, visibility = {'buffers'} },
   label_style = 'sep',
-  dim_inactive_icons = true,
   show_full_path = false,
   clickable_bufline = true,
   max_recent = 10,
@@ -41,7 +40,6 @@ M.settings = {  -- user settings {{{1
   show_icons = true,
   colored_icons = true,
   separators = {'▎', '▏'}
-  -- separator = '▏'
 }
 
 M.icons = { -- icons {{{1

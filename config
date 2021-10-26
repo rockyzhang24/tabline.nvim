@@ -26,7 +26,6 @@ local settings = {
     visibility = {'buffers'}
   },
   label_style               = 'sep',                          -- see below
-  dim_inactive_icons        = true,                           -- grey icons for inactive buffers
   show_full_path            = false,                          -- instead of just the basename
   clickable_bufline         = true,                           -- lmb selects, rmb puts last, s-rmb deletes buffer
   max_recent                = 10,                             -- number of buffers that can be rendered

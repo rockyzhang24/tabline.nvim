@@ -56,9 +56,7 @@ function M.devicon(b, selected)  -- {{{1
         M.icons[color] = make_icons_hi(color)
       end
       local hi = M.icons[color][b.hi]
-      local typ = (selected or not s.dim_inactive_icons)
-                  and (not s.colored_icons and 'ncl' or 'sel') or 'dim'
-      -- TODO don't use string.gsub
+      local typ = selected and (not s.colored_icons and 'ncl' or 'sel') or 'dim'
       return hi and string.gsub(hi[typ], '___', icon) or ''
     end
   end
