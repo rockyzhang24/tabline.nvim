@@ -60,14 +60,14 @@ end
 local subcmds = { -- {{{1
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
-  'reopen', 'resetall', 'purge', 'cleanup', 'fullpath',
+  'reopen', 'resetall', 'purge', 'cleanup', 'minimize', 'fullpath',
   'away', 'left', 'right', 'theme', 'labelstyle',
 }
 
 local completion = {  -- {{{1
   ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
-  ['filtering'] = { 'on', 'off' },
-  ['fullpath'] = { 'on', 'off' },
+  ['filtering'] = { 'off' },
+  ['fullpath'] = { 'off' },
   ['theme'] = themes.available,
   ['labelstyle'] = { 'order', 'bufnr', 'sep' },
 }
@@ -246,7 +246,7 @@ local function toggle_filtering(bang, args) -- Toggle filtering {{{1
   if bang then
     s.filtering = not s.filtering
   else
-    s.filtering = #args == 0 or args[1] ~= 'off'
+    s.filtering = args[1] ~= 'off'
   end
   vim.cmd('redraw! | echo "buffer filtering turned ' .. (s.filtering and 'on' or 'off') .. '"')
 end
@@ -255,7 +255,7 @@ local function fullpath(bang, args) -- Show full path in labels {{{1
   if bang then
     s.show_full_path = not s.show_full_path
   else
-    s.show_full_path = #args == 0 or args[1] ~= 'off'
+    s.show_full_path = args[1] ~= 'off'
   end
   vim.cmd('redrawtabline')
 end
@@ -401,14 +401,14 @@ local function purge(wipe) -- Purge {{{1
   end
 end
 
-local function cleanup(bang) -- Clean up {{{1
-  local del = 0
-  if bang then
-    del = h.delete_bufs_without_wins()
-  else
-    del = h.delete_buffers_out_of_valid_wds()
-  end
+local function cleanup() -- Clean up {{{1
+  local del = h.delete_buffers_out_of_valid_wds()
   print('Cleaned up ' .. del .. ' buffers.')
+end
+
+local function minimize() -- Delete buffers without windows {{{1
+  local del = h.delete_bufs_without_wins()
+  print('Deleted ' .. del .. ' buffers.')
 end
 
 local function info(bang) -- Info {{{1
@@ -470,6 +470,8 @@ commands = {  -- {{{1
   ['left'] = move_left,
   ['right'] = move_right,
   ['close'] = close,
+  ['cleanup'] = cleanup,
+  ['minimize'] = minimize,
   ['bufreset'] = reset_buffer,
   ['tabreset'] = reset_tab,
   ['reopen'] = reopen,
@@ -488,7 +490,6 @@ banged = {  -- {{{1
   ['tabicon'] = icon_tab,
   ['info'] = info,
   ['pin'] = pin_buffer,
-  ['cleanup'] = cleanup,
   ['purge'] = purge,
   ['fullpath'] = fullpath,
 }
