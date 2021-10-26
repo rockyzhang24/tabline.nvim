@@ -100,7 +100,12 @@ function format_buffer_labels(bufs) -- {{{1
   sepactive, sepinactive = unpack(s.separators)
 
   -- set function that renders the buffers number/separator
-  local buf_nr = ({ bufnr = buf_bufnr, order = buf_order, sep = buf_sep })[s.label_style]
+  local buf_nr = ({
+      bufnr = buf_bufnr,
+      order = buf_order,
+      sep = buf_sep,
+      sel = buf_sel,
+    })[s.label_style]
 
   if #bufs == 0 and next(all) then
     bufs = { all[bufnr()] and bufnr() or next(all).nr }
@@ -171,11 +176,16 @@ function buf_icon(b, selected)  -- {{{1
 end
 
 function buf_bufnr(curbuf, label) -- {{{1
-  return curbuf and ("%#TNumSel# " .. label.nr) or ("%#TNum# " .. label.nr)
+  return curbuf and ("%#TNumSel# " .. label.nr .. ' ') or ("%#TNum# " .. label.nr .. ' ')
+end
+
+function buf_sel(curbuf, label) -- {{{1
+  local ch = label.n < 10 and label.n or string.char(label.n + 87)
+  return curbuf and ("%#TNumSel# " .. ch .. ' ') or ("%#TNum# " .. ch .. ' ')
 end
 
 function buf_order(curbuf, label) -- {{{1
-  return curbuf and ("%#TNumSel# " .. label.n) or ("%#TNum# " .. label.n)
+  return curbuf and ("%#TNumSel# " .. label.n .. ' ') or ("%#TNum# " .. label.n .. ' ')
 end
 
 function buf_sep(curbuf, label) -- {{{1

@@ -125,6 +125,25 @@ local function select_tab(cnt, cmdline) -- Select tab {{{1
   end
 end
 
+local function select_tab_with_char() -- Select tab with character {{{1
+  if h.tabs_mode() then
+    return
+  end
+  local oldstyle, bufs, selbuf, selnr, selaz, _ = s.label_style, g.current_buffers
+  s.label_style = 'sel'
+  vim.cmd('redrawtabline')
+  selbuf = fn.nr2char(fn.getchar())
+  s.label_style = oldstyle
+  vim.cmd('redrawtabline')
+  _, _, selnr = string.find(selbuf, '(%d)')
+  _, _, selaz = string.find(selbuf, '([a-z])')
+  if selnr and tonumber(selnr) <= #bufs then
+    vim.cmd('buffer ' .. bufs[tonumber(selnr)])
+  elseif selaz and string.byte(selaz) - 87 <= #bufs then
+    vim.cmd('buffer ' .. bufs[string.byte(selaz) - 87])
+  end
+end
+
 local function next_tab(args) -- Next tab {{{1
   local cnt, last = unpack(args)
   local max = #g.current_buffers
@@ -501,5 +520,6 @@ return {
   complete = complete,
   change_mode = change_mode,
   select_tab = select_tab,
+  select_tab_with_char = select_tab_with_char,
   away = away,
 }
