@@ -33,7 +33,7 @@ local filternew = tbl.filternew
 
 local function command(arg)
   local subcmd, bang, args = nil, false, {}
-  for w in string.gmatch(arg, '(%w+!?)') do
+  for w in string.gmatch(arg, '(%S+)') do
     if not subcmd then
       subcmd = w
       if string.find(w, '!', #w, true) then
@@ -402,16 +402,13 @@ local function purge(wipe) -- Purge {{{1
 end
 
 local function cleanup(bang) -- Clean up {{{1
-  local del, err = 0, 0
+  local del = 0
   if bang then
-    del, err = h.delete_bufs_without_wins()
+    del = h.delete_bufs_without_wins()
   else
-    del, err = h.delete_buffers_out_of_valid_wds()
+    del = h.delete_buffers_out_of_valid_wds()
   end
   print('Cleaned up ' .. del .. ' buffers.')
-  if err > 0 then
-    print(err .. ' buffers not removed because of errors (modified?)')
-  end
 end
 
 local function info(bang) -- Info {{{1
