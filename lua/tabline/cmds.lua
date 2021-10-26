@@ -250,12 +250,21 @@ local function change_mode(arg) -- Change mode {{{1
   local mode = arg[1]
   if index({ 'auto', 'tabs', 'buffers', 'args' }, mode) then
     v.mode = mode
-  elseif mode == 'next' then
-    local cur = index(s.modes, v.mode)
-    if not cur then
-      v.mode = s.modes[1]
-    else
-      v.mode = s.modes[(cur % #s.modes) + 1]
+    vim.cmd('redrawtabline')
+    return
+  elseif mode ~= 'next' or #s.modes < 2 then
+    return
+  end
+  -- try not to reselect the same mode, if old mode was 'auto'
+  -- this doesn't seem to work if 'auto' is not the first mode
+  local wastab, wasbuf = h.tabs_mode(), h.buffers_mode()
+  local old, cur = v.mode, index(s.modes, v.mode)
+  if not cur then
+    v.mode = s.modes[1]
+  else
+    v.mode = s.modes[(cur % #s.modes) + 1]
+    if old == 'auto' and (h.tabs_mode() == wastab or h.buffers_mode() == wasbuf) then
+      v.mode = s.modes[((cur + 1) % #s.modes) + 1]
     end
   end
   vim.cmd('redrawtabline')

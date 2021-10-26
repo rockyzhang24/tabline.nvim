@@ -23,7 +23,7 @@ M.settings = {  -- user settings {{{1
   main_cmd_name = 'Tabline',
   filtering = false,
   cwd_badge = true,
-  mode_badge = nil,
+  mode_badge = { args = 'args' },
   tabs_badge = { fraction = true, left = true, visibility = {'buffers'} },
   label_style = 'sep',
   show_full_path = false,
