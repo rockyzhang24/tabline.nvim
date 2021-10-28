@@ -19,7 +19,6 @@ local strfind = string.find
 local remove = table.remove
 local insert = table.insert
 local index = require'tabline.table'.index
-local slice = require'tabline.table'.slice
 local copy = require'tabline.table'.copy
 local filter = require'tabline.table'.filter
 local validbuf = h.validbuf
@@ -114,6 +113,27 @@ local function special_or_listed(bnr) -- {{{1
   if buf.special or ( buflisted(bnr) > 0 and getbufvar(bnr, '&buftype') == '' ) then
     return buf
   end
+end -- }}}
+
+--------------------------------------------------------------------------------
+-- Function: slice_recent
+-- Make a slice of the recent buffers table, taking the most s.max_recent
+-- buffers. It also sets the .recent member to a minimum of 1, so that the
+-- recent buffers table is stable right from the start.
+--
+-- @param tbl:  the table to slice
+-- @param bufs: g.buffers
+-- @return: the slice
+--------------------------------------------------------------------------------
+function slice_recent(tbl, bufs) -- {{{1
+  local sliced = {}
+  for i = 1, s.max_recent do
+    sliced[i] = tbl[i]
+    if bufs[sliced[i]].recent == 0 then
+      bufs[sliced[i]].recent = 1
+    end
+  end
+  return sliced
 end -- }}}
 
 
@@ -225,14 +245,13 @@ end
 -- Table with most recently accessed buffers, limited in number by
 -- s.max_recent. Includes also current buffer and any pinned buffer.
 --
--- @return: either a slice of the valid buffers (a different table), or the
--- valid buffers table (same table).
+-- @return: a table with most recently accessed buffers
 -------------------------------------------------------------------------------
 function M.recent_bufs()
   local recent, cur = copy(g.valid), bufnr()
   if #recent > s.max_recent then
     table.sort(recent, function(a,b) return g.buffers[a].recent > g.buffers[b].recent end)
-    recent = slice(recent, 1, s.max_recent)
+    recent = slice_recent(recent, g.buffers)
     table.sort(recent, function(a,b) return g.buffers[a].nr < g.buffers[b].nr end)
   end
   if g.buffers[cur] and not index(recent, cur) then
