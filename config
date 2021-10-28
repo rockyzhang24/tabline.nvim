@@ -50,6 +50,9 @@ local settings = {
 -- Mappings
 --------------------------------------------------------------------------------
 
+-- example mapping to select buffer
+vim.cmd('nmap gb <Plug>(TabSelect)')
+
 local L = settings.mapleader
 
 local mappings = {

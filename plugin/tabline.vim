@@ -21,8 +21,7 @@ augroup tabline
     au TabClosed   *  lua require'tabline.tabs'.save()
 augroup END
 
-nnoremap <expr><silent> <Plug>(TabSelect)  v:lua.require'tabline.cmds'.select_tab(v:count)
-nnoremap                <Plug>(TabSelect?) <Cmd>call v:lua.require'tabline.cmds'.select_tab_with_char()<cr>
+nnoremap <Plug>(TabSelect) <Cmd>call v:lua.require'tabline.cmds'.select_tab_with_char(v:count)<cr>
 
 fun! Buflineclick(nr, clicks, button, mod)
     call v:lua.buflineclick(a:nr, a:clicks, a:button, a:mod)

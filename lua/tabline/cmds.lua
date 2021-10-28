@@ -106,27 +106,23 @@ end
 -- Subcommands
 -------------------------------------------------------------------------------
 
-local function select_tab(cnt, cmdline) -- Select tab {{{1
-  if cnt == 0 then return '' end
+local function select_tab(cnt) -- Select tab {{{1
   local bufs, b = g.current_buffers, nil
-  if h.tabs_mode() then
-    return 'gt'
-  elseif v.mode == 'args' and not h.empty_arglist() then
+  if v.mode == 'args' and not h.empty_arglist() then
     b = bufs[math.min(cnt, #fn.argv())]
   elseif s.label_style == 'bufnr' then
     b = cnt
   else
     b = bufs[math.min(cnt, #bufs)]
   end
-  if cmdline then
-    vim.cmd('buffer ' .. b)
-  else
-    return string.format(':%ssilent! buffer %s\n', CU, b)
-  end
+  vim.cmd('buffer ' .. b)
 end
 
-local function select_tab_with_char() -- Select tab with character {{{1
+local function select_tab_with_char(cnt) -- Select tab with character {{{1
   if h.tabs_mode() then
+    return
+  elseif cnt ~= 0 then
+    select_tab(cnt)
     return
   end
   local oldstyle, bufs, selbuf, selnr, selaz = s.label_style, g.current_buffers
@@ -193,7 +189,7 @@ local function move_left(arg) -- Move current tab N positions to the left {{{1
     insert(bufs, new, remove(bufs, cur))
     set_order(bufs)
     vim.cmd('redrawtabline')
-    select_tab(new, true)
+    select_tab(new)
   end
 end
 
@@ -216,7 +212,7 @@ local function move_right(arg) -- Move current tab N positions to the right {{{1
     insert(bufs, new, remove(bufs, cur))
     set_order(bufs)
     vim.cmd('redrawtabline')
-    select_tab(new, true)
+    select_tab(new)
   end
 end
 
@@ -241,7 +237,7 @@ local function away(arg) -- Move tab to last position {{{1
     end
     vim.cmd('redrawtabline')
     if cur then
-      select_tab(cur, true)
+      select_tab(cur)
     end
   end
 end
@@ -540,7 +536,6 @@ return {
   command = command,
   complete = complete,
   change_mode = change_mode,
-  select_tab = select_tab,
   select_tab_with_char = select_tab_with_char,
   away = away,
 }

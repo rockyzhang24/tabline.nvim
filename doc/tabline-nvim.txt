@@ -208,17 +208,20 @@ Mapping~
    cd?     show cwd (global/local/tab), git dir, tags
 
 ------------------------------------------------------------------------------
-                                                                   *tnv-plugs*
-Finally there are two <Plug>s available, to select a buffer (or tab) in the
-tabline. You have to map them yourself. For example:
+                                                                    *tnv-plug*
+Finally there is a <Plug> available, to select a buffer in the bufferline.
+This only works in 'buffers' or 'args' mode. In 'tabs' mode use |gt|.
+
+You have to map the <Plug> yourself. For example:
 >
-  " select a tab by with count, or execute another command
-  nmap <expr> <BS> v:count ? "\<Plug>(TabSelect)" : ":Buffers\r"
-
   " press key, then type a character to go to corresponding buffer
-  nmap        <BS> <Plug>(TabSelect?)
+  " it also accepts a count, then selects directly the buffer
+  nmap gb <Plug>(TabSelect)
 
-The second may be better if you use a style with separators, instead of
+  " select a buffer by with count, or execute another command
+  nmap <expr> gb v:count ? "\<Plug>(TabSelect)" : ":Buffers\r"
+
+The first form may be better if you use a style with separators, instead of
 numbers.
 
 
