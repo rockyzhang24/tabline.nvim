@@ -5,7 +5,7 @@ local a = require'tabline.fzf.ansi'
 
 local winOs = fn.has('win32') == 1
 
-local sessions_path = s.sessions_path or fn.stdpath('data') .. '/session'
+local sessions_path = s.sessions_dir or fn.stdpath('data') .. '/session'
 local sessions_data = fn.stdpath('data') .. '/.tabline_sessions'
 
 local date_cmd = fn.has('mac') == 1 and 'gdate' or 'date'

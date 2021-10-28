@@ -107,6 +107,7 @@ initialized. For the default value, run `:Tabline config`
   |show_icons|            icons from nvim-web-devincons
   |colored_icons|         will use normal bg if false
   |separators|            for active and inactive tabs/buffers
+  |sessions_dir|          directory for the session management commands
 
 
   |mode|         'auto', 'tabs', 'buffers', 'args', in any order
@@ -181,9 +182,12 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
 
 Note: |fzf| means that it needs fzf {1} (the command-line tool, not fzf.vim).
 
-Session commands will use |vim-obsession| if available.
-
                                          {1}   https://github.com/junegunn/fzf
+
+Session commands will use |vim-obsession| if available.
+By default the session directory is `stdpath('data') .. '/session'`, see
+|standard-path|. It can be overridden with `settings.sessions_dir`.
+
 
 
 
