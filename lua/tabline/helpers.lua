@@ -76,7 +76,7 @@ function M.tabbufs(tnr) -- {{{1
 end
 
 function M.validbuf(b, wd)  -- {{{1
-  return b and ( not s.filtering or find(b, wd) )
+  return b and ( not s.filtering or find(b, wd, 1, true) )
 end
 
 function M.delete_bufs_without_wins() -- {{{1

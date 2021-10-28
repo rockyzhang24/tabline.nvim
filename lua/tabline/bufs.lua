@@ -4,8 +4,25 @@ local h = require'tabline.helpers'
 
 local icons = require'tabline.setup'.icons
 
+-- proxy functions {{{1
+local strfind = string.find
+local gsub = string.gsub
+local remove = table.remove
+local insert = table.insert
+local sort = table.sort
+local index = require'tabline.table'.index
+local copy = require'tabline.table'.copy
+local filter = require'tabline.table'.filter
+local validbuf = h.validbuf
+
 -- vim functions {{{1
+local fixedpath = vim.fn.fnamemodify
 local fnamemodify = vim.fn.fnamemodify
+if vim.fn.has('win32') == 1 then
+  function fixedpath(path, mod)
+    return gsub(fnamemodify(path, mod), '/', '\\')
+  end
+end
 local bufname = vim.fn.bufname
 local getbufvar = vim.fn.getbufvar
 local buflisted = vim.fn.buflisted
@@ -14,14 +31,6 @@ local tabpagebuflist = vim.fn.tabpagebuflist
 local tabpagenr = vim.fn.tabpagenr
 local bufnr = vim.fn.bufnr
 --}}}
-
-local strfind = string.find
-local remove = table.remove
-local insert = table.insert
-local index = require'tabline.table'.index
-local copy = require'tabline.table'.copy
-local filter = require'tabline.table'.filter
-local validbuf = h.validbuf
 
 -------------------------------------------------------------------------------
 -- Initialize buffers
@@ -60,7 +69,7 @@ local function new_buf(bnr) -- {{{1
       ext = getbufvar(bnr, '&filetype')
       if ext == '' then ext = nil end
     end
-    path = fnamemodify(bname, ':p')
+    path = fixedpath(bname, ':p')
     basename = fnamemodify(bname, ':t')
   end
   return {
@@ -93,7 +102,7 @@ local function special_or_listed(bnr) -- {{{1
     buf.special = true
 
   elseif getbufvar(bnr, '&buftype') == 'terminal' then
-    if string.find(buf.path, ';#FZF') then
+    if strfind(buf.path, ';#FZF') then
       buf.name = 'FZF'
       buf.devicon = 'fzf'
       buf.doubleicon = true
@@ -250,9 +259,9 @@ end
 function M.recent_bufs()
   local recent, cur = copy(g.valid), bufnr()
   if #recent > s.max_recent then
-    table.sort(recent, function(a,b) return g.buffers[a].recent > g.buffers[b].recent end)
+    sort(recent, function(a,b) return g.buffers[a].recent > g.buffers[b].recent end)
     recent = slice_recent(recent, g.buffers)
-    table.sort(recent, function(a,b) return g.buffers[a].nr < g.buffers[b].nr end)
+    sort(recent, function(a,b) return g.buffers[a].nr < g.buffers[b].nr end)
   end
   if g.buffers[cur] and not index(recent, cur) then
     insert(recent, cur)
@@ -312,7 +321,7 @@ function M.click(nr, clicks, button, mod)
   local cmd = require'tabline.cmds'
   local n, cur = g.current_buffers[nr], bufnr()
   if button == 'r' then
-    if string.find(mod, 's') then
+    if strfind(mod, 's') then
       if getbufvar(n, '&modified') == 1 then
         print('Cannot delete, buffer is modified')
       else
