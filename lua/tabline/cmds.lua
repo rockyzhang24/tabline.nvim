@@ -145,29 +145,31 @@ end
 
 local function next_tab(args) -- Next tab {{{1
   local cnt, last = unpack(args)
-  local max = #g.current_buffers
+  local bufs = get_bufs()
+  local max = #bufs
   if last then
-    vim.cmd('buffer ' .. g.current_buffers[max])
+    vim.cmd('buffer ' .. bufs[max])
     return
   end
-  local cur = index(g.current_buffers, bufnr()) or 1
+  local cur = index(bufs, bufnr()) or bufs[1]
   local target = (cur - 1 + (cnt or 1)) % max + 1
-  vim.cmd('buffer ' .. g.current_buffers[target])
+  vim.cmd('buffer ' .. bufs[target])
 end
 
 local function prev_tab(args) -- Prev tab {{{1
   local cnt, first = unpack(args)
+  local bufs = get_bufs()
   if first then
-    vim.cmd('buffer ' .. g.current_buffers[1])
+    vim.cmd('buffer ' .. bufs[1])
     return
   end
-  local max = #g.current_buffers
-  local cur = index(g.current_buffers, bufnr()) or 0
+  local max = #bufs
+  local cur = index(bufs, bufnr()) or bufs[1]
   local target = cur - (cnt or 1)
   while target <= 0 do
     target = target + max
   end
-  vim.cmd('buffer ' .. g.current_buffers[target])
+  vim.cmd('buffer ' .. bufs[target])
 end
 
 local function move_left(arg) -- Move current tab N positions to the left {{{1
