@@ -29,7 +29,7 @@ Also:
   * commands to quickly set/change (tab/window) working directory
   * reopen closed tabs
   * clean up buffers across all tabs and other commands
-  * session management
+  * session management with fzf
 
   {1} https://github.com/kyazdani42/nvim-web-devicons
   {2} with a font that supports them, for example https://www.nerdfonts.com/
@@ -179,7 +179,11 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   config                       open buffer with sample configuration
 
 
-Note: |fzf| means that it needs fzf (the main plugin, not fzf.vim).
+Note: |fzf| means that it needs fzf {1} (the command-line tool, not fzf.vim).
+
+Session commands will use |vim-obsession| if available.
+
+                                         {1}   https://github.com/junegunn/fzf
 
 
 

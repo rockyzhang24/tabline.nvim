@@ -162,6 +162,23 @@ end
 
 local function session_new() session_save(true) end
 
+------------------------------------------------------------------------------
+
+local function session_delete(line)
+  local file = sessions_path .. '/' .. string.gsub(line, ' *\t.*', '')
+
+  if fn.filereadable(file) == 0 or not confirm('Delete session ' .. file .. '?') then
+    return
+  end
+
+  if obsession() and file == vim.g.this_obsession then
+    vim.cmd('silent Obsession!')
+  else
+    vim.fn.delete(file)
+  end
+  print('Session ' .. file .. ' has been deleted')
+end
+
 -------------------------------------------------------------------------------
 
 return {
@@ -169,4 +186,5 @@ return {
   session_load = session_load,
   session_save = session_save,
   session_new = session_new,
+  session_delete = session_delete,
 }

@@ -70,7 +70,7 @@ local completion = {  -- {{{1
   ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
   ['filtering'] = { 'off' },
   ['fullpath'] = { 'off' },
-  ['session'] = { 'load', 'new', 'save' },
+  ['session'] = { 'load', 'new', 'save', 'delete' },
   ['theme'] = themes.available,
   ['labelstyle'] = { 'order', 'bufnr', 'sep' },
 }
@@ -495,11 +495,12 @@ local function theme(arg) -- Set theme {{{1
   end
 end
 
-local function session(arg) -- Session load/new/save {{{1
+local function session(arg) -- Session load/new/save/delete {{{1
   local cmd = ({
     ['load'] = fzf.load_session,
     ['new'] = fzf.new_session,
     ['save'] = fzf.save_session,
+    ['delete'] = fzf.delete_session,
   })[arg[1]]
   if cmd then cmd() end
 end

@@ -159,10 +159,23 @@ local function load_session()
     })
 end
 
+local function delete_session()
+  if mac_no_gnu() then return end
+  statusline("Delete Session")
+  local _, sessions = require'tabline.fzf.sessions'.sessions_list()
+  fn['fzf#run']({
+      source = sessions,
+      sink = require'tabline.fzf.sessions'.session_delete,
+      down = '30%',
+      options = '--ansi --header-lines=1 --no-preview'
+    })
+end
+
 return {
   list_buffers = list_buffers,
   closed_tabs = closed_tabs,
   load_session = load_session,
+  delete_session = delete_session,
   save_session = require'tabline.fzf.sessions'.session_save,
   new_session = require'tabline.fzf.sessions'.session_new,
 }
