@@ -19,6 +19,17 @@ function tbl.copy(tbl)
   return t2
 end
 
+function tbl.reverse(tbl)
+  local n = #tbl
+  local i = 1
+  while i < n do
+    tbl[i], tbl[n] = tbl[n], tbl[i]
+    i = i + 1
+    n = n - 1
+  end
+  return tbl
+end
+
 function tbl.filter(tbl, func)
   local ix, sz = 1, #tbl
   for k, v in ipairs(tbl) do

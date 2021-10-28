@@ -14,6 +14,7 @@ augroup tabline
     au BufAdd      *  lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
     au BufEnter    *  lua require'tabline.bufs'.recent_buf(tonumber(vim.fn.expand('<abuf>')))
     au BufUnload   *  lua require'tabline.bufs'.remove_buf(tonumber(vim.fn.expand('<abuf>')))
+    au BufDelete   *  lua require'tabline.bufs'.remove_buf(tonumber(vim.fn.expand('<abuf>')))
     au OptionSet buf* lua require'tabline.bufs'.add_file(vim.fn.expand('<afile>'))
     au FileType    *  lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
     au TermEnter   *  lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))

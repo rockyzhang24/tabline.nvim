@@ -173,9 +173,13 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   cleanup                      delete buffers unrelated to any of the CWDs
   minimize                     delete buffers without a window in any tabpage
   purge         !              delete/wipe(!) non-regular buffers in tabpage
+  buffers                      |fzf| choose among valid buffers
+  closedtabs                   |fzf| choose closed tab to reopen
+  session       load, ...      |fzf| load session, or save/create new session
   config                       open buffer with sample configuration
 
 
+Note: |fzf| means that it needs fzf (the main plugin, not fzf.vim).
 
 
 

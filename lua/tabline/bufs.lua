@@ -215,7 +215,10 @@ end
 --
 -- @return: the ordered list of the buffers to render
 -------------------------------------------------------------------------------
-function M.get_bufs()
+function M.get_bufs(all)
+  if all then
+    return M.valid_bufs()
+  end
   g.valid, g.pinned = M.valid_bufs()
   if s.filtering then
     local cwd = getcwd()

@@ -5,7 +5,7 @@ local s = require'tabline.setup'.settings
 local h = require'tabline.helpers'
 local find = string.find
 
-local M, closed, last = {}, {}, nil
+local M, last = { closed = {} }, {}, nil
 
 -------------------------------------------------------------------------------
 -- Tab initializer
@@ -47,17 +47,18 @@ function M.store()
   last = {
     buf = fn.bufnr(),
     cmd = ldir == 1 and 'tcd' or ldir == 2 and 'lcd' or 'cd',
-    wd = fn.getcwd()
+    wd = fn.getcwd(),
+    name = vim.t.tab.name or '',
   }
 end
 
 function M.save()
-  if last then table.insert(closed, last) end
+  if last then table.insert(M.closed, last) end
 end
 
-function M.reopen()
-  if #closed == 0 then return end
-  local tab = table.remove(closed)
+function M.reopen(ix)
+  if #M.closed == 0 then return end
+  local tab = table.remove(M.closed, ix or #M.closed)
   local cmd = 'b ' .. tab.buf
   if fn.bufexists(tab.buf) == 0 then
     cmd = 'bnext'

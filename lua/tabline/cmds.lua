@@ -7,6 +7,7 @@ local devicons = require'nvim-web-devicons'
 local get_bufs = require'tabline.bufs'.get_bufs
 local set_order = require'tabline.bufs'.set_order
 local themes = require'tabline.themes'
+local fzf = require'tabline.fzf.fzf'
 
 local CU = vim.api.nvim_replace_termcodes('<C-U>', true, false, true)
 local Esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
@@ -62,12 +63,14 @@ local subcmds = { -- {{{1
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'minimize', 'fullpath',
   'away', 'left', 'right', 'theme', 'labelstyle',
+  'buffers', 'closedtabs', 'session',
 }
 
 local completion = {  -- {{{1
   ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
   ['filtering'] = { 'off' },
   ['fullpath'] = { 'off' },
+  ['session'] = { 'load', 'new', 'save' },
   ['theme'] = themes.available,
   ['labelstyle'] = { 'order', 'bufnr', 'sep' },
 }
@@ -492,6 +495,15 @@ local function theme(arg) -- Set theme {{{1
   end
 end
 
+local function session(arg) -- Session load/new/save {{{1
+  local cmd = ({
+    ['load'] = fzf.load_session,
+    ['new'] = fzf.new_session,
+    ['save'] = fzf.save_session,
+  })[arg[1]]
+  if cmd then cmd() end
+end
+
 -- }}}
 
 
@@ -515,6 +527,9 @@ commands = {  -- {{{1
   ['config'] = config,
   ['theme'] = theme,
   ['labelstyle'] = labelstyle,
+  ['buffers'] = fzf.list_buffers,
+  ['closedtabs'] = fzf.closed_tabs,
+  ['session'] = session,
 }
 
 banged = {  -- {{{1
