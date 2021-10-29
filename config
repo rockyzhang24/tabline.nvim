@@ -56,28 +56,34 @@ vim.cmd('nmap gb <Plug>(TabSelect)')
 local L = settings.mapleader
 
 local mappings = {
-  ['mode next']  = '<F5>',   -- change tabline mode
-  ['next']       = ']b',     -- select next buffer/tab
-  ['prev']       = '[b',     -- select previous buffer/tab
-  ['away']       = L .. 'a', -- move current buffer away from sight (put last)
-  ['left']       = nil,      -- move current buffer [count] positions to the left
-  ['right']      = nil,      -- move current buffer [count] positions to the right
-  ['filtering!'] = L .. 'f', -- toggle buffer filtering based on cwd
-  ['fullpath!']  = L .. '/', -- toggle showing the paths/basenames
-  ['close']      = L .. 'q', -- delete the buffer without closing the window
-  ['pin!']       = L .. 'p', -- toggle pin buffer
-  ['unpin!']     = nil,      -- unpin all pinned buffers
-  ['bufname']    = nil,      -- give name to current buffer
-  ['tabname']    = nil,      -- give name to current tab
-  ['buficon']    = nil,      -- give icon to current buffer
-  ['tabicon']    = nil,      -- give icon to current tab
-  ['bufreset']   = nil,      -- remove custom name/icon from current buffer
-  ['tabreset']   = nil,      -- remove custom name/icon from current tab
-  ['resetall']   = nil,      -- remove all custom names/icons
-  ['reopen']     = L .. 'u', -- reopen closed tab
-  ['purge']      = L .. 'x', -- close anything in the tabpage that isn't a regular buffer
-  ['cleanup']    = L .. 'X', -- delete all buffers that are unrelated to current directories
-  ['minimize']   = nil,      -- delete all buffers except the ones in their own window
+  ['mode next']      = '<F5>',    -- change tabline mode
+  ['next']           = ']b',      -- select next buffer/tab
+  ['prev']           = '[b',      -- select previous buffer/tab
+  ['away']           = L .. 'a',  -- move current buffer away from sight (put last)
+  ['left']           = nil,       -- move current buffer [count] positions to the left
+  ['right']          = nil,       -- move current buffer [count] positions to the right
+  ['filtering!']     = L .. 'f',  -- toggle buffer filtering based on cwd
+  ['fullpath!']      = L .. '/',  -- toggle showing the paths/basenames
+  ['close']          = L .. 'q',  -- delete the buffer without closing the window
+  ['pin!']           = L .. 'p',  -- toggle pin buffer
+  ['unpin!']         = nil,       -- unpin all pinned buffers
+  ['bufname']        = nil,       -- give name to current buffer
+  ['tabname']        = nil,       -- give name to current tab
+  ['buficon']        = nil,       -- give icon to current buffer
+  ['tabicon']        = nil,       -- give icon to current tab
+  ['bufreset']       = nil,       -- remove custom name/icon from current buffer
+  ['tabreset']       = nil,       -- remove custom name/icon from current tab
+  ['resetall']       = nil,       -- remove all custom names/icons
+  ['reopen']         = L .. 'u',  -- reopen closed tab
+  ['closedtabs']     = L .. 'U',  -- fzf choose tab to reopen
+  ['purge']          = L .. 'x',  -- close anything in the tabpage that isn't a regular buffer
+  ['cleanup']        = L .. 'X',  -- delete all buffers that are unrelated to current directories
+  ['minimize']       = nil,       -- delete all buffers except the ones in their own window
+  ['buffers']        = L .. 'b',  -- fzf choose valid buffer
+  ['session load']   = L .. 'sl',
+  ['session new']    = L .. 'sn',
+  ['session save']   = L .. 'ss',
+  ['session delete'] = L .. 'sd',
 }
 
 -------------------------------------------------------------------------------

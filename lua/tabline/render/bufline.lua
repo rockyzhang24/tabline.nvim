@@ -194,16 +194,15 @@ function buf_sep(curbuf, label) -- {{{1
 end
 
 function buf_label(blabel)  -- {{{1
-  local hi = printf('%%#T%s# ', blabel.hi)
+  local hi = '%#T' .. blabel.hi .. '# '
   if not s.show_icons then
     return hi .. blabel.name .. ' '
   end
 
   local curbuf = winbufnr(0) == blabel.nr
-  local icons = g.buffers[blabel.nr].doubleicon
   local icon = buf_icon(blabel, curbuf)
 
-  return icons
+  return g.buffers[blabel.nr].doubleicon
          and hi .. icon .. blabel.name .. ' ' .. icon
          or  hi .. icon .. blabel.name .. ' '
 end
