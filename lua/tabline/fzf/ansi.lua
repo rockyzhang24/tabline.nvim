@@ -25,7 +25,7 @@ local function csi(color, fg)
   if sub(color, 1, 1) == '#' then
     return prefix .. '2;' .. table.concat(tbl.map(
       {sub(color, 2, 3), sub(color, 4, 5), sub(color, 6, 7)},
-      function(k,v) return fn.str2nr(v, 16) end
+      function(_,v) return fn.str2nr(v, 16) end
     ), ';')
   end
   return prefix .. '5;' .. color

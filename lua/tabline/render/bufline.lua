@@ -19,12 +19,9 @@ local argc = vim.fn.argc
 
 -- table functions {{{1
 local tbl = require'tabline.table'
-local remove = table.remove
-local concat = table.concat
 local insert = table.insert
 local index = tbl.index
 local filter = tbl.filter
-local filternew = tbl.filternew
 local slice = tbl.slice
 local map = tbl.map
 --}}}
@@ -33,11 +30,12 @@ local map = tbl.map
 local printf = string.format
 
 local get_bufs = require'tabline.bufs'.get_bufs
+local add_buf = require'tabline.bufs'.add_buf
 local short_bufname = require'tabline.render.paths'.short_bufname
 local devicon = require'tabline.render.icons'.devicon
 
 local sepactive, sepinactive
-local buf_order, buf_bufnr, buf_sep
+local buf_order, buf_bufnr, buf_sel, buf_sep
 local buf_path, buf_icon, buf_label, buf_mod, format_buffer_labels
 local render_buffers, render_args, limit_buffers
 
@@ -64,8 +62,8 @@ function render_args(render_tabs)
     end
   end -- }}}
   local bufs = filter(
-    map(argv(), function(k,v) return bufnr(v) end),
-    function(k,v) return v > 0 end
+    map(argv(), function(_,val) return bufnr(val) end),
+    function(_,val) return val > 0 end
   )
   bufs = limit_buffers(bufs)
   return format_buffer_labels(bufs)
@@ -95,7 +93,7 @@ function limit_buffers(bufs)
 end
 
 function format_buffer_labels(bufs) -- {{{1
-  local curbuf, tabs, all = winbufnr(0), {}, g.buffers
+  local curbuf, tabs, all, center = winbufnr(0), {}, g.buffers, 0
   local pagebufs = tabpagebuflist(tabpagenr())
   sepactive, sepinactive = unpack(s.separators)
 
@@ -115,7 +113,7 @@ function format_buffer_labels(bufs) -- {{{1
 
   for k, bnr in pairs(bufs) do
     local iscur = curbuf == bnr
-    local b = all[bnr]
+    local b = all[bnr] or add_buf(bnr)
     local haswin = index(pagebufs, bnr)
 
     local buf = {
@@ -166,10 +164,10 @@ function buf_icon(b, selected)  -- {{{1
   if g.buffers[b.nr].icon then
     return g.buffers[b.nr].icon .. ' '
   else
-    local devicon = devicon(b, selected)
-    if devicon then
-      b.icon = devicon
-      return devicon .. ' '
+    local dicon = devicon(b, selected)
+    if dicon then
+      b.icon = dicon
+      return dicon .. ' '
     end
   end
   return ''

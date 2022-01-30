@@ -1,7 +1,7 @@
 local fn = vim.fn
 local tbl = require'tabline.table'
 local s = require'tabline.setup'.settings
-local a = require'tabline.fzf.ansi'
+local ansi = require'tabline.fzf.ansi'
 
 local winOs = fn.has('win32') == 1
 
@@ -16,7 +16,7 @@ local stat_cmd = fn.has('mac') == 1 and 'gstat' or 'stat'
 -------------------------------------------------------------------------------
 
 local lastmod = function(f) return fn.str2nr(fn.system(date_cmd .. ' -r ' .. f .. ' +%s')) end
-local confirm = function(s) return fn.confirm(s, '&Yes\n&No') == 1 end
+local confirm = function(str) return fn.confirm(str, '&Yes\n&No') == 1 end
 local obsession = function() return fn.exists('g:loaded_obsession') == 1 end
 
 local function sdata() -- Read sessions data file {{{1
@@ -38,10 +38,10 @@ local function get_date(f) -- 'date' shell command {{{1
 end
 
 local function desc(fname, name, data) -- Session description {{{1
-  local mark = fname == vim.v.this_session and a.green(' [%]  ') or '      '
-  local desc = data[name] or ''
+  local mark = fname == vim.v.this_session and ansi.green(' [%]  ') or '      '
+  local dscr = data[name] or ''
   local time = winOs and '' or get_date(fname)
-  return string.format('%-30s\t%s%s%s', a.yellow(name), a.cyan(time), mark, desc)
+  return string.format('%-30s\t%s%s%s', ansi.yellow(name), ansi.cyan(time), mark, dscr)
 end
 
 local function update_current_session() -- Update current session {{{1
@@ -65,10 +65,10 @@ end
 local function sessions_list()
   local lines = {}
   local data = sdata()
-  local sessions, ordered = fn.globpath(sessions_path, '*', false, true)
+  local sessions = fn.globpath(sessions_path, '*', false, true)
 
-  for i, s in ipairs(sessions) do
-    if string.match(s, '__LAST__') then
+  for i, ss in ipairs(sessions) do
+    if string.match(ss, '__LAST__') then
       table.remove(sessions, i)
       break
     end
@@ -79,8 +79,8 @@ local function sessions_list()
   end
   table.insert(sessions, table.remove(sessions, tbl.index(sessions, vim.v.this_session)))
 
-  for _, s in ipairs(sessions) do
-    table.insert(lines, 1, desc(s, fn.fnamemodify(s, ':t'), data))
+  for _, ss in ipairs(sessions) do
+    table.insert(lines, 1, desc(ss, fn.fnamemodify(ss, ':t'), data))
   end
   table.insert(lines, 1, "Session\t\t\tTimestamp\tDescription")
   return tbl.index(sessions, vim.v.this_session), lines
@@ -131,12 +131,12 @@ local function session_save(new)
 
   local data = sdata()
   local _name = (new or vim.v.this_session == '') and '' or fn.fnamemodify(vim.v.this_session, ':t')
-  local desc = data[_name] or ''
+  local dscr = data[_name] or ''
 
-  name = fn.input('Enter a name for ' .. (new and 'the new' or 'this') .. ' session: ', _name)
+  local name = fn.input('Enter a name for ' .. (new and 'the new' or 'this') .. ' session: ', _name)
   if name == '' then return end
 
-  data[name] = fn.input('Enter an optional description: ', desc)
+  data[name] = fn.input('Enter an optional description: ', dscr)
 
   if confirm(string.format('%s session %s?', new and 'New' or 'Save', name)) then
     if _name ~= '' and name ~= _name then

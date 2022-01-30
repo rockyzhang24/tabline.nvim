@@ -1,4 +1,3 @@
-local g = require'tabline.setup'.global
 local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
 
@@ -6,20 +5,7 @@ local icons = require'tabline.setup'.icons
 
 -- vim functions {{{1
 local tabpagenr = vim.fn.tabpagenr
-local tabpagebuflist = vim.fn.tabpagebuflist
 local gettabvar = vim.fn.gettabvar
-
--- table functions {{{1
-local tbl = require'tabline.table'
-local remove = table.remove
-local concat = table.concat
-local insert = table.insert
-local index = tbl.index
-local filter = tbl.filter
-local filternew = tbl.filternew
-local slice = tbl.slice
-local map = tbl.map
---}}}
 
 local printf = string.format
 

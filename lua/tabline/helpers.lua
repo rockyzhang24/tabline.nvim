@@ -7,7 +7,6 @@ local fn = vim.fn
 local argv = vim.fn.argv
 local tabpagenr = vim.fn.tabpagenr
 local tabpagebuflist = vim.fn.tabpagebuflist
-local getcwd = vim.fn.getcwd
 local haslocaldir = vim.fn.haslocaldir
 local execute = vim.fn.execute
 --}}}
@@ -32,15 +31,15 @@ end
 --------------------------------------------------------------------------------
 
 function M.get_hi_color(hi, gui, typ, fallback) -- {{{1
-  local hi, col = execute('hi ' .. hi)
-  local _, _, link = find(hi, 'links to (%w+)')
+  local hl, col = execute('hi ' .. hi)
+  local _, _, link = find(hl, 'links to (%w+)')
   if link then
-    hi = execute('hi ' .. link)
+    hl = execute('hi ' .. link)
   end
   if gui == 'gui' then
-    _, _, col = find(hi, gui .. typ .. '=#(%x+)')
+    _, _, col = find(hl, gui .. typ .. '=#(%x+)')
   else
-    _, _, col = find(hi, gui .. typ .. '=(%d+)')
+    _, _, col = find(hl, gui .. typ .. '=(%d+)')
   end
   return col or fallback
 end
@@ -80,7 +79,7 @@ function M.validbuf(b, wd)  -- {{{1
 end
 
 function M.delete_bufs_without_wins() -- {{{1
-  local cnt, err, bufs = 0, 0, {}
+  local cnt, bufs = 0, {}
   for tnr = 1, tabpagenr('$') do
     for _, bnr in ipairs(tabpagebuflist(tnr)) do
       bufs[bnr] = true
@@ -95,7 +94,7 @@ function M.delete_bufs_without_wins() -- {{{1
 end
 
 function M.delete_buffers_out_of_valid_wds() -- {{{1
-  local cnt, err, wds, bufs = 0, 0, {}, {}
+  local cnt, wds, bufs = 0, {}, {}
   for tnr = 1, tabpagenr('$') do
     wds[fn.getcwd(-1, tnr)] = true
     for win = 1, fn.tabpagewinnr(tnr, '$') do

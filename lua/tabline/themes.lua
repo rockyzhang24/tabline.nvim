@@ -1,5 +1,3 @@
-local h = require'tabline.helpers'
-
 local index = require'tabline.table'.index
 
 local M = {}

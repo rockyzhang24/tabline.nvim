@@ -1,4 +1,4 @@
-local commands
+local commands, banged
 local s = require'tabline.setup'.settings
 local g = require'tabline.setup'.global
 local v = require'tabline.setup'.variables
@@ -8,9 +8,6 @@ local get_bufs = require'tabline.bufs'.get_bufs
 local set_order = require'tabline.bufs'.set_order
 local themes = require'tabline.themes'
 local fzf = require'tabline.fzf.fzf'
-
-local CU = vim.api.nvim_replace_termcodes('<C-U>', true, false, true)
-local Esc = vim.api.nvim_replace_termcodes('<Esc>', true, false, true)
 
 local fn = vim.fn
 
@@ -22,7 +19,6 @@ local getcwd = vim.fn.getcwd
 -- table functions {{{1
 local tbl = require'tabline.table'
 local remove = table.remove
-local concat = table.concat
 local insert = table.insert
 local index = tbl.index
 local filternew = tbl.filternew
@@ -31,6 +27,10 @@ local filternew = tbl.filternew
 -------------------------------------------------------------------------------
 -- Main command
 -------------------------------------------------------------------------------
+
+local function set_tabline()
+    vim.cmd[[set tabline=%!v:lua.require'tabline.tabline'.render()]]
+end
 
 local function command(arg)
   local subcmd, bang, args = nil, false, {}
@@ -75,10 +75,10 @@ local completion = {  -- {{{1
   ['labelstyle'] = { 'order', 'bufnr', 'sep' },
 }
 
-local function complete(a, c, p)  -- {{{1
+local function complete(_, c, _)  -- {{{1
   vim.cmd('redraw!')
   local subcmd, arg
-  cmdline = string.sub(c, #s.main_cmd_name + 2)
+  local cmdline = string.sub(c, #s.main_cmd_name + 2)
   -- print(string.format('"%s"', cmdline))
   for w in string.gmatch(cmdline, '(%w+)') do
     if not subcmd then
@@ -89,15 +89,14 @@ local function complete(a, c, p)  -- {{{1
       return {}
     end
   end
-  local res
   if arg and completion[subcmd] then
-    return filternew(completion[subcmd],
-                           function(k,v) return string.find(v, '^' .. arg) end)
+    return filternew(
+        completion[subcmd], function(_,str) return string.find(str, '^' .. arg) end)
   elseif subcmd and completion[subcmd] then
     return completion[subcmd]
   elseif subcmd then
-    return filternew(subcmds,
-                           function(k,v) return string.find(v, '^' .. subcmd) end)
+    return filternew(
+        subcmds, function(_,str) return string.find(str, '^' .. subcmd) end)
   else
     return subcmds
   end
@@ -128,7 +127,8 @@ local function select_tab_with_char(cnt) -- Select tab with character {{{1
     select_tab(cnt)
     return
   end
-  local oldstyle, bufs, selbuf, selnr, selaz = s.label_style, g.current_buffers
+  local oldstyle, bufs = s.label_style, g.current_buffers
+  local selbuf, selnr, selaz
   s.label_style = 'sel'
   vim.cmd('redrawtabline')
   selbuf = fn.nr2char(fn.getchar())
@@ -391,6 +391,7 @@ local function reset_all() -- Reset all tabs and buffers {{{1
     fn.settabvar(i, 'tab', require'tabline.tabs'.new_tab(i))
   end
   require'tabline.bufs'.init_bufs()
+  set_tabline()
 end
 
 local function pin_buffer(bang) -- Pin buffer {{{1
@@ -460,16 +461,15 @@ local function info(bang) -- Info {{{1
     print('order: ' .. vim.inspect(s.filtering and g.order[getcwd()] or g.order.unfiltered))
   else
     print('--- BUFFERS ---')
-    for k, v in pairs(g.buffers) do
-      print(string.format('%s   %s', v.nr, vim.inspect(v)))
+    for _, val in pairs(g.buffers) do
+      print(string.format('%s   %s', val.nr, vim.inspect(val)))
     end
   end
 end
 
 local function testspeed() -- Test speed {{{1
-  local fn = vim.fn
   local time = fn.reltime()
-  for i = 1, 1000 do
+  for _ = 1, 1000 do
     vim.cmd('redrawtabline')
   end
   print(

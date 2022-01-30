@@ -1,17 +1,13 @@
 local fn = vim.fn
-local o = vim.o
-local g = require'tabline.setup'.global
-local s = require'tabline.setup'.settings
 local h = require'tabline.helpers'
-local find = string.find
 
-local M, last = { closed = {} }, {}, nil
+local M, last = { closed = {} }, {}
 
 -------------------------------------------------------------------------------
 -- Tab initializer
 -------------------------------------------------------------------------------
 
-local function new(page)  -- {{{1
+local function new(_)  -- {{{1
   return { ['name'] = false }
 end
 

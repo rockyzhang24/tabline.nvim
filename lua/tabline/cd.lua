@@ -14,7 +14,7 @@ local roots = { -- {{{1
 
 local function find_root() -- find root {{{1
   local dir, file
-  for k, v in pairs(roots) do
+  for _, v in pairs(roots) do
     dir = fn.finddir(v, '.;')
     if dir ~= '' then
       return fn.fnamemodify(dir, ':p:h')
@@ -93,7 +93,7 @@ local function input(dir, typ)  -- get directory from input {{{1
   local types = {'cd', 'tcd', 'lcd'}
   local cur = '[' .. types[vim.b._cdtype] .. '] '
   vim.cmd('redraw! | echohl Question')
-  dst = fn.input(cur, dir and dir or find_root() or getcwd(), 'dir')
+  local dst = fn.input(cur, dir and dir or find_root() or getcwd(), 'dir')
   vim.cmd('echohl None')
   vim.cmd('cunmap <buffer> <C-j>')
   return types[vim.b._cdtype], dst
@@ -124,7 +124,8 @@ function M.cdw() M.set_dir(0) end
 
 function M.info()
   local wdir, tdir = h.localdir() == 2, h.localdir() == 1
-  local fmt, all, gitdir = "%-20s %s\n"
+  local fmt = "%-20s %s\n"
+  local all, gitdir
 
   -- working directory
   if wdir then

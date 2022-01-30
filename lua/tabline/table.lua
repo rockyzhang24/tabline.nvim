@@ -2,49 +2,49 @@ local tbl = {}
 
 local remove = table.remove
 
-function tbl.slice(tbl, first, last, step)
+function tbl.slice(t, first, last, step)
   local sliced, n = {}, 0
-  for i = first or 1, last or #tbl, step or 1 do
+  for i = first or 1, last or #t, step or 1 do
     n = n + 1
-    sliced[n] = tbl[i]
+    sliced[n] = t[i]
   end
   return sliced
 end
 
-function tbl.copy(tbl)
+function tbl.copy(t)
   local t2 = {}
-  for k,v in pairs(tbl) do
+  for k,v in pairs(t) do
     t2[k] = v
   end
   return t2
 end
 
-function tbl.reverse(tbl)
-  local n = #tbl
+function tbl.reverse(t)
+  local n = #t
   local i = 1
   while i < n do
-    tbl[i], tbl[n] = tbl[n], tbl[i]
+    t[i], t[n] = t[n], t[i]
     i = i + 1
     n = n - 1
   end
-  return tbl
+  return t
 end
 
-function tbl.filter(tbl, func)
-  local ix, sz = 1, #tbl
-  for k, v in ipairs(tbl) do
+function tbl.filter(t, func)
+  local ix, sz = 1, #t
+  for k, v in ipairs(t) do
     if func(k, v) then
-      tbl[ix] = v
+      t[ix] = v
       ix = ix + 1
     end
   end
-  for i = ix, sz do tbl[i] = nil end
-  return tbl
+  for i = ix, sz do t[i] = nil end
+  return t
 end
 
-function tbl.filternew(tbl, func)
-  local ix, sz, new = 1, #tbl, {}
-  for k,v in pairs(tbl) do new[k] = v end
+function tbl.filternew(t, func)
+  local ix, sz, new = 1, #t, {}
+  for k,v in pairs(t) do new[k] = v end
   for k, v in ipairs(new) do
     if func(k, v) then
       new[ix] = v
@@ -55,24 +55,24 @@ function tbl.filternew(tbl, func)
   return new
 end
 
-function tbl.map(tbl, func)
-  for k, v in pairs(tbl) do
-    tbl[k] = func(k,v)
+function tbl.map(t, func)
+  for k, v in pairs(t) do
+    t[k] = func(k,v)
   end
-  return tbl
+  return t
 end
 
-function tbl.mapnew(tbl, func)
+function tbl.mapnew(t, func)
   local new = {}
-  for k, v in pairs(tbl) do
+  for k, v in pairs(t) do
     new[k] = func(k,v)
   end
   return new
 end
 
-function tbl.index(tbl, val)
+function tbl.index(t, val)
   local ix = 1
-  for _, v in ipairs(tbl) do
+  for _, v in ipairs(t) do
     if v == val then
       return ix
     end
@@ -81,16 +81,16 @@ function tbl.index(tbl, val)
   return nil
 end
 
-function tbl.uniq(tbl)
+function tbl.uniq(t)
   local seen = {}
-  for k, v in pairs(tbl) do
+  for k, v in pairs(t) do
     if seen[v] then
-      remove(tbl, k)
+      remove(t, k)
     else
       seen[v] = true
     end
   end
-  return tbl
+  return t
 end
 
 return tbl

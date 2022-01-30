@@ -48,7 +48,7 @@ local function sep(group)
   return '%s ' .. hi
 end
 
-function theme()
+local function theme()
   return {
     name = 'default',
 

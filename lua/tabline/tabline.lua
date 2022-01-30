@@ -11,7 +11,6 @@ local strwidth = vim.api.nvim_strwidth
 local tbl = require'tabline.table'
 local remove = table.remove
 local concat = table.concat
-local insert = table.insert
 local map = tbl.map
 local index = tbl.index
 --}}}
@@ -29,8 +28,8 @@ local fit_tabline, render
 local format_right_corner = require'tabline.render.corners'.format_right_corner
 local mode_label = require'tabline.render.corners'.mode_label
 
-local function bufwidth(s) s = subst(s, '%%#%w+#', '') return strwidth(s) end
-local function tabwidth(s) s = subst(subst(s, '%%#%w+#', ''), '%%%d+T', '') return strwidth(s) end
+local function bufwidth(str) str = subst(str, '%%#%w+#', '') return strwidth(str) end
+local function tabwidth(str) str = subst(subst(str, '%%#%w+#', ''), '%%%d+T', '') return strwidth(str) end
 
 -------------------------------------------------------------------------------
 -- Entry point for tabline rendering
@@ -85,7 +84,7 @@ function fit_tabline(center, tabs)
   local cwdbadge = format_right_corner()
   limit = limit - labelwidth(cwdbadge)
 
-  local modebadge = mode_label(), 0
+  local modebadge = mode_label()
   limit = limit - labelwidth(modebadge)
 
   local tabsbadge = tabs_badge()
@@ -166,7 +165,7 @@ function fit_tabline(center, tabs)
     end
   end
 
-  local labels = map(tabs, function(_,v) return v.label end)
+  local labels = map(tabs, function(_,val) return val.label end)
   if h.tabs_mode() then
     for n, l in ipairs(labels) do
       labels[n] = '%' .. n .. 'T' .. l

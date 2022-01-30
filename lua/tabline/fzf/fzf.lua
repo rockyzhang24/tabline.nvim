@@ -2,18 +2,10 @@ if vim.fn.exists('g:loaded_fzf') == 0 then
   return nil
 end
 
-local g = require'tabline.setup'.global
-local s = require'tabline.setup'.settings
-local h = require'tabline.helpers'
 local a = require'tabline.fzf.ansi'
 
 -- vim functions {{{1
 local fn = vim.fn
-local argv = vim.fn.argv
-local tabpagenr = vim.fn.tabpagenr
-local tabpagebuflist = vim.fn.tabpagebuflist
-local getcwd = vim.fn.getcwd
-local haslocaldir = vim.fn.haslocaldir
 local execute = vim.fn.execute
 local bufnr = vim.fn.bufnr
 local bufname = vim.fn.bufname
@@ -21,12 +13,8 @@ local bufname = vim.fn.bufname
 -- table functions {{{1
 local tbl = require'tabline.table'
 local remove = table.remove
-local concat = table.concat
 local insert = table.insert
-local sort = table.sort
-local filter = tbl.filter
 local map = tbl.map
-local mapnew = tbl.mapnew
 local index = tbl.index
 local copy = tbl.copy
 --}}}
@@ -73,7 +61,7 @@ end
 
 local function strip(str) return string.gsub(str, '^%s*(.*)%s*', '%1') end
 
-local function format_buffer(k,b) -- {{{1
+local function format_buffer(_,b) -- {{{1
   local name = bufname(b) == '' and '[Unnamed]' or fn.fnamemodify(bufname(b), ":~:.")
   local flag = b == bufnr() and a.blue('%', 'Conditional') or (b == bufnr('#') and a.magenta('#', 'Special') or ' ')
   local modified = fn.getbufvar(b, '&modified') == 1 and a.red(' [+]', 'Exception') or ''

@@ -7,7 +7,6 @@ local icons = require'tabline.setup'.icons
 -- proxy functions {{{1
 local strfind = string.find
 local gsub = string.gsub
-local remove = table.remove
 local insert = table.insert
 local sort = table.sort
 local index = require'tabline.table'.index
@@ -134,7 +133,7 @@ end -- }}}
 -- @param bufs: g.buffers
 -- @return: the slice
 --------------------------------------------------------------------------------
-function slice_recent(tbl, bufs) -- {{{1
+local function slice_recent(tbl, bufs) -- {{{1
   local sliced = {}
   for i = 1, s.max_recent do
     sliced[i] = tbl[i]
@@ -183,6 +182,7 @@ function M.add_buf(bnr)
   else
     g.buffers[bnr] = nil
   end
+  return g.buffers[bnr]
 end
 
 function M.add_file(file)
@@ -230,6 +230,16 @@ function M.get_bufs(all)
     g.order.unfiltered = M.ordered_bufs(g.recent.unfiltered)
     return g.order.unfiltered
   end
+end
+
+-------------------------------------------------------------------------------
+--- Function: M.get_buf
+---
+--- @param bnr number: buffer number
+--- @return table: buffer object or nil
+-------------------------------------------------------------------------------
+function M.get_buf(bnr)
+    return g.buffers[bnr] or M.add_buf(bnr)
 end
 
 -------------------------------------------------------------------------------
@@ -296,7 +306,7 @@ function M.ordered_bufs(recent, cwd)
   elseif not cwd then
     order = g.order.unfiltered
   end
-  order = filter(order, function(k,v) return index(recent, v) end)
+  order = filter(order, function(_,v) return index(recent, v) end)
   for _, b in ipairs(recent) do
     if not index(order, b) then
       insert(order, b)

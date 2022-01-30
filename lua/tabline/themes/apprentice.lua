@@ -1,4 +1,4 @@
-function theme()
+local function theme()
   return {
     name = 'apprentice',
 

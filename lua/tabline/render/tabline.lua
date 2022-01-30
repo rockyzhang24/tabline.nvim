@@ -1,6 +1,4 @@
-local o = vim.o
 local g = require'tabline.setup'.global
-local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
 local i = require'tabline.setup'.indicators
 
@@ -8,26 +6,19 @@ local i = require'tabline.setup'.indicators
 local tabpagenr = vim.fn.tabpagenr
 local tabpagebuflist = vim.fn.tabpagebuflist
 local tabpagewinnr = vim.fn.tabpagewinnr
-local bufname = vim.fn.bufname
-local fnamemodify = vim.fn.fnamemodify
 local getbufvar = vim.fn.getbufvar
 local gettabvar = vim.fn.gettabvar
-local filereadable = vim.fn.filereadable
 
 -- table functions {{{1
-local tbl = require'tabline.table'
-local remove = table.remove
-local concat = table.concat
 local insert = table.insert
-local index = tbl.index
 --}}}
 
 local printf = string.format
 
-local short_bufname = require'tabline.render.paths'.short_bufname
 local buf_icon = require'tabline.render.bufline'.buf_icon
 local buf_path = require'tabline.render.bufline'.buf_path
 local get_tab = require'tabline.tabs'.get_tab
+local get_buf = require'tabline.bufs'.get_buf
 
 local tab_buffer = function(tnr) return tabpagebuflist(tnr)[tabpagewinnr(tnr)] end
 
@@ -63,7 +54,7 @@ end
 ----
 -- Format the tab number for the tab label.
 ----
-function tab_num(tnr, hi)
+function tab_num(tnr)
   return printf("%%#TNum%s# %d ", tnr == tabpagenr() and 'Sel' or '', tnr)
 end
 
@@ -77,7 +68,7 @@ end
 ----
 function tab_hi(bnr, tnr)
   if tnr == tabpagenr() then
-    return (s.special_tabs and g.buffers[bnr].special) and 'Special' or 'Select'
+    return (s.special_tabs and get_buf(bnr) and g.buffers[bnr].special) and 'Special' or 'Select'
   else
     return 'Hidden'
   end
@@ -98,7 +89,7 @@ end
 ----
 function tab_label(bnr, tnr)
 
-  local buf = g.buffers[bnr]
+  local buf = get_buf(bnr)
   local tab = get_tab(tnr)
 
   -- custom label
@@ -149,7 +140,7 @@ function tab_icon(bnr, tnr, hi)
     return T.icon .. ' '
   end
 
-  local B = g.buffers[bnr]
+  local B = get_buf(bnr)
   if not B then return '' end
 
   local buf  = {nr = bnr, hi = hi, icon = B.icon, name = B.name}
@@ -176,7 +167,7 @@ function format_tab_label(tnr)
   local label = tab_label(bnr, tnr)
   local mod   = tab_mod_flag(tnr, false)
 
-  local formatted = g.buffers[bnr] and g.buffers[bnr].doubleicon
+  local formatted = get_buf(bnr) and g.buffers[bnr].doubleicon
                     and printf("%s%%#T%s# %s%s %s%s", nr, hi, icon, label, icon, mod)
                     or printf("%s%%#T%s# %s%s %s", nr, hi, icon, label, mod)
 

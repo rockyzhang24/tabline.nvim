@@ -4,8 +4,6 @@
 
 local M = { run_once = false }
 
-local tbl = require'tabline.table'
-
 M.global = { -- internal tables {{{1
   closed_tabs = {},
   pinned = {},
