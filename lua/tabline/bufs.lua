@@ -257,6 +257,8 @@ function M.valid_bufs()
       insert(valid, nr)
     elseif not b.special and validbuf(b.path, wd) then
       insert(valid, nr)
+    elseif s.show_unnamed and bufname(nr) == '' then
+      insert(valid, nr)
     end
   end
   return valid, pinned

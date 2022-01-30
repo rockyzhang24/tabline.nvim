@@ -95,6 +95,7 @@ initialized. For the default value, run `:Tabline config`
   |tabs_badge|            see below
   |label_style|           see below
   |show_full_path|        shortened full path, for example `~/.l/s/n/s/file.ext`
+  |show_unnamed|          show unnamed buffers in the bufferline
   |clickable_bufline|     LMB selects, RMB puts last, S-RMB deletes buffer
   |max_recent|            number of buffers that can be rendered (most recent)
   |scratch_label|         label for scratch buffers

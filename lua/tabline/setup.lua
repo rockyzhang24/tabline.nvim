@@ -25,6 +25,7 @@ M.settings = {  -- user settings {{{1
   tabs_badge = { fraction = true, left = true, visibility = {'buffers'} },
   label_style = 'sep',
   show_full_path = false,
+  show_unnamed = true,
   clickable_bufline = true,
   max_recent = 10,
   modes = { 'auto', 'buffers', 'args' },
