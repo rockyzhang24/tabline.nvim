@@ -7,6 +7,7 @@ TABLINE-NVIM - TABLE OF CONTENTS                                *tabline-nvim*
   Settings                                                |tnv-init|
   Main command                                            |tnv-command|
   Mappings                                                |tnv-mappings|
+  Themes                                                  |tnv-themes|
   Credits                                                 |tnv-credits|
   License                                                 |tnv-license|
 
@@ -103,9 +104,9 @@ initialized. For the default value, run `:Tabline config`
   |mapleader|             used in the mappings below
   |default_mappings|      apply default mappings before any mapping you set
   |cd_mappings|           enable normal mode mappings that start with `cd`
-  |theme|                 if nil, no theme will be loaded, then use your highlight
+  |theme|                 if `nil`, you must set up highlights yourself
   |ascii_only|            avoid any kind of non-ascii character
-  |show_icons|            icons from nvim-web-devincons
+  |show_icons|            icons from `nvim-web-devincons`
   |colored_icons|         will use normal bg if false
   |separators|            for active and inactive tabs/buffers
   |sessions_dir|          directory for the session management commands
@@ -164,7 +165,7 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   unpin         !              unpin current buffer or all(!) buffers
   reopen                       reopen last closed tab
   fullpath      off, !         toggle basename/shortened full paths
-  theme         {theme}        set a theme
+  theme         {theme}        set a theme |tnv-themes|
   bufname       {name}         give a name to current buffer
   tabname       {name}         ,,      ,,             tab
   buficon       {icon}         give an icon to current buffer
@@ -240,7 +241,67 @@ numbers.
 
 
 
-CREDITS                                                           *tnv-credits*
+THEMES                                                            *tnv-themes*
+==============================================================================
+
+Theme can be changed with `:Tabline theme {theme name}`
+
+Available themes are:
+
+  `default`       adaptive, uses vim highlight groups
+  `apprentice`    dark theme
+  `themer`        adaptive, needs `themer.lua` {1}, uses its highlight groups
+
+                                  {1} https://github.com/ThemerCorp/themer.lua
+
+Otherwise you can create your own, but it's not that straightforward, since
+there are a lot of highlight groups. First define a table:
+>
+  local theme = {
+    name = 'theme_name',
+    ... -- highlight groups here
+  }
+<
+Then you must register it: >
+  require('tabline.themes').add(theme)
+
+Then you can load it with: >
+  :Tabline theme theme_name
+
+Highlight groups are:
+
+  `TSelect`         selected tab/buffer
+  `TVisible`        buffers that have a window
+  `THidden`         buffers without a window
+  `TExtra`          buffers with window, not belonging to current tab
+  `TSpecial`        special buffers (git status, etc)
+  `TFill`           tabline background
+  `TCorner`         right corner with CWD
+  `TNumSel`         for when using numbers instead of separators
+  `TNum`            ,, ,,
+
+Most of them have a `Dim`, `Sep` and `Mod` variants, that control inactive
+icons, separators and modified mark.
+
+Look at the `apprentice` theme for a full example. The `%s` placeholder is
+where the group name will go.
+
+For example: >
+  TSelect = '%s gui=NONE guifg=#bcbcbc guibg=#444444',
+
+becomes: >
+  hi TSelect gui=NONE guifg=#bcbcbc guibg=#444444'
+
+while: >
+  TSelect = 'link %s Pmenu',
+
+becomes: >
+  hi link TSelect Pmenu
+
+
+
+
+CREDITS                                                          *tnv-credits*
 ==============================================================================
 
 Bram Moolenaar for Vim
