@@ -1,5 +1,5 @@
 if vim.fn.exists('g:loaded_fzf') == 0 then
-  return nil
+  return {}
 end
 
 local a = require'tabline.fzf.ansi'
