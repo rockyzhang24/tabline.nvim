@@ -1,51 +1,47 @@
-local gsub = string.gsub
-local find  = string.find
-local execute = vim.fn.execute
+local fn = vim.fn
+local printf = string.format
+
+local t, fg, bg
 
 local function mod(group)
-  local hi = execute('hi ' .. group)
-  local _, _, link = find(hi, 'links to (%w+)')
-  if link then
-    hi = execute('hi ' .. link)
+  t = vim.o.termguicolors and 'gui' or 'cterm'
+  fg = vim.o.termguicolors and '#ff6666' or '124'
+  bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
+  if bg == '' then
+    return printf('%%s %sfg=%s %s=bold', t, fg, t)
+  else
+    return printf('%%s %sbg=%s %sfg=%s %s=bold', t, bg, t, fg, t)
   end
-  hi = gsub(hi, '.*xxx', '')
-  hi = gsub(hi, 'ctermfg=%S+', 'ctermfg=124')
-  hi = gsub(hi, 'guifg=%S+', 'guifg=#ff6666')
-  hi = gsub(hi, 'cterm=%S+', '')
-  hi = gsub(hi, 'gui=%S+', '')
-  return '%s ' .. hi .. ' cterm=bold gui=bold'
 end
 
 local function dim(group)
-  local guifg = vim.o.background == 'dark' and '6c6c6c' or 'a9a9a9'
-  local termfg = vim.o.background == 'dark' and '242' or '248'
-  local hi = execute('hi ' .. group)
-  local _, _, link = find(hi, 'links to (%w+)')
-  if link then
-    hi = execute('hi ' .. link)
+  t = vim.o.termguicolors and 'gui' or 'cterm'
+  if vim.o.termguicolors then
+    fg = vim.o.background == 'dark' and '#6c6c6c' or '#a9a9a9'
+  else
+    fg = vim.o.background == 'dark' and '242' or '248'
   end
-  hi = gsub(hi, '.*xxx', '')
-  hi = gsub(hi, 'ctermfg=%S+', 'ctermfg=' .. termfg)
-  hi = gsub(hi, 'guifg=%S+', 'guifg=#' .. guifg)
-  hi = gsub(hi, 'cterm=%S+', '')
-  hi = gsub(hi, 'gui=%S+', '')
-  return '%s ' .. hi
+  bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
+  if bg == '' then
+    return printf('%%s %sfg=%s %s=none', t, fg, t)
+  else
+    return printf('%%s %sbg=%s %sfg=%s %s=none', t, bg, t, fg, t)
+  end
 end
 
 local function sep(group)
-  local guifg = vim.o.background == 'dark' and '5f87af' or '4a679a'
-  local termfg = vim.o.background == 'dark' and '67' or '7'
-  local hi = execute('hi ' .. group)
-  local _, _, link = find(hi, 'links to (%w+)')
-  if link then
-    hi = execute('hi ' .. link)
+  t = vim.o.termguicolors and 'gui' or 'cterm'
+  if vim.o.termguicolors then
+    fg = vim.o.background == 'dark' and '#5f87af' or '#4a679a'
+  else
+    fg = vim.o.background == 'dark' and '67' or '7'
   end
-  hi = gsub(hi, '.*xxx', '')
-  hi = gsub(hi, 'ctermfg=%S+', 'ctermfg=' .. termfg)
-  hi = gsub(hi, 'guifg=%S+', 'guifg=#' .. guifg)
-  hi = gsub(hi, 'cterm=%S+', '')
-  hi = gsub(hi, 'gui=%S+', '')
-  return '%s ' .. hi
+  bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
+  if bg == '' then
+    return printf('%%s %sfg=%s %s=none', t, fg, t)
+  else
+    return printf('%%s %sbg=%s %sfg=%s %s=none', t, bg, t, fg, t)
+  end
 end
 
 local function theme()
@@ -78,4 +74,4 @@ local function theme()
 }
 end
 
-return { theme = theme }
+return { theme = theme, mod = mod, dim = dim, sep = sep }

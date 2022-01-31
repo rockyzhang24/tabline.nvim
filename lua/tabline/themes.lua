@@ -5,7 +5,13 @@ local M = {}
 M.themes = {}
 M.available = { 'default', 'apprentice' }
 
-function M.apply(theme)
+function M.refresh()
+  if not index(M.available, 'themer') and pcall(require, 'themer') then
+    table.insert(M.available, 'themer')
+  end
+end
+
+function M.apply(theme, reload)
   local s = require'tabline.setup'.settings
   if M.restore_settings then
     for k, v in pairs(M.restore_settings) do
@@ -13,8 +19,11 @@ function M.apply(theme)
     end
     M.restore_settings = nil
   end
+  if reload and theme.reload then
+    theme = theme.reload()
+  end
   M.current = theme
-  local skip = {'name', 'settings'}
+  local skip = {'name', 'settings', 'reload'}
   for k, v in pairs(theme) do
     if not index(skip, k) then
       vim.cmd(string.format('hi! ' .. v, k))
@@ -38,4 +47,5 @@ function M.add(theme)
   table.insert(M.available, theme.name)
 end
 
+M.refresh()
 return M

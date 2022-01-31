@@ -71,7 +71,10 @@ local completion = {  -- {{{1
   ['filtering'] = { 'off' },
   ['fullpath'] = { 'off' },
   ['session'] = { 'load', 'new', 'save', 'delete' },
-  ['theme'] = themes.available,
+  ['theme'] = (function()
+    themes.refresh()
+    return themes.available
+  end)(),
   ['labelstyle'] = { 'order', 'bufnr', 'sep' },
 }
 
@@ -489,10 +492,15 @@ local function labelstyle(arg) -- Labels style {{{1
 end
 
 local function theme(arg) -- Set theme {{{1
-  s.theme = arg[1]
-  if not index(themes.available, s.theme) then
+  if not next(arg) then
+    print('Current theme: ' .. s.theme)
+    return
+  end
+  themes.refresh()
+  if not index(themes.available, arg[1]) then
     print('Theme not available')
   else
+    s.theme = arg[1]
     require'tabline.setup'.load_theme(true)
   end
 end

@@ -129,7 +129,7 @@ function M.load_theme(reload) -- Load theme {{{1
     local themes = require'tabline.themes'
     local theme = themes.themes[M.settings.theme]
     if theme then
-      themes.apply(theme)
+      themes.apply(theme, reload)
     else
       local loaded, theme = pcall(require, 'tabline.themes.' .. M.settings.theme)
       if not loaded then
@@ -137,7 +137,7 @@ function M.load_theme(reload) -- Load theme {{{1
         M.load_theme(reload)
         return
       else
-        themes.apply(theme.theme())
+        themes.apply(theme.theme(), reload)
       end
     end
   end
