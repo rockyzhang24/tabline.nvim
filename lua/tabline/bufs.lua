@@ -29,6 +29,7 @@ local getcwd = vim.fn.getcwd
 local tabpagebuflist = vim.fn.tabpagebuflist
 local tabpagenr = vim.fn.tabpagenr
 local bufnr = vim.fn.bufnr
+local execute = vim.fn.execute
 --}}}
 
 -------------------------------------------------------------------------------
@@ -240,6 +241,21 @@ end
 -------------------------------------------------------------------------------
 function M.get_buf(bnr)
     return g.buffers[bnr] or M.add_buf(bnr)
+end
+
+-------------------------------------------------------------------------------
+--- Function: M.session_post_clean_up
+--- Remove buffers that are no longer valid.
+-------------------------------------------------------------------------------
+function M.session_post_clean_up()
+  for i = 1, bufnr('$') do
+    if g.buffers[i] then
+      if not buflisted(i) or (buflisted(i) and bufname(i) == '') then
+        execute(i .. 'bwipe')
+        g.buffers[i] = nil
+      end
+    end
+  end
 end
 
 -------------------------------------------------------------------------------
