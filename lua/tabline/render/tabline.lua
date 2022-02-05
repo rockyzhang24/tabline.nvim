@@ -133,7 +133,7 @@ end
 -------------------------------------------------------------------------------
 function tab_icon(bnr, tnr, hi)
   if not s.show_icons then
-    return ' '
+    return ''
   end
   local T, icon = gettabvar(tnr, 'tab'), nil
   if T.icon then
@@ -147,7 +147,7 @@ function tab_icon(bnr, tnr, hi)
   icon = buf_icon(buf, tnr == tabpagenr())
 
   return not icon and ''
-         or type(icon) == 'string' and icon .. ' '
+         or type(icon) == 'string' and icon
          or icon[tnr == tabpagenr() and 1 or 2] .. ' '
 end
 

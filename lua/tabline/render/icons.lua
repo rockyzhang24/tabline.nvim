@@ -4,7 +4,6 @@ local M = { icons = {}, normalbg = nil }
 -- Icons
 -------------------------------------------------------------------------------
 
-local icons
 local printf = string.format
 
 local g = require'tabline.setup'.global
@@ -12,13 +11,14 @@ local s = require'tabline.setup'.settings
 local h = require'tabline.helpers'
 
 -- Load devicons and add custom icons {{{1
-local ok, devicons = pcall(require, 'nvim-web-devicons')
+local ok, icons = pcall(require, 'nvim-web-devicons')
 if not ok then
-  devicons = nil
+  icons = nil
 else
-  icons = devicons.get_icons()
+  icons = icons.get_icons()
   icons.fzf = { icon = "🗲", color = "#d0bf41", cterm_color = "185", name = 'fzf' }
   icons.python = { icon = "", color = "#3572A5", cterm_color = "67", name = 'python' }
+  icons.default = { icon = "", color = "#6d8086", cterm_color = "66", name = "default" }
 end
 --}}}
 
@@ -45,19 +45,21 @@ local function make_icons_hi(gcol, tcol)
 end
 
 local function get_icon(name, ext)
-  return icons[name] or icons[ext]
+  return icons[name] or icons[ext] or icons.default
 end
 
 function M.devicon(b, selected)  -- {{{1
-  if devicons then
+  if icons then
     local buf = g.buffers[b.nr]
     if not buf.basename then
       return ''
     end
-    local icon = get_icon(buf.devicon or buf.basename, buf.ext)
+    local icon = get_icon(buf.basename, buf.ext)
     if icon then
       if not M.icons[icon.color] then
-        M.icons[icon.color] = make_icons_hi(icon.color, icon.cterm_color)
+        M.icons[icon.color] = make_icons_hi(
+          -- increase contrast for some colors
+          icon.color:gsub('#56', '#a6'), icon.cterm_color:gsub('^60$', '126'))
       end
       local hi = M.icons[icon.color][b.hi]
       local typ = selected and (not s.colored_icons and 'ncl' or 'sel') or 'dim'

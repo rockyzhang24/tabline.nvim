@@ -104,7 +104,7 @@ local function special_or_listed(bnr) -- {{{1
   elseif getbufvar(bnr, '&buftype') == 'terminal' then
     if strfind(buf.path, ';#FZF') then
       buf.name = 'FZF'
-      buf.devicon = 'fzf'
+      buf.basename = 'fzf'
       buf.doubleicon = true
     else
       local pid = string.match(buf.path, '//(%d+):')

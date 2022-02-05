@@ -97,8 +97,8 @@ function format_buffer_labels(bufs) -- {{{1
   local pagebufs = tabpagebuflist(tabpagenr())
   sepactive, sepinactive = unpack(s.separators)
 
-  -- set function that renders the buffers number/separator
-  local buf_nr = ({
+  -- set function that renders the buffer's number/separator
+  local sep = ({
       bufnr = buf_bufnr,
       order = buf_order,
       sep = buf_sep,
@@ -127,9 +127,9 @@ function format_buffer_labels(bufs) -- {{{1
     }
 
     if b.special then
-      buf.label = buf_nr(iscur, buf) .. buf_label(buf)
+      buf.label = sep(iscur, buf) .. buf_label(buf)
     else
-      buf.label = buf_nr(iscur, buf) .. buf_label(buf) .. buf_mod(buf)
+      buf.label = sep(iscur, buf) .. buf_label(buf) .. buf_mod(buf)
     end
 
     if iscur then center = bnr end
@@ -162,12 +162,12 @@ end
 
 function buf_icon(b, selected)  -- {{{1
   if g.buffers[b.nr].icon then
-    return g.buffers[b.nr].icon .. ' '
+    return g.buffers[b.nr].icon .. '  '
   else
     local dicon = devicon(b, selected)
     if dicon then
       b.icon = dicon
-      return dicon .. ' '
+      return dicon .. '  '
     end
   end
   return ''
@@ -197,8 +197,7 @@ function buf_label(blabel)  -- {{{1
     return hi .. blabel.name .. ' '
   end
 
-  local curbuf = winbufnr(0) == blabel.nr
-  local icon = buf_icon(blabel, curbuf)
+  local icon = buf_icon(blabel, winbufnr(0) == blabel.nr)
 
   return g.buffers[blabel.nr].doubleicon
          and hi .. icon .. blabel.name .. ' ' .. icon
