@@ -8,7 +8,6 @@ local argv = vim.fn.argv
 local tabpagenr = vim.fn.tabpagenr
 local tabpagebuflist = vim.fn.tabpagebuflist
 local haslocaldir = vim.fn.haslocaldir
-local execute = vim.fn.execute
 --}}}
 
 local find = string.find
@@ -30,18 +29,9 @@ end
 -- Generic helpers
 --------------------------------------------------------------------------------
 
-function M.get_hi_color(hi, gui, typ, fallback) -- {{{1
-  local hl, col = execute('hi ' .. hi)
-  local _, _, link = find(hl, 'links to (%w+)')
-  if link then
-    hl = execute('hi ' .. link)
-  end
-  if gui == 'gui' then
-    _, _, col = find(hl, gui .. typ .. '=#(%x+)')
-  else
-    _, _, col = find(hl, gui .. typ .. '=(%d+)')
-  end
-  return col or fallback
+function M.get_hi_color(hi, typ, fallback) -- {{{1
+  local color = fn.synIDattr(fn.synIDtrans(fn.hlID(hi)), typ)
+  return color == '' and fallback or color
 end
 
 function M.tabs_mode() -- {{{1
