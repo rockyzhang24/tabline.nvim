@@ -2,7 +2,7 @@
 -- Initialization
 -------------------------------------------------------------------------------
 
-local M = { run_once = false }
+local M = { ran_once = false }
 
 M.global = { -- internal tables {{{1
   closed_tabs = {},
@@ -174,12 +174,13 @@ function M.setup(opts)
 
   define_main_cmd()
   M.load_theme()
-  M.run_once = true
+  M.ran_once = true
+  vim.cmd 'silent! delcommand TablineConfig'
   vim.cmd[[set tabline=%!v:lua.require'tabline.tabline'.render()]]
 end
 
 function M.mappings(maps)
-  if not M.run_once then
+  if not M.ran_once then
     return
   end
 
