@@ -175,8 +175,7 @@ function M.setup(opts)
   define_main_cmd()
   M.load_theme()
   M.ran_once = true
-  vim.cmd 'silent! delcommand TablineConfig'
-  vim.cmd[[set tabline=%!v:lua.require'tabline.tabline'.render()]]
+  vim.fn['tabline#init']()
 end
 
 function M.mappings(maps)
