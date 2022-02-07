@@ -251,7 +251,7 @@ function M.session_post_clean_up()
   for i = 1, bufnr('$') do
     if g.buffers[i] then
       if not buflisted(i) or (buflisted(i) and bufname(i) == '') then
-        execute(i .. 'bwipe')
+        execute(i .. 'bwipe', 'silent!')
         g.buffers[i] = nil
       end
     end
