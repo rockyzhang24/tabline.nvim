@@ -223,16 +223,16 @@ Mapping~
 
 ------------------------------------------------------------------------------
                                                                     *tnv-plug*
-Finally there is a <Plug> available, to select a buffer in the bufferline.
-This only works in 'buffers' or 'args' mode. In 'tabs' mode use |gt|.
+There is a <Plug> available, to select a buffer in the bufferline.
+In 'tabs' mode it works like |gt|.
 
 You have to map the <Plug> yourself. For example:
 >
-  " press key, then type a character to go to corresponding buffer
+  " press key, then type a character to go to corresponding buffer/tab
   " it also accepts a count, then selects directly the buffer
   nmap gb <Plug>(TabSelect)
 
-  " select a buffer by with count, or execute another command
+  " select a buffer with count, or execute another command
   nmap <expr> gb v:count ? "\<Plug>(TabSelect)" : ":Buffers\r"
 
 The first form may be better if you use a style with separators, instead of

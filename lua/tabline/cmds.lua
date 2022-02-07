@@ -116,6 +116,10 @@ end
 -------------------------------------------------------------------------------
 
 local function select_tab(cnt) -- Select tab {{{1
+  if h.tabs_mode() then
+    vim.fn.feedkeys(cnt .. 'gt', 'n')
+    return
+  end
   local bufs, b = g.current_buffers, nil
   if v.mode == 'args' and not h.empty_arglist() then
     b = bufs[math.min(cnt, #fn.argv())]
@@ -128,25 +132,29 @@ local function select_tab(cnt) -- Select tab {{{1
 end
 
 local function select_tab_with_char(cnt) -- Select tab with character {{{1
-  if h.tabs_mode() then
-    return
-  elseif cnt ~= 0 then
+  if cnt ~= 0 then
     select_tab(cnt)
     return
   end
   local oldstyle, bufs = s.label_style, g.current_buffers
-  local selbuf, selnr, selaz
+  local seltab, selnr, selaz
   s.label_style = 'sel'
   vim.cmd('redrawtabline')
-  selbuf = fn.nr2char(fn.getchar())
+  seltab = fn.nr2char(fn.getchar())
   s.label_style = oldstyle
   vim.cmd('redrawtabline')
-  _, _, selnr = string.find(selbuf, '(%d)')
-  _, _, selaz = string.find(selbuf, '([a-z])')
-  if selnr and tonumber(selnr) <= #bufs then
-    vim.cmd('buffer ' .. bufs[tonumber(selnr)])
-  elseif selaz and string.byte(selaz) - 87 <= #bufs then
-    vim.cmd('buffer ' .. bufs[string.byte(selaz) - 87])
+  _, _, selnr = string.find(seltab, '(%d)')
+  _, _, selaz = string.find(seltab, '([a-z])')
+  if h.tabs_mode() then
+    if selnr and tonumber(selnr) <= fn.tabpagenr('$') then
+      vim.fn.feedkeys(selnr .. 'gt', 'n')
+    end
+  else
+    if selnr and tonumber(selnr) <= #bufs then
+      vim.cmd('buffer ' .. bufs[tonumber(selnr)])
+    elseif selaz and string.byte(selaz) - 87 <= #bufs then
+      vim.cmd('buffer ' .. bufs[string.byte(selaz) - 87])
+    end
   end
 end
 
