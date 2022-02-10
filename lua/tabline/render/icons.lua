@@ -45,7 +45,9 @@ local function make_icons_hi(gcol, tcol)
 end
 
 local function get_icon(name, ext)
-  return icons[name] or icons[ext] or icons.default
+  local i = icons[name] or icons[ext] or icons.default
+  i.cterm_color = i.cterm_color or '250'
+  return i
 end
 
 function M.devicon(b, selected)  -- {{{1
