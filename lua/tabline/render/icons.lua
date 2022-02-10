@@ -44,26 +44,21 @@ local function make_icons_hi(gcol, tcol)
   return ret
 end
 
-local function get_icon(name, ext)
-  local i = icons[name] or icons[ext] or icons.default
-  i.cterm_color = i.cterm_color or '250'
-  return i
-end
-
 function M.devicon(b, selected)  -- {{{1
   if icons then
     local buf = g.buffers[b.nr]
     if not buf.basename then
-      return ''
+      return nil
     end
-    local icon = get_icon(buf.basename, buf.ext)
+    local icon = icons[buf.basename] or icons[buf.ext] or icons.default
     if icon then
-      if not M.icons[icon.color] then
-        M.icons[icon.color] = make_icons_hi(
+      local gcol, tcol = icon.color, icon.cterm_color or '250'
+      if not M.icons[gcol] then
+        M.icons[gcol] = make_icons_hi(
           -- increase contrast for some colors
-          icon.color:gsub('#56', '#a6'), icon.cterm_color:gsub('^60$', '126'))
+          gcol:gsub('#56', '#a6'), tcol:gsub('^60$', '126'))
       end
-      local hi = M.icons[icon.color][b.hi]
+      local hi = M.icons[gcol][b.hi]
       local typ = selected and (not s.colored_icons and 'ncl' or 'sel') or 'dim'
       return hi and string.gsub(hi[typ], '___', icon.icon) or ''
     end

@@ -41,6 +41,7 @@ local settings = {
   theme                     = 'default',
   show_icons                = true,
   colored_icons             = true,
+  icon_spacing              = '  ',
   ascii_only                = false,
   scratch_label             = '[Scratch]',
   unnamed_label             = '[Unnamed]',

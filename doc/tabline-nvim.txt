@@ -108,6 +108,7 @@ initialized. For the default value, run `:Tabline config`
   |ascii_only|            avoid any kind of non-ascii character
   |show_icons|            icons from `nvim-web-devincons`
   |colored_icons|         will use normal bg if false
+  |icon_spacing|          spaces between icon and filename (default '  ')
   |separators|            for active and inactive tabs/buffers
   |sessions_dir|          directory for the session management commands
 

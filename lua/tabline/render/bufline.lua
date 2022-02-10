@@ -34,7 +34,7 @@ local add_buf = require'tabline.bufs'.add_buf
 local short_bufname = require'tabline.render.paths'.short_bufname
 local devicon = require'tabline.render.icons'.devicon
 
-local sepactive, sepinactive
+local sepactive, sepinactive, iconspacing
 local buf_order, buf_bufnr, buf_sel, buf_sep
 local buf_path, buf_icon, buf_label, buf_mod, format_buffer_labels
 local render_buffers, render_args, limit_buffers
@@ -96,6 +96,7 @@ function format_buffer_labels(bufs) -- {{{1
   local curbuf, tabs, all, center = winbufnr(0), {}, g.buffers, 0
   local pagebufs = tabpagebuflist(tabpagenr())
   sepactive, sepinactive = unpack(s.separators)
+  iconspacing = s.icon_spacing or '  '
 
   -- set function that renders the buffer's number/separator
   local sep = ({
@@ -162,12 +163,12 @@ end
 
 function buf_icon(b, selected)  -- {{{1
   if g.buffers[b.nr].icon then
-    return g.buffers[b.nr].icon .. '  '
+    return g.buffers[b.nr].icon .. iconspacing
   else
     local dicon = devicon(b, selected)
     if dicon then
       b.icon = dicon
-      return dicon .. '  '
+      return dicon .. iconspacing
     end
   end
   return ''
