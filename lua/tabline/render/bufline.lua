@@ -34,7 +34,8 @@ local add_buf = require'tabline.bufs'.add_buf
 local short_bufname = require'tabline.render.paths'.short_bufname
 local devicon = require'tabline.render.icons'.devicon
 
-local sepactive, sepinactive, iconspacing
+local iconspacing = s.icon_spacing or '  '
+local sepactive, sepinactive
 local buf_order, buf_bufnr, buf_sel, buf_sep
 local buf_path, buf_icon, buf_label, buf_mod, format_buffer_labels
 local render_buffers, render_args, limit_buffers
