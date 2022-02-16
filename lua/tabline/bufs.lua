@@ -94,7 +94,8 @@ end -- }}}
 --          a special buffer, otherwise nil
 --------------------------------------------------------------------------------
 local function special_or_listed(bnr) -- {{{1
-  local ft, buf = getbufvar(bnr, '&filetype'), new_buf(bnr)
+  local ft, bt = getbufvar(bnr, '&filetype'), getbufvar(bnr, '&buftype')
+  local buf = new_buf(bnr)
 
   if ft == 'help' and getbufvar(bnr, '&modifiable') == 0 then
     buf.name = 'HELP'
@@ -117,9 +118,14 @@ local function special_or_listed(bnr) -- {{{1
     buf.icon = special_ft[ft].icon
     buf.doubleicon = special_ft[ft].doubleicon
     buf.special = true
+
+  elseif bufname(bnr) ~= '' and bt ~= '' then
+    buf.name = bufname(bnr)
+    buf.special = true
+    buf.icon = icons.menu
   end
 
-  if buf.special or ( buflisted(bnr) > 0 and getbufvar(bnr, '&buftype') == '' ) then
+  if buf.special or ( buflisted(bnr) > 0 and bt == '' ) then
     return buf
   end
 end -- }}}

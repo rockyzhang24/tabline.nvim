@@ -22,6 +22,7 @@ function! tabline#init() abort
         au ColorScheme *  lua require'tabline.setup'.load_theme(true)
         au TabNew      *  lua require'tabline.tabs'.init_tabs()
         au BufAdd      *  lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
+        au BufFilePost *  lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
         au BufEnter    *  lua require'tabline.bufs'.recent_buf(tonumber(vim.fn.expand('<abuf>')))
         au BufUnload   *  lua require'tabline.bufs'.remove_buf(tonumber(vim.fn.expand('<abuf>')))
         au BufDelete   *  lua require'tabline.bufs'.remove_buf(tonumber(vim.fn.expand('<abuf>')))
