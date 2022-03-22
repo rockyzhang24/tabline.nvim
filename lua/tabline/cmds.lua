@@ -494,6 +494,11 @@ local function testspeed() -- Test speed {{{1
     )
 end
 
+local function debug() -- Toggle debug mode {{{1
+  s.debug = not s.debug
+  print('Debug mode:', s.debug)
+end
+
 local function config() -- Configuration buffer {{{1
   vim.fn['tabline#config']()
 end
@@ -547,6 +552,7 @@ commands = {  -- {{{1
   ['reopen'] = reopen,
   ['resetall'] = reset_all,
   ['testspeed'] = testspeed,
+  ['debug'] = debug,
   ['config'] = config,
   ['theme'] = theme,
   ['labelstyle'] = labelstyle,
