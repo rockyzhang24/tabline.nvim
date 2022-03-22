@@ -2,15 +2,18 @@ local commands, banged
 local s = require'tabline.setup'.settings
 local g = require'tabline.setup'.global
 local v = require'tabline.setup'.variables
+local icons = require'tabline.setup'.icons
+local devicons = require'tabline.render.icons'.icons
 local h = require'tabline.helpers'
+local delbufs = require'tabline.delbufs'
 local get_bufs = require'tabline.bufs'.get_bufs
 local set_order = require'tabline.bufs'.set_order
 local themes = require'tabline.themes'
 local fzf = require'tabline.fzf.fzf'
 
-local ok, devicons = pcall(require, 'nvim-web-devicons')
+local ok, dv = pcall(require, 'nvim-web-devicons')
 if not ok then
-  devicons = nil
+  dv = nil
 end
 
 local fn = vim.fn
@@ -344,10 +347,10 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
   local buf, icon = g.buffers[bufnr()], nil
   if bang then
     buf.icon = nil
-  elseif s.icons[args[1]] then
-    icon = s.icons[args[1]]
+  elseif icons[args[1]] then
+    icon = icons[args[1]]
   else
-    icon = devicons and devicons.get_icon(args[1])
+    icon = dv and devicons[args[1]] or dv.get_icon(args[1])
     if not icon then return end
   end
   if getbufvar(bufnr(), '&buftype') ~= '' then
@@ -378,10 +381,10 @@ local function icon_tab(bang, args) -- Icon tab {{{1
     return
   elseif bang then
     icon = nil
-  elseif s.icons[args[1]] then
-    icon = s.icons[args[1]]
+  elseif icons[args[1]] then
+    icon = icons[args[1]]
   else
-    icon = devicons and devicons.get_icon(args[1])
+    icon = dv and devicons[args[1]] or dv.get_icon(args[1])
     if not icon then return end
   end
   t.icon = icon
@@ -458,13 +461,11 @@ local function purge(wipe) -- Purge {{{1
 end
 
 local function cleanup() -- Clean up {{{1
-  local del = h.delete_buffers_out_of_valid_wds()
-  print('Cleaned up ' .. del .. ' buffers.')
+  print('Cleaned up ' .. delbufs.outside_valid_wds() .. ' buffers.')
 end
 
 local function minimize() -- Delete buffers without windows {{{1
-  local del = h.delete_bufs_without_wins()
-  print('Deleted ' .. del .. ' buffers.')
+  print('Deleted ' .. delbufs.without_window() .. ' buffers.')
 end
 
 local function info(bang) -- Info {{{1

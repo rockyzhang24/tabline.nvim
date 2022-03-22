@@ -19,6 +19,7 @@ local buf_icon = require'tabline.render.bufline'.buf_icon
 local buf_path = require'tabline.render.bufline'.buf_path
 local get_tab = require'tabline.tabs'.get_tab
 local get_buf = require'tabline.bufs'.get_buf
+local devicons = require'tabline.render.icons'.icons
 
 local tab_buffer = function(tnr) return tabpagebuflist(tnr)[tabpagewinnr(tnr)] end
 
@@ -137,6 +138,9 @@ function tab_icon(bnr, tnr, hi)
   end
   local T, icon = gettabvar(tnr, 'tab'), nil
   if T.icon then
+    if devicons[T.icon] then
+      return devicons[T.icon][tnr == tabpagenr() and 'Selected' or 'Visible']
+    end
     return T.icon .. ' '
   end
 

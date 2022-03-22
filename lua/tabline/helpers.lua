@@ -14,17 +14,6 @@ local find = string.find
 
 local M = {}
 
--------------------------------------------------------------------------------
--- Local functions
--------------------------------------------------------------------------------
-
-local function bdelete(bnr) -- try to delete buffer {{{1
-  vim.v.errmsg = ''
-  vim.cmd('silent! bdelete ' .. bnr)
-  return vim.v.errmsg == ''
-end
--- }}}
-
 --------------------------------------------------------------------------------
 -- Generic helpers
 --------------------------------------------------------------------------------
@@ -66,42 +55,6 @@ end
 
 function M.validbuf(b, wd)  -- {{{1
   return b and ( not s.filtering or find(b, wd, 1, true) )
-end
-
-function M.delete_bufs_without_wins() -- {{{1
-  local cnt, bufs = 0, {}
-  for tnr = 1, tabpagenr('$') do
-    for _, bnr in ipairs(tabpagebuflist(tnr)) do
-      bufs[bnr] = true
-    end
-  end
-  for bnr = 1, fn.bufnr('$') do
-    if not bufs[bnr] then
-      cnt = cnt + ( bdelete(bnr) and 1 or 0 )
-    end
-  end
-  return cnt
-end
-
-function M.delete_buffers_out_of_valid_wds() -- {{{1
-  local cnt, wds, bufs = 0, {}, {}
-  for tnr = 1, tabpagenr('$') do
-    wds[fn.getcwd(-1, tnr)] = true
-    for win = 1, fn.tabpagewinnr(tnr, '$') do
-      wds[fn.getcwd(win, tnr)] = true
-    end
-  end
-  for n, b in pairs(g.buffers) do
-    for wd, _ in pairs(wds) do
-      if not bufs[n] then
-        bufs[n] = M.validbuf(b.path, wd)
-      end
-    end
-    if not bufs[n] then
-      cnt = cnt + ( bdelete(n) and 1 or 0 )
-    end
-  end
-  return cnt
 end
 
 --}}}
