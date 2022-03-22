@@ -120,7 +120,7 @@ local function special_or_listed(bnr) -- {{{1
     buf.special = true
 
   elseif bufname(bnr) ~= '' and bt ~= '' then
-    buf.name = bufname(bnr)
+    buf.name = fnamemodify(bufname(bnr), ':t')
     buf.special = true
     buf.icon = icons.menu
   end
