@@ -221,11 +221,17 @@ function M.mappings(maps)
   end
 end
 
-function M.update_label_style()
+function M.update_label_style(force)
   local s, v = M.settings, M.variables
   if type(s.label_style) == 'string' then
+    if force then
+      s.label_style = force
+    end
     v.label_style = s.label_style
   elseif type(s.label_style) == 'table' then
+    if force then
+      s.label_style[v.mode] = force
+    end
     v.label_style = s.label_style[v.mode] or 'sep'
   else
     v.label_style = 'sep'

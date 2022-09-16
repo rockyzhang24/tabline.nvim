@@ -508,7 +508,7 @@ local function config() -- Configuration buffer {{{1
 end
 
 local function labelstyle(arg) -- Labels style {{{1
-  s.label_style = arg[1]
+  update_label_style(arg[1])
   vim.cmd('redrawtabline')
 end
 
