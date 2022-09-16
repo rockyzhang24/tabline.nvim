@@ -61,12 +61,13 @@ M.indicators = { -- indicators {{{1
 }
 
 local MAPPINGS = { -- default mappings {{{1
+  -- { mapping, <CR> instead of <Space>, add count }
   ['mode next'] =        { '<F5>', true },
-  ['next'] =             { ']b', true },
-  ['prev'] =             { '[b', true },
+  ['next'] =             { ']b', true, true },
+  ['prev'] =             { '[b', true, true },
   ['away'] =             { M.settings.mapleader .. 'a', true },
-  ['left'] =             { nil, true },
-  ['right'] =            { nil, true },
+  ['left'] =             { nil, true, true },
+  ['right'] =            { nil, true, true },
   ['filtering!'] =       { M.settings.mapleader .. 'f', true },
   ['fullpath!'] =        { M.settings.mapleader .. '/', true },
   ['close'] =            { M.settings.mapleader .. 'q', true },
@@ -102,7 +103,14 @@ local function set_mappings(mappings) -- Define mappings {{{1
   if c then
     for k, v in pairs(mappings) do
       if v[1] and vim.fn.mapcheck(v[1]) == '' then
-        vim.cmd(string.format('nnoremap %s :<c-u>%s %s%s', v[1], c, k, v[2] and '<cr>' or '<space>'))
+        vim.cmd(string.format(
+          'nnoremap %s :<c-u>%s %s%s%s',
+          v[1],                                 -- mapping
+          c,                                    -- :Tabline ex command
+          k,                                    -- subcommand
+          v[3] and ' <c-r>=v:count1<cr>' or '', -- count
+          v[2] and '<cr>' or '<space>'          -- final character
+          ))
       end
     end
   end
@@ -191,7 +199,7 @@ function M.mappings(maps)
   if type(maps) == 'table' then
     for k, v in pairs(maps) do
       if MAPPINGS[k] then
-        maps[k] = { v, MAPPINGS[k][2] }
+        maps[k] = { v, MAPPINGS[k][2], MAPPINGS[k][3] }
       else
         maps[k] = nil
       end
