@@ -113,27 +113,33 @@ initialized. For the default value, run `:Tabline config`
   |sessions_dir|          directory for the session management commands
 
 
-  |mode|         'auto', 'tabs', 'buffers', 'args', in any order
+  |modes|        {table}
+               'auto', 'tabs', 'buffers', 'args', in any order
                `auto` will automatically switch to tabs mode if there is more
                than one tab, or to `buffers` mode when there is only one tab
                `args` shows the arglist, but will be skipped if this is empty
 
-  |mode_badge|   for example: `{ buffers = 'B', args = 'A', auto = '' }`
+  |mode_badge|   {table}, {bool}, {nil}  
+               for example: `{ buffers = 'B', args = 'A', auto = '' }`
                If `nil` or `false`, the badge is not shown.
                If `true`, default names are used.
                If it's a table, and value is nil or an empty string it won't be
                showed. `auto` shows the actual mode instead of itself, unless
                you define it in this table.
 
-  |tabs_badge|   Displays current tab number. Set to false (not nil) to disable.
+  |tabs_badge|   {table}, {bool}  
+               Displays current tab number. Set to false (not nil) to disable.
                `visibility` is a list of modes that show it.
                `fraction` is the badge style
                `left` is the position in the tabline
 
-  |label_style|  'sep', 'order' or 'bufnr'
+  |label_style|  {string}, {table}
+               'sep', 'order' or 'bufnr'
                `order` will show the position in the bufferline, `bufnr` will
                show the actual buffer number, `sep` a simple colored separator
                (with a different color in tabs and buffers mode).
+               Also as table: `{ buffers = 'bufnr' }` will use 'bufnr' in
+               buffers mode, 'sep' (default value) for other modes.
 
 
 

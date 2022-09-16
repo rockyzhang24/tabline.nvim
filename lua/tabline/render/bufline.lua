@@ -105,7 +105,7 @@ function format_buffer_labels(bufs) -- {{{1
       order = buf_order,
       sep = buf_sep,
       sel = buf_sel,
-    })[s.label_style]
+    })[v.label_style]
 
   if #bufs == 0 and next(all) then
     bufs = { all[bufnr()] and bufnr() or next(all).nr }

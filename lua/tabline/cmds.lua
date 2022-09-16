@@ -17,6 +17,7 @@ if not ok then
 end
 
 local fn = vim.fn
+local update_label_style = require'tabline.setup'.update_label_style
 
 -- vim functions {{{1
 local getbufvar = vim.fn.getbufvar
@@ -126,7 +127,7 @@ local function select_tab(cnt) -- Select tab {{{1
   local bufs, b = g.current_buffers, nil
   if v.mode == 'args' and not h.empty_arglist() then
     b = bufs[math.min(cnt, #fn.argv())]
-  elseif s.label_style == 'bufnr' then
+  elseif v.label_style == 'bufnr' then
     b = cnt
   else
     b = bufs[math.min(cnt, #bufs)]
@@ -139,12 +140,12 @@ local function select_tab_with_char(cnt) -- Select tab with character {{{1
     select_tab(cnt)
     return
   end
-  local oldstyle, bufs = s.label_style, g.current_buffers
+  local oldstyle, bufs = v.label_style, g.current_buffers
   local seltab, selnr, selaz
-  s.label_style = 'sel'
+  v.label_style = 'sel'
   vim.cmd('redrawtabline')
   seltab = fn.nr2char(fn.getchar())
-  s.label_style = oldstyle
+  v.label_style = oldstyle
   vim.cmd('redrawtabline')
   _, _, selnr = string.find(seltab, '(%d)')
   _, _, selaz = string.find(seltab, '([a-z])')
@@ -269,6 +270,7 @@ local function change_mode(arg) -- Change mode {{{1
   local mode = arg[1]
   if index({ 'auto', 'tabs', 'buffers', 'args' }, mode) then
     v.mode = mode
+    update_label_style()
     vim.cmd('redrawtabline')
     return
   elseif mode ~= 'next' or #s.modes < 2 then
@@ -286,6 +288,7 @@ local function change_mode(arg) -- Change mode {{{1
       v.mode = s.modes[((cur + 1) % #s.modes) + 1]
     end
   end
+  update_label_style()
   vim.cmd('redrawtabline')
 end
 

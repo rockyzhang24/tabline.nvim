@@ -15,6 +15,7 @@ M.global = { -- internal tables {{{1
 M.variables = { -- internal variables {{{1
   mode = 'auto',
   max_bufs = 10,
+  label_style = 'sep',
 }
 
 M.settings = {  -- user settings {{{1
@@ -175,6 +176,7 @@ function M.setup(opts)
 
   define_main_cmd()
   M.load_theme()
+  M.update_label_style()
   M.ran_once = true
   vim.fn['tabline#init']()
 end
@@ -208,6 +210,17 @@ function M.mappings(maps)
   end
   if M.settings.cd_mappings then
     set_cd_mappings()
+  end
+end
+
+function M.update_label_style()
+  local s, v = M.settings, M.variables
+  if type(s.label_style) == 'string' then
+    v.label_style = s.label_style
+  elseif type(s.label_style) == 'table' then
+    v.label_style = s.label_style[v.mode] or 'sep'
+  else
+    v.label_style = 'sep'
   end
 end
 

@@ -1,5 +1,6 @@
 local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
+local v = require'tabline.setup'.variables
 local i = require'tabline.setup'.indicators
 
 -- vim functions {{{1
@@ -36,7 +37,7 @@ local format_tab_label, render_tabs
 
 function render_tabs()
   -- set function that renders the tabs number/separator
-  tab_nr = s.label_style == 'sep' and tab_sep or tab_num
+  tab_nr = v.label_style == 'sep' and tab_sep or tab_num
   sepactive, sepinactive = unpack(s.separators)
 
   local tabs = {}
