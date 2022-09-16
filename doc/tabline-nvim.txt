@@ -127,7 +127,7 @@ initialized. For the default value, run `:Tabline config`
                showed. `auto` shows the actual mode instead of itself, unless
                you define it in this table.
 
-  |tabs_badge|   {table}, {bool}  
+  |tabs_badge|   {table}, {false}  
                Displays current tab number. Set to false (not nil) to disable.
                `visibility` is a list of modes that show it.
                `fraction` is the badge style

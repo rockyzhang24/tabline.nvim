@@ -172,7 +172,7 @@ function fit_tabline(center, tabs)
     end
   end
   labels = concat(labels, '')
-  if s.tabs_badge.left then
+  if s.tabs_badge and s.tabs_badge.left then
     return tabsbadge .. modebadge .. labels .. '%#TFill#%=' .. cwdbadge .. '%999X'
   else
     return modebadge .. labels .. '%#TFill#%=' .. tabsbadge .. cwdbadge .. '%999X'
