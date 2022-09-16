@@ -375,7 +375,4 @@ function M.click(nr, clicks, button, mod)
   end
 end
 
--- this is global, will be called by vimscript
-buflineclick = M.click
-
 return M

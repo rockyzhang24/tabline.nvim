@@ -10,5 +10,5 @@ endif
 nnoremap <Plug>(TabSelect) <Cmd>call v:lua.require'tabline.cmds'.select_tab_with_char(v:count)<cr>
 
 fun! Buflineclick(nr, clicks, button, mod)
-    call v:lua.buflineclick(a:nr, a:clicks, a:button, a:mod)
+    call v:lua.require'tabline.bufs'.click(a:nr, a:clicks, a:button, a:mod)
 endfun
