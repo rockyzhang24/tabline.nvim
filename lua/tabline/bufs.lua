@@ -216,6 +216,8 @@ end
 function M.recent_buf(bnr)
   if g.buffers[bnr] then
     g.buffers[bnr].recent = g.buffers[bnr].recent + 1
+  else
+    M.add_buf(bnr)
   end
 end
 
