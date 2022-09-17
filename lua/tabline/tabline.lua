@@ -147,7 +147,7 @@ function fit_tabline(center, tabs)
       tabs[i].label = tabs[i].label .. ' '
       i, used = i + 1, used + 1
     end
-    if right_has_been_cut then
+    if not s.show_button and right_has_been_cut then
       tabs[ntabs].label = printf('%s%%#DiffDelete# > ', strsub(tabs[ntabs].label, 1, #tabs[ntabs].label - 4))
     end
   else
