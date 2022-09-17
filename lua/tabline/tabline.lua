@@ -95,6 +95,8 @@ function fit_tabline(center, tabs)
     return '%#TFill#%=' .. cwdbadge
   end
 
+  local buttonWidth = s.show_button and 3 or 0
+
   -- now keep the current buffer center-screen as much as possible
   local L = { ['width'] = 0 }
   local R = { ['width'] = 0 }
@@ -102,7 +104,7 @@ function fit_tabline(center, tabs)
   -- sum the string lengths for the left and right halves
   local currentside = L
   for _, tab in ipairs(tabs) do
-    tab.width = labelwidth(tab.label)
+    tab.width = labelwidth(tab.label) + buttonWidth
     if tab.width >= limit then
       tab.label = strsub(tab.label, 1, limit - 1) .. '…'
       tab.width = labelwidth(tab.label)
