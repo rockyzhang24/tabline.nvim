@@ -213,7 +213,6 @@ local function move_left(arg) -- Move current tab N positions to the left {{{1
     insert(bufs, new, remove(bufs, cur))
     set_order(bufs)
     vim.cmd('redrawtabline')
-    select_tab(new)
   end
 end
 
@@ -236,7 +235,6 @@ local function move_right(arg) -- Move current tab N positions to the right {{{1
     insert(bufs, new, remove(bufs, cur))
     set_order(bufs)
     vim.cmd('redrawtabline')
-    select_tab(new)
   end
 end
 
@@ -255,13 +253,15 @@ local function away(arg) -- Move tab to last position {{{1
   elseif h.buffers_mode() then
     local bufs = get_bufs()
     local cur = nr or index(bufs, bufnr())
-    if #bufs then
+    if #bufs > 0 then
       insert(bufs, remove(bufs, cur))
       set_order(bufs)
     end
     vim.cmd('redrawtabline')
-    if cur then
-      select_tab(cur)
+    if cur > 1 then
+      vim.cmd('buffer ' .. g.buffers[bufs[cur - 1]].nr)
+    else
+      vim.cmd('buffer ' .. g.buffers[bufs[1]].nr)
     end
   end
 end
