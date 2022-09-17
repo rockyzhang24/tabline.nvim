@@ -64,8 +64,8 @@ function M.fmt(arg)
   local ctermfg, ctermbg, guifg, guibg, bold = unpack(arg)
   local b = bold and 'bold' or 'NONE'
   return '%s ' .. printf(
-  'cterm=%s gui=%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
-  b, b, ctermfg, ctermbg, guifg, guibg
+    'cterm=%s gui=%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
+    b, b, ctermfg, ctermbg, guifg, guibg
   )
 end
 
