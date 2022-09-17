@@ -38,6 +38,7 @@ M.settings = {  -- user settings {{{1
   theme = 'default',
   ascii_only = false,
   show_icons = true,
+  show_button = false,
   colored_icons = true,
   icon_spacing = '  ',
   separators = {'▎', '▏'}
@@ -58,6 +59,7 @@ M.indicators = { -- indicators {{{1
   ['modified'] = M.settings.ascii_only and '[+]'  or '●',
   ['readonly'] = M.settings.ascii_only and '[RO]' or ' 🔒',
   ['pinned'] = M.settings.ascii_only and   '[^]'  or ' 📌',
+  ['close'] = M.settings.ascii_only and    ' X '  or '  ',
 }
 
 local MAPPINGS = { -- default mappings {{{1

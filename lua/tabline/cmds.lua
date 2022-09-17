@@ -71,13 +71,14 @@ local subcmds = { -- {{{1
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'minimize', 'fullpath',
   'away', 'left', 'right', 'theme', 'labelstyle',
-  'buffers', 'closedtabs', 'session',
+  'buffers', 'closedtabs', 'session', 'button',
 }
 
 local completion = {  -- {{{1
   ['mode'] = { 'next', 'auto', 'tabs', 'buffers', 'args' },
   ['filtering'] = { 'off' },
   ['fullpath'] = { 'off' },
+  ['button'] = { 'off' },
   ['session'] = { 'load', 'new', 'save', 'delete' },
   ['theme'] = (function()
     themes.refresh()
@@ -437,6 +438,15 @@ local function unpin_buffer(bang) -- Unpin buffer(s) {{{1
   vim.cmd('redrawtabline')
 end
 
+local function button(bang, args) -- Show/hide close buttons {{{1
+  if bang then
+    s.show_button = not s.show_button
+  else
+    s.show_button = args[1] ~= 'off'
+  end
+  vim.cmd('redrawtabline')
+end
+
 local function reopen() -- Reopen {{{1
   require'tabline.tabs'.reopen()
 end
@@ -576,6 +586,7 @@ banged = {  -- {{{1
   ['unpin'] = unpin_buffer,
   ['purge'] = purge,
   ['fullpath'] = fullpath,
+  ['button'] = button,
 }
 
 -- }}}
@@ -586,4 +597,5 @@ return {
   change_mode = change_mode,
   select_tab_with_char = select_tab_with_char,
   away = away,
+  next_tab = next_tab,
 }

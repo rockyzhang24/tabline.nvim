@@ -107,6 +107,7 @@ initialized. For the default value, run `:Tabline config`
   |theme|                 if `nil`, you must set up highlights yourself
   |ascii_only|            avoid any kind of non-ascii character
   |show_icons|            icons from `nvim-web-devincons`
+  |show_button|           show close button to delete buffer (`buffers` mode)
   |colored_icons|         will use normal bg if false
   |icon_spacing|          spaces between icon and filename (default '  ')
   |separators|            for active and inactive tabs/buffers
@@ -172,6 +173,7 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   unpin         !              unpin current buffer or all(!) buffers
   reopen                       reopen last closed tab
   fullpath      off, !         toggle basename/shortened full paths
+  button        off, !         toggle close button
   theme         {theme}        set a theme |tnv-themes|
   bufname       {name}         give a name to current buffer
   tabname       {name}         ,,      ,,             tab

@@ -358,6 +358,15 @@ function M.set_order(bufs)
   g.current_buffers = bufs
 end
 
+-------------------------------------------------------------------------------
+--- Function: M.click
+--- Handler for bufferline clicks on label.
+---
+--- @param nr:     buffer number
+--- @param clicks: number of clicks
+--- @param button: kind of mouse button
+--- @param mod:    modifier key
+-------------------------------------------------------------------------------
 function M.click(nr, clicks, button, mod)
   local cmd = require'tabline.cmds'
   local n, cur = g.current_buffers[nr], bufnr()
@@ -374,6 +383,30 @@ function M.click(nr, clicks, button, mod)
     end
   elseif button == 'l' then
     vim.cmd('buffer ' .. n)
+  end
+end
+
+-------------------------------------------------------------------------------
+--- Function: M.close
+--- Handler for clicks on close button.
+---
+--- @param nr:     buffer number
+--- @param clicks: number of clicks
+--- @param button: kind of mouse button
+--- @param mod:    modifier key
+-------------------------------------------------------------------------------
+function M.close(nr, clicks, button, mod)
+  local cmd = require'tabline.cmds'
+  local n, cur = g.current_buffers[nr], bufnr()
+  if button == 'l' then
+    if getbufvar(n, '&modified') == 1 then
+      print('Cannot delete, buffer is modified')
+    else
+      if bufnr() == n then
+        require'tabline.cmds'.next_tab({1, false})
+      end
+      vim.cmd('bdelete ' .. n)
+    end
   end
 end
 

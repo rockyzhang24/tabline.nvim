@@ -1,6 +1,7 @@
 local o = vim.o
 local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
+local i = require'tabline.setup'.indicators
 local h = require'tabline.helpers'
 
 -- vim functions {{{1
@@ -159,9 +160,23 @@ function fit_tabline(center, tabs)
     end
   end
 
-  if s.clickable_bufline and h.buffers_mode() then
-    for _, l in ipairs(tabs) do
-      l.label = '%' .. l.n .. '@Buflineclick@' .. l.label .. '%X'
+  -- button to close buffer
+  local button = '@CloseButtonClick@' .. i.close .. '%X'
+
+  if h.buffers_mode() then
+    if s.clickable_bufline and s.show_button then
+      for _, l in ipairs(tabs) do
+        l.label = '%' .. l.n .. '@BuflineClick@' .. l.label .. '%X'
+        .. '%' .. l.n .. button
+      end
+    elseif s.clickable_bufline then
+      for _, l in ipairs(tabs) do
+        l.label = '%' .. l.n .. '@BuflineClick@' .. l.label .. '%X'
+      end
+    elseif s.show_button then
+      for _, l in ipairs(tabs) do
+        l.label = l.label .. '%' .. l.n .. button
+      end
     end
   end
 
