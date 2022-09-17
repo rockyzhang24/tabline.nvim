@@ -1,9 +1,22 @@
+local printf = string.format
 local index = require'tabline.table'.index
 
 local M = {}
 
 M.themes = {}
-M.available = { 'default', 'apprentice' }
+M.available = {
+  'default',
+  'apprentice',
+  'seoul',
+  'tomorrow',
+  'dracula',
+  'molokai',
+  'codedark',
+  'slate',
+  'paper',
+  'paramount',
+  'eightbit'
+}
 
 function M.refresh()
   if not index(M.available, 'themer') and pcall(require, 'themer') then
@@ -45,6 +58,15 @@ function M.add(theme)
   end
   M.themes[theme.name] = theme
   table.insert(M.available, theme.name)
+end
+
+function M.fmt(arg)
+  local ctermfg, ctermbg, guifg, guibg, bold = unpack(arg)
+  local b = bold and 'bold' or 'NONE'
+  return '%s ' .. printf(
+  'cterm=%s gui=%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
+  b, b, ctermfg, ctermbg, guifg, guibg
+  )
 end
 
 M.refresh()
