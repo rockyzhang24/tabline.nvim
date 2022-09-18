@@ -498,7 +498,7 @@ end
 
 local function testspeed() -- Test speed {{{1
   local time = fn.reltime()
-  for _ = 1, 10000 do
+  for _ = 1, 1000 do
     vim.cmd('redrawtabline')
   end
   print(
