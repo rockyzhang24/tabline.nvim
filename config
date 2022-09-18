@@ -40,6 +40,7 @@ local settings = {
   cd_mappings               = false,
   theme                     = 'default',
   show_icons                = true,
+  show_button               = false,
   colored_icons             = true,
   icon_spacing              = '  ',
   ascii_only                = false,
