@@ -21,7 +21,7 @@ The main features of the plugin are:
   * three tabline modes: tabs, buffers, |arglist|              |tnv-rendering|
   * clickable and reorderable bufferline
   * rename tabs/buffers
-  * optional buffer filtering on the base of the CWD
+  * optional buffer filtering on the base of CWD/custom filters
 
 Also:
 
@@ -69,12 +69,6 @@ The tabline can be rendered in different modes:
   `auto`     `tabs` if there is more than one tab, otherwise `buffers`
 
 Default order is `{ 'auto', 'buffers', 'arglist' }`
-                                                               *tnv-filtering*
-
-  Buffer filtering makes sense if local working directories are being used,
-  either via |:tcd| or |:lcd|. When enabled, only buffers whose path is within
-  the current CWD will be showed in the tabline.
-
 
 
 
@@ -168,7 +162,8 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   left          {count}        move current buffer to the left
   right         {count}        move current buffer to the right
   close                        delete buffer, but keep window
-  filtering     off, !         enable/toggle buffer filtering
+  filtering     off, !         enable/toggle cwd buffer filtering
+  filter        !, {filter}    pattern to filter buffers (|tnv-filtering|)
   pin           !              pin current buffer, or toggle(!)
   unpin         !              unpin current buffer or all(!) buffers
   reopen                       reopen last closed tab
@@ -199,6 +194,40 @@ Session commands will use |vim-obsession| if available.
 By default the session directory is `stdpath('data') .. '/session'`, see
 |standard-path|. It can be overridden with `settings.sessions_dir`.
 
+
+
+FILTERING                                                      *tnv-filtering*
+==============================================================================
+
+Filtering only applies to 'buffers' mode.
+
+There are two kinds of filtering that can be enabled:
+
+  - CWD filtering
+  - regex filtering against buffer name
+
+CWD filtering makes sense if local working directories are being used,
+either via |:tcd| or |:lcd|. When enabled, only buffers whose path is within
+the current CWD will be showed in the tabline.
+It is enabled by default, controlled by the `filtering` setting, and can be
+toggled with >
+  :Tabline filtering!
+
+Regex filtering is independent from CWD filtering, not controlled by
+a setting, but must be enabled with >
+  :Tabline filter {lua regex pattern}
+
+When using <bang>, filter is applied to all tabs: >
+  :Tabline filter! {lua regex pattern}
+
+To reset filter use an empty string (<bang> resets for all tabs): >
+  :Tabline filter[!]
+
+If a regex filter is defined for the current tab, it is shown in the right
+corner of the tabline.
+
+Note: listed buffers with open windows will be shown in the tabline,
+regardless of any applied filter.
 
 
 

@@ -23,19 +23,21 @@ local format_right_corner, right_corner_icon, right_corner_label, mode_label
 function format_right_corner()
   -- Label for the upper right corner.
   local N = tabpagenr()
+  local t = vim.t.tab or get_tab()
 
-  if (vim.t.tab or get_tab()).corner then
+  if t.corner then
     return vim.t.tab.corner
 
   elseif not s.cwd_badge then
     return ''
 
   else
+    local flt   = t.filter and '%#TExtra# ' .. t.filter .. ' ' or ''
     local hi    = '%#TCorner#'
     local icon  = '%#TNumSel# ' .. right_corner_icon(N)
     local mod   = tab_mod_flag(N, true)
     local label = right_corner_label(N)
-    return printf('%s%s %s %s', icon, hi, label, mod)
+    return printf('%s%s%s %s %s', flt, icon, hi, label, mod)
   end
 end --}}}
 

@@ -12,6 +12,7 @@ local sort = table.sort
 local index = require'tabline.table'.index
 local copy = require'tabline.table'.copy
 local filter = require'tabline.table'.filter
+local get_tab = require'tabline.tabs'.get_tab
 local validbuf = h.validbuf
 
 -- vim functions {{{1
@@ -276,13 +277,16 @@ end
 function M.valid_bufs()
   local valid, pinned, wd = {}, {}, getcwd()
   local pagebufs = tabpagebuflist(tabpagenr())
+  local filter = get_tab().filter
   for nr, b in pairs(g.buffers) do
     if b.pinned then
       insert(pinned, nr)
     elseif index(pagebufs, nr) then
       insert(valid, nr)
     elseif not b.special and validbuf(b.path, wd) then
-      insert(valid, nr)
+      if not filter or strfind(b.path, filter) then
+        insert(valid, nr)
+      end
     elseif s.show_unnamed and bufname(nr) == '' then
       insert(valid, nr)
     end

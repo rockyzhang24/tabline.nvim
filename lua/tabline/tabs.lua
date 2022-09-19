@@ -64,4 +64,21 @@ function M.reopen(ix)
   vim.cmd(tab.cmd .. ' ' .. tab.wd)
 end
 
+local function _set_filter(filter, tnr)
+  local t = M.get_tab(tnr)
+  t.filter = filter
+  fn.settabvar(tnr or fn.tabpagenr(), 'tab', t)
+end
+
+function M.set_filter(filter, all)
+  if all then
+    for i = 1, #fn.tabpagenr('$') do
+      _set_filter(filter ~= '' and filter or nil, i)
+    end
+  else
+    _set_filter(filter ~= '' and filter or nil)
+  end
+  print(M.get_tab().filter)
+end
+
 return M

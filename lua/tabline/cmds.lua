@@ -70,7 +70,7 @@ local subcmds = { -- {{{1
   'mode', 'info', 'next', 'prev', 'filtering', 'close', 'pin', 'unpin',
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'minimize', 'fullpath',
-  'away', 'left', 'right', 'theme', 'labelstyle',
+  'away', 'left', 'right', 'theme', 'labelstyle', 'filter',
   'buffers', 'closedtabs', 'session', 'button',
 }
 
@@ -546,6 +546,11 @@ local function session(arg) -- Session load/new/save/delete {{{1
   if cmd then cmd() end
 end
 
+local function filter(bang, arg) -- Apply filter for bufferline {{{1
+  require'tabline.tabs'.set_filter(arg[1], bang)
+  vim.cmd('redrawtabline')
+end
+
 -- }}}
 
 
@@ -587,6 +592,7 @@ banged = {  -- {{{1
   ['purge'] = purge,
   ['fullpath'] = fullpath,
   ['button'] = button,
+  ['filter'] = filter,
 }
 
 -- }}}
