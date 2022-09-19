@@ -78,7 +78,6 @@ function M.set_filter(filter, all)
   else
     _set_filter(filter ~= '' and filter or nil)
   end
-  print(M.get_tab().filter)
 end
 
 return M
