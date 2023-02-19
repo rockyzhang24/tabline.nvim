@@ -36,7 +36,7 @@ function! tabline#init() abort
     if !v:vim_did_enter
         au tabline VimEnter * ++once exe 'lua require"tabline.bufs".init_bufs()'
                     \|               exe 'lua require"tabline.tabs".init_tabs()'
+                    \|               silent! delcommand TablineConfig
     endif
-    silent! delcommand TablineConfig
     set tabline=%!v:lua.require'tabline.tabline'.render()
 endfunction
