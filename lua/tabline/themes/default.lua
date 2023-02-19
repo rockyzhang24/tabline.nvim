@@ -1,15 +1,12 @@
-local fn = vim.fn
+local H = require("tabline.highlight")
 local printf = string.format
 
 local fg
 
 local function make_fmt(group, bold)
   local t = vim.o.termguicolors and 'gui' or 'cterm'
-  local bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
+  local bg = H.get_hl(group).bg
   bold = bold and 'bold' or 'none'
-  if not vim.o.termguicolors and bg:match('^%#') then
-    bg = ''
-  end
   if bg == '' then
     return printf('%%s %sfg=%s %s=%s', t, fg, t, bold)
   else

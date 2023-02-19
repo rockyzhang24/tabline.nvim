@@ -1,4 +1,4 @@
-local M = { icons = {}, normalbg = nil }
+local M = { icons = {} }
 
 -------------------------------------------------------------------------------
 -- Icons
@@ -8,7 +8,7 @@ local printf = string.format
 
 local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
-local h = require'tabline.helpers'
+local h = require'tabline.highlight'
 
 -- Load devicons and add custom icons {{{1
 local ok, icons = pcall(require, 'nvim-web-devicons')
@@ -26,14 +26,8 @@ local function make_icons_hi(gcol, tcol)
   local ret, tgc = {}, vim.o.termguicolors
   local gui = tgc and 'gui' or 'cterm'
   local groups = { 'Special', 'Select', 'Extra', 'Visible', 'Hidden' }
-  if not M.normalbg then
-    M.normalbg = h.get_hi_color('Normal', 'bg', tgc and '#000000' or 0)
-  end
-  if not M.normalfg then
-    M.normalfg = h.get_hi_color('Normal', 'fg', tgc and '#bcbcbc' or 250)
-  end
   for _, v in ipairs(groups) do
-    local bg = h.get_hi_color('T' .. v, 'bg', M.normalbg)
+    local bg = h.get_hl('T' .. v).bg
     local c = tgc and gcol:sub(2) or tcol or require'tabline.term256'.hex2term(gcol:sub(2))
     vim.cmd(printf('hi T%s%s %sbg=%s %sfg=%s', v, c, gui, bg, gui, tgc and gcol or c))
     ret[v] = {}
@@ -59,8 +53,8 @@ function M.devicon(b, selected)  -- {{{1
           gcol:gsub('#56', '#a6'), tcol:gsub('^60$', '126'))
       end
       local hi = M.icons[gcol][b.hi]
-      local typ = selected and (not s.colored_icons and 'ncl' or 'sel') or 'dim'
-      return hi and string.gsub(hi[typ], '___', icon.icon) or ''
+      local kind = selected and (not s.colored_icons and 'ncl' or 'sel') or 'dim'
+      return hi and string.gsub(hi[kind], '___', icon.icon) or ''
     end
   end
   return nil

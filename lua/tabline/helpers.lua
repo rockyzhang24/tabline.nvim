@@ -1,4 +1,3 @@
-local g = require'tabline.setup'.global
 local v = require'tabline.setup'.variables
 local s = require'tabline.setup'.settings
 

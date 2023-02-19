@@ -138,6 +138,10 @@ local function define_main_cmd() -- Define main command {{{1
 end
 
 function M.load_theme(reload) -- Load theme {{{1
+  if reload then
+    require'tabline.render.icons'.icons = {}
+    require'tabline.highlight'.refresh()
+  end
   if M.settings.theme then
     local themes = require'tabline.themes'
     local theme = themes.themes[M.settings.theme]
@@ -154,11 +158,6 @@ function M.load_theme(reload) -- Load theme {{{1
         themes.apply(theme.theme(), reload)
       end
     end
-  end
-  if reload then
-    require'tabline.render.icons'.icons = {}
-    require'tabline.render.icons'.normalfg = nil
-    require'tabline.render.icons'.normalbg = nil
   end
 end
 
