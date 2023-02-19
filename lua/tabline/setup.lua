@@ -143,7 +143,8 @@ function M.load_theme(reload) -- Load theme {{{1
     if theme then
       themes.apply(theme, reload)
     else
-      local loaded, theme = pcall(require, 'tabline.themes.' .. M.settings.theme)
+      local loaded
+      loaded, theme = pcall(require, 'tabline.themes.' .. M.settings.theme)
       if not loaded then
         M.settings.theme = 'default'
         M.load_theme(reload)
@@ -188,6 +189,7 @@ function M.setup(opts)
   M.load_theme()
   M.update_label_style()
   M.ran_once = true
+  vim.cmd('silent! delcommand TablineConfig')
   vim.fn['tabline#init']()
 end
 
