@@ -1,47 +1,43 @@
 local fn = vim.fn
 local printf = string.format
 
-local t, fg, bg
+local fg
 
-local function mod(group)
-  t = vim.o.termguicolors and 'gui' or 'cterm'
-  fg = vim.o.termguicolors and '#ff6666' or '124'
-  bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
+local function make_fmt(group, bold)
+  local t = vim.o.termguicolors and 'gui' or 'cterm'
+  local bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
+  bold = bold and 'bold' or 'none'
+  if not vim.o.termguicolors and bg:match('^%#') then
+    bg = ''
+  end
   if bg == '' then
-    return printf('%%s %sfg=%s %s=bold', t, fg, t)
+    return printf('%%s %sfg=%s %s=%s', t, fg, t, bold)
   else
-    return printf('%%s %sbg=%s %sfg=%s %s=bold', t, bg, t, fg, t)
+    return printf('%%s %sbg=%s %sfg=%s %s=%s', t, bg, t, fg, t, bold)
   end
 end
 
+local function mod(group)
+  fg = vim.o.termguicolors and '#ff6666' or '124'
+  return make_fmt(group, true)
+end
+
 local function dim(group)
-  t = vim.o.termguicolors and 'gui' or 'cterm'
   if vim.o.termguicolors then
     fg = vim.o.background == 'dark' and '#6c6c6c' or '#a9a9a9'
   else
     fg = vim.o.background == 'dark' and '242' or '248'
   end
-  bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
-  if bg == '' then
-    return printf('%%s %sfg=%s %s=none', t, fg, t)
-  else
-    return printf('%%s %sbg=%s %sfg=%s %s=none', t, bg, t, fg, t)
-  end
+  return make_fmt(group, false)
 end
 
 local function sep(group)
-  t = vim.o.termguicolors and 'gui' or 'cterm'
   if vim.o.termguicolors then
     fg = vim.o.background == 'dark' and '#5f87af' or '#4a679a'
   else
     fg = vim.o.background == 'dark' and '67' or '7'
   end
-  bg = fn.synIDattr(fn.synIDtrans(fn.hlID(group)), "bg")
-  if bg == '' then
-    return printf('%%s %sfg=%s %s=none', t, fg, t)
-  else
-    return printf('%%s %sbg=%s %sfg=%s %s=none', t, bg, t, fg, t)
-  end
+  return make_fmt(group, false)
 end
 
 local function theme()
