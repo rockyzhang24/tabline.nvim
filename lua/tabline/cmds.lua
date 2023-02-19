@@ -16,6 +16,8 @@ if not ok then
   dv = nil
 end
 
+local function get_icons() return vim.tbl_keys(require("tabline.setup").icons) end
+
 local fn = vim.fn
 local update_label_style = require'tabline.setup'.update_label_style
 
@@ -84,6 +86,8 @@ local completion = {  -- {{{1
     themes.refresh()
     return themes.available
   end)(),
+  ['tabicon'] = get_icons,
+  ['buficon'] = get_icons,
   ['labelstyle'] = { 'order', 'bufnr', 'sep' },
 }
 
@@ -91,7 +95,6 @@ local function complete(_, c, _)  -- {{{1
   vim.cmd('redraw!')
   local subcmd, arg
   local cmdline = string.sub(c, #s.main_cmd_name + 2)
-  -- print(string.format('"%s"', cmdline))
   for w in string.gmatch(cmdline, '(%w+)') do
     if not subcmd then
       subcmd = w
@@ -101,11 +104,11 @@ local function complete(_, c, _)  -- {{{1
       return {}
     end
   end
-  if arg and completion[subcmd] then
-    return filternew(
-        completion[subcmd], function(_,str) return string.find(str, '^' .. arg) end)
-  elseif subcmd and completion[subcmd] then
-    return completion[subcmd]
+  local res = type(completion[subcmd]) == 'function' and completion[subcmd]() or completion[subcmd]
+  if arg and res then
+    return filternew(res, function(_,str) return string.find(str, '^' .. arg) end)
+  elseif subcmd and res then
+    return res
   elseif subcmd then
     return filternew(
         subcmds, function(_,str) return string.find(str, '^' .. subcmd) end)
