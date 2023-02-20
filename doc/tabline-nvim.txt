@@ -177,8 +177,8 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   bufreset                     remove buffer customizations (name, icon)
   tabreset                     ,,     tab    ,,
   resetall                     reset all customizations
-  cleanup                      delete buffers unrelated to any of the CWDs
-  minimize                     delete buffers without a window in any tabpage
+  cleanup       !              delete buffers unrelated to any of the CWDs
+  minimize      !              delete buffers without a window in any tabpage
   purge         !              delete/wipe(!) non-regular buffers in tabpage
   buffers                      |fzf| choose among valid buffers
   closedtabs                   |fzf| choose closed tab to reopen
@@ -193,6 +193,34 @@ Note: |fzf| means that it needs fzf {1} (the command-line tool, not fzf.vim).
 Session commands will use |vim-obsession| if available.
 By default the session directory is `stdpath('data') .. '/session'`, see
 |standard-path|. It can be overridden with `settings.sessions_dir`.
+
+
+
+CLEAN-UP COMMANDS                                               *tnv-clean-up*
+==============================================================================
+
+There is a handful of different commands that do different things:
+
+  Tabline purge~
+    Deletes scratch buffers in current tab, closes windows.
+  Tabline purge!~
+    Wipes out scratch buffers in current tab, closes windows.
+  Tabline cleanup~
+    Deletes regular buffers that are unrelated to any of the CWDs in any of
+    the open windows in all tabs. Never closes windows.
+  Tabline cleanup!~
+    Additionally, also wipes out all scratch, unlisted buffers in the buffer
+    list that don't have an open window in any tab.
+  Tabline minimize~
+    Deletes all buffers, in all tabs, that don't have an open window.
+    Never closes windows.
+  Tabline minimize!~
+    Runs also `cleanup!` before `minimize`, so that scratch buffers are not
+    simply deleted, but wiped out.
+
+Except `Tabline purge[!]`, the other commands never close open windows in any
+tab. Regular buffers can only be |bdelete|d by theses commands, never wiped
+out. They will still show up in the |unlisted-buffer| list.
 
 
 

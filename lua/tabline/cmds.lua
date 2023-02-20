@@ -476,12 +476,22 @@ local function purge(wipe) -- Purge {{{1
   end
 end
 
-local function cleanup() -- Clean up {{{1
-  print('Cleaned up ' .. delbufs.outside_valid_wds() .. ' buffers.')
+local function cleanup(bang) -- Clean up {{{1
+  local dn, wn = delbufs.outside_valid_wds(bang)
+  local fmt = "Deleted %s buffers%s."
+  local wip = wn > 0 and string.format(" (%d wiped)", wn) or ""
+  print(string.format(fmt, dn, wip))
 end
 
-local function minimize() -- Delete buffers without windows {{{1
-  print('Deleted ' .. delbufs.without_window() .. ' buffers.')
+local function minimize(bang) -- Delete buffers without windows {{{1
+  local dn, wn = 0, 0
+  if bang then
+    dn, wn = delbufs.outside_valid_wds(true)
+  end
+  dn = dn + delbufs.without_window()
+  local fmt = "Deleted %s buffers%s."
+  local wip = wn > 0 and string.format(" (%d wiped)", wn) or ""
+  print(string.format(fmt, dn, wip))
 end
 
 local function info(bang) -- Info {{{1
@@ -596,6 +606,8 @@ banged = {  -- {{{1
   ['fullpath'] = fullpath,
   ['button'] = button,
   ['filter'] = filter,
+  ['minimize'] = minimize,
+  ['cleanup'] = cleanup,
 }
 
 -- }}}
