@@ -18,7 +18,6 @@ local getbufvar = fn.getbufvar
 local filereadable = fn.filereadable
 local buflisted = fn.buflisted
 local bufexists = fn.bufexists
-local bufloaded = fn.bufloaded
 local getcwd = fn.getcwd
 local argv = fn.argv
 local winid = fn.win_getid

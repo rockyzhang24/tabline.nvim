@@ -275,14 +275,14 @@ end
 function M.valid_bufs()
   local valid, pinned, wd = {}, {}, getcwd()
   local pagebufs = tabpagebuflist(tabpagenr())
-  local filter = get_tab().filter
+  local flt = get_tab().filter
   for nr, b in pairs(g.buffers) do
     if b.pinned then
       insert(pinned, nr)
     elseif index(pagebufs, nr) then
       insert(valid, nr)
     elseif not b.special and validbuf(b.path, wd) then
-      if not filter or strfind(b.path, filter) then
+      if not flt or strfind(b.path, flt) then
         insert(valid, nr)
       end
     elseif s.show_unnamed and bufname(nr) == '' then
@@ -384,7 +384,7 @@ end
 --- @param button: kind of mouse button
 --- @param mod:    modifier key
 -------------------------------------------------------------------------------
-function M.click(nr, clicks, button, mod)
+function M.click(nr, _, button, mod)
   local cmd = require'tabline.cmds'
   local n, cur = g.current_buffers[nr], bufnr()
   if button == 'r' then
@@ -412,9 +412,8 @@ end
 --- @param button: kind of mouse button
 --- @param mod:    modifier key
 -------------------------------------------------------------------------------
-function M.close(nr, clicks, button, mod)
-  local cmd = require'tabline.cmds'
-  local n, cur = g.current_buffers[nr], bufnr()
+function M.close(nr, _, button, _)
+  local n = g.current_buffers[nr]
   if button == 'l' then
     if getbufvar(n, '&modified') == 1 then
       print('Cannot delete, buffer is modified')

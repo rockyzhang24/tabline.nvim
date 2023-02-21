@@ -137,7 +137,7 @@ function tab_icon(bnr, tnr, hi)
   if not s.show_icons then
     return ''
   end
-  local T, icon = gettabvar(tnr, 'tab'), nil
+  local T = gettabvar(tnr, 'tab')
   if T.icon then
     if devicons[T.icon] then
       return devicons[T.icon][tnr == tabpagenr() and 'Selected' or 'Visible']
@@ -149,7 +149,7 @@ function tab_icon(bnr, tnr, hi)
   if not B then return '' end
 
   local buf  = {nr = bnr, hi = hi, icon = B.icon, name = B.name}
-  icon = buf_icon(buf, tnr == tabpagenr())
+  local icon = buf_icon(buf, tnr == tabpagenr())
 
   return not icon and ''
          or type(icon) == 'string' and icon

@@ -128,7 +128,8 @@ local function select_tab(cnt) -- Select tab {{{1
     vim.fn.feedkeys(cnt .. 'gt', 'n')
     return
   end
-  local bufs, b = g.current_buffers, nil
+  local bufs = g.current_buffers
+  local b
   if v.mode == 'args' and not h.empty_arglist() then
     b = bufs[math.min(cnt, #fn.argv())]
   elseif v.label_style == 'bufnr' then
@@ -145,7 +146,7 @@ local function select_tab_with_char(cnt) -- Select tab with character {{{1
     return
   end
   local oldstyle, bufs = v.label_style, g.current_buffers
-  local seltab, selnr, selaz
+  local seltab, selnr, selaz, _
   v.label_style = 'sel'
   vim.cmd('redrawtabline')
   seltab = fn.nr2char(fn.getchar())
@@ -383,7 +384,8 @@ end
 
 local function icon_tab(bang, args) -- Icon tab {{{1
   if #args == 0 and not bang then return end
-  local t, icon = vim.t.tab, nil
+  local t = vim.t.tab
+  local icon
   if bang and not t.icon then
     return
   elseif bang then
@@ -402,7 +404,7 @@ end
 local function reset_buffer() -- Reset buffer {{{1
   local buf = g.buffers[bufnr()]
   if not buf then return end
-  buf = require'tabline.bufs'.add_buf(bufnr())
+  require'tabline.bufs'.add_buf(bufnr())
   vim.cmd('redrawtabline')
 end
 

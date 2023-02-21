@@ -67,11 +67,11 @@ local function tabs_badge() -- Tabs badge {{{1
   end
   if not bdg.fraction then
     local ret = '%#THidden#'
-    for i = 1, tabpagenr('$') do
-      if tabpagenr() == i then
-        ret = ret .. '%#TSelect# ' .. i .. ' %#THidden#'
+    for n = 1, tabpagenr('$') do
+      if tabpagenr() == n then
+        ret = ret .. '%#TSelect# ' .. n .. ' %#THidden#'
       else
-        ret = ret .. ' ' .. i .. ' '
+        ret = ret .. ' ' .. n .. ' '
       end
     end
     return ret .. '%#TFill# '
@@ -191,11 +191,11 @@ function fit_tabline(center, tabs)
         tabs[1].label = '%#DiffDelete# < ' .. tabs[1].label
       end
       -- adapt the tabs to the available space
-      local i, used = 1, L.width + R.width + arrow
+      local n, used = 1, L.width + R.width + arrow
       while used < limit do
-        if i > ntabs then i = 1 end
-        tabs[i].label = tabs[i].label .. ' '
-        i, used = i + 1, used + 1
+        if n > ntabs then n = 1 end
+        tabs[n].label = tabs[n].label .. ' '
+        n, used = n + 1, used + 1
       end
       if s.overflow_arrows and not s.show_button and right_has_been_cut then
         tabs[ntabs].label = printf('%s%%#DiffDelete# > ', strsub(tabs[ntabs].label, 1, #tabs[ntabs].label - 4))
@@ -203,13 +203,13 @@ function fit_tabline(center, tabs)
     end
   else
     -- make labels a bit broader as long as there is enough room
-    local i, used, ntabs = 1, L.width + R.width, #tabs
+    local n, used, ntabs = 1, L.width + R.width, #tabs
     while used < limit do
-      if i > ntabs then
+      if n > ntabs then
         break
       end
-      tabs[i].label = tabs[i].label .. ' '
-      i, used = i + 1, used + 1
+      tabs[n].label = tabs[n].label .. ' '
+      n, used = n + 1, used + 1
     end
   end
 
