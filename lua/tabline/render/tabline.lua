@@ -1,14 +1,15 @@
+local fn = vim.fn
 local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
 local v = require'tabline.setup'.variables
 local i = require'tabline.setup'.indicators
 
 -- vim functions {{{1
-local tabpagenr = vim.fn.tabpagenr
-local tabpagebuflist = vim.fn.tabpagebuflist
-local tabpagewinnr = vim.fn.tabpagewinnr
-local getbufvar = vim.fn.getbufvar
-local gettabvar = vim.fn.gettabvar
+local tabpagenr = fn.tabpagenr
+local tabpagebuflist = fn.tabpagebuflist
+local tabpagewinnr = fn.tabpagewinnr
+local getbufvar = fn.getbufvar
+local gettabvar = fn.gettabvar
 
 -- table functions {{{1
 local insert = table.insert

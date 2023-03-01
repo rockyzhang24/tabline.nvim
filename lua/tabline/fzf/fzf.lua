@@ -6,9 +6,9 @@ local a = require'tabline.fzf.ansi'
 
 -- vim functions {{{1
 local fn = vim.fn
-local execute = vim.fn.execute
-local bufnr = vim.fn.bufnr
-local bufname = vim.fn.bufname
+local execute = fn.execute
+local bufnr = fn.bufnr
+local bufname = fn.bufname
 
 -- table functions {{{1
 local tbl = require'tabline.table'

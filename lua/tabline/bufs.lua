@@ -1,6 +1,7 @@
 local g = require'tabline.setup'.global
 local s = require'tabline.setup'.settings
 local h = require'tabline.helpers'
+local fn = vim.fn
 
 local icons = require'tabline.setup'.icons
 
@@ -17,21 +18,21 @@ local get_tab = require'tabline.tabs'.get_tab
 local validbuf = h.validbuf
 
 -- vim functions {{{1
-local fixedpath = vim.fn.fnamemodify
-local fnamemodify = vim.fn.fnamemodify
-if vim.fn.has('win32') == 1 then
+local fixedpath = fn.fnamemodify
+local fnamemodify = fn.fnamemodify
+if fn.has('win32') == 1 then
   function fixedpath(path, mod)
     return gsub(fnamemodify(path, mod), '/', '\\')
   end
 end
-local bufname = vim.fn.bufname
-local getbufvar = vim.fn.getbufvar
-local buflisted = vim.fn.buflisted
-local getcwd = vim.fn.getcwd
-local tabpagebuflist = vim.fn.tabpagebuflist
-local tabpagenr = vim.fn.tabpagenr
-local bufnr = vim.fn.bufnr
-local execute = vim.fn.execute
+local bufname = fn.bufname
+local getbufvar = fn.getbufvar
+local buflisted = fn.buflisted
+local getcwd = fn.getcwd
+local tabpagebuflist = fn.tabpagebuflist
+local tabpagenr = fn.tabpagenr
+local bufnr = fn.bufnr
+local execute = fn.execute
 --}}}
 
 -------------------------------------------------------------------------------
@@ -217,7 +218,7 @@ end
 -------------------------------------------------------------------------------
 function M.recent_buf(bnr)
   if g.buffers[bnr] then
-    g.buffers[bnr].recent = vim.fn.localtime()
+    g.buffers[bnr].recent = fn.localtime()
   else
     M.add_buf(bnr)
   end
@@ -260,6 +261,8 @@ function M.session_post_clean_up()
   for i = 1, bufnr('$') do
     if g.buffers[i] then
       if not buflisted(i) or (buflisted(i) and bufname(i) == '') then
+        -- FIXME: maybe I should check some more stuff before wiping,
+        -- for example the size of the buffer
         execute(i .. 'bwipe', 'silent!')
         g.buffers[i] = nil
       end

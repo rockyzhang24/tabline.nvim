@@ -3,10 +3,10 @@ local s = require'tabline.setup'.settings
 
 -- vim functions {{{1
 local fn = vim.fn
-local argv = vim.fn.argv
-local tabpagenr = vim.fn.tabpagenr
-local tabpagebuflist = vim.fn.tabpagebuflist
-local haslocaldir = vim.fn.haslocaldir
+local argv = fn.argv
+local tabpagenr = fn.tabpagenr
+local tabpagebuflist = fn.tabpagebuflist
+local haslocaldir = fn.haslocaldir
 --}}}
 
 local find = string.find

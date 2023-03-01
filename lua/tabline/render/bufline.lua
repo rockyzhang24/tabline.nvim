@@ -1,3 +1,4 @@
+local fn = vim.fn
 local o = vim.o
 local g = require'tabline.setup'.global
 local v = require'tabline.setup'.variables
@@ -6,16 +7,16 @@ local i = require'tabline.setup'.indicators
 local h = require'tabline.helpers'
 
 -- vim functions {{{1
-local bufnr = vim.fn.bufnr
-local bufname = vim.fn.bufname
-local getbufvar = vim.fn.getbufvar
-local fnamemodify = vim.fn.fnamemodify
-local winbufnr = vim.fn.winbufnr
-local tabpagebuflist = vim.fn.tabpagebuflist
-local tabpagenr = vim.fn.tabpagenr
-local filereadable = vim.fn.filereadable
-local argv = vim.fn.argv
-local argc = vim.fn.argc
+local bufnr = fn.bufnr
+local bufname = fn.bufname
+local getbufvar = fn.getbufvar
+local fnamemodify = fn.fnamemodify
+local winbufnr = fn.winbufnr
+local tabpagebuflist = fn.tabpagebuflist
+local tabpagenr = fn.tabpagenr
+local filereadable = fn.filereadable
+local argv = fn.argv
+local argc = fn.argc
 
 -- table functions {{{1
 local tbl = require'tabline.table'

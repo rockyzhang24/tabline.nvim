@@ -174,7 +174,7 @@ local function session_delete(line)
   if obsession() and file == vim.g.this_obsession then
     vim.cmd('silent Obsession!')
   else
-    vim.fn.delete(file)
+    fn.delete(file)
   end
   print('Session ' .. file .. ' has been deleted')
 end

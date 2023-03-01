@@ -1,6 +1,7 @@
 -------------------------------------------------------------------------------
 -- Initialization
 -------------------------------------------------------------------------------
+local fn = vim.fn
 
 local M = { ran_once = false }
 
@@ -42,7 +43,7 @@ M.settings = {  -- user settings {{{1
   overflow_arrows = false,
   colored_icons = true,
   icon_spacing = '  ',
-  separators = {'▎', '▏'}
+  separators = {'▎', '▏'},
 }
 
 M.icons = { -- icons {{{1
@@ -105,7 +106,7 @@ local function set_mappings(mappings) -- Define mappings {{{1
   local c = M.settings.main_cmd_name
   if c then
     for k, v in pairs(mappings) do
-      if v[1] and vim.fn.mapcheck(v[1]) == '' then
+      if v[1] and fn.mapcheck(v[1]) == '' then
         vim.cmd(string.format(
           'nnoremap %s :<c-u>%s %s%s%s',
           v[1],                                 -- mapping
@@ -123,7 +124,7 @@ local function set_cd_mappings() -- Define cd mappings {{{1
   local cmd = "lua require'tabline.cd'."
   if not M.settings.cd_mappings then return end
   for _, v in ipairs({ 'cdc', 'cdl', 'cdt', 'cdw' }) do
-    if vim.fn.maparg(v) == '' then
+    if fn.maparg(v) == '' then
       vim.cmd(string.format('nnoremap <silent> %s :<c-u>%s%s()<cr>', v, cmd, v))
     end
   end
@@ -193,7 +194,7 @@ function M.setup(opts)
   M.update_label_style()
   M.ran_once = true
   vim.cmd('silent! delcommand TablineConfig')
-  vim.fn['tabline#init']()
+  fn['tabline#init']()
 end
 
 function M.mappings(maps)

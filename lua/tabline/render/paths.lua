@@ -1,8 +1,9 @@
 -- vim functions {{{1
-local bufname = vim.fn.bufname
-local fnamemodify = vim.fn.fnamemodify
-local tabpagewinnr = vim.fn.tabpagewinnr
-local getcwd = vim.fn.getcwd
+local fn = vim.fn
+local bufname = fn.bufname
+local fnamemodify = fn.fnamemodify
+local tabpagewinnr = fn.tabpagewinnr
+local getcwd = fn.getcwd
 --}}}
 
 local strfind = string.find
@@ -10,11 +11,11 @@ local gsub = string.gsub
 
 local M = {}
 
-local pathpat = vim.fn.has('win32') == 1 and '([/\\]?%.?[^/\\])[^/\\]-[/\\]'
+local pathpat = fn.has('win32') == 1 and '([/\\]?%.?[^/\\])[^/\\]-[/\\]'
                                          or '(/?%.?[^/])[^/]-/'
 
-local slash = vim.fn.has('win32') == 1 and '[/\\]' or '/'
-local slashchar = vim.fn.has('win32') == 1 and '\\' or '/'
+local slash = fn.has('win32') == 1 and '[/\\]' or '/'
+local slashchar = fn.has('win32') == 1 and '\\' or '/'
 
 function M.short_bufname(bnr)
   local name = fnamemodify(bufname(bnr), ':~:.')

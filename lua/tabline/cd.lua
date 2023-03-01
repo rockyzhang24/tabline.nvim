@@ -3,8 +3,8 @@ local M = {}
 local h = require'tabline.helpers'
 
 local fn = vim.fn
-local getcwd = vim.fn.getcwd
-local locdir = vim.fn.haslocaldir
+local getcwd = fn.getcwd
+local locdir = fn.haslocaldir
 
 local roots = { -- {{{1
   git = '.git',

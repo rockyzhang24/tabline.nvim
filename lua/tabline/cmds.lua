@@ -26,9 +26,9 @@ local fn = vim.fn
 local update_label_style = require'tabline.setup'.update_label_style
 
 -- vim functions {{{1
-local getbufvar = vim.fn.getbufvar
-local bufnr = vim.fn.bufnr
-local getcwd = vim.fn.getcwd
+local getbufvar = fn.getbufvar
+local bufnr = fn.bufnr
+local getcwd = fn.getcwd
 
 -- table functions {{{1
 local tbl = require'tabline.table'
@@ -129,7 +129,7 @@ end
 
 local function select_tab(cnt) -- Select tab {{{1
   if h.tabs_mode() then
-    vim.fn.feedkeys(cnt .. 'gt', 'n')
+    fn.feedkeys(cnt .. 'gt', 'n')
     return
   end
   local bufs = g.current_buffers
@@ -160,7 +160,7 @@ local function select_tab_with_char(cnt) -- Select tab with character {{{1
   _, _, selaz = string.find(seltab, '([a-z])')
   if h.tabs_mode() then
     if selnr and tonumber(selnr) <= fn.tabpagenr('$') then
-      vim.fn.feedkeys(selnr .. 'gt', 'n')
+      fn.feedkeys(selnr .. 'gt', 'n')
     end
   else
     if selnr and tonumber(selnr) <= #bufs then
@@ -533,7 +533,7 @@ local function debug() -- Toggle debug mode {{{1
 end
 
 local function config() -- Configuration buffer {{{1
-  vim.fn['tabline#config']()
+  fn['tabline#config']()
 end
 
 local function labelstyle(arg) -- Labels style {{{1
