@@ -268,6 +268,7 @@ function M.session_post_clean_up()
       end
     end
   end
+  require("tabline.persist").restore_persistance()
 end
 
 -------------------------------------------------------------------------------

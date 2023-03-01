@@ -29,6 +29,7 @@ Also:
   * tab CWD/name can be shown in the right corner of the tabline
   * commands to quickly set/change (tab/window) working directory
   * reopen closed tabs
+  * on-demand persistance in sessions
   * clean up buffers across all tabs and other commands
   * session management with fzf
 
@@ -183,12 +184,16 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   buffers                      |fzf| choose among valid buffers
   closedtabs                   |fzf| choose closed tab to reopen
   session       load, ...      |fzf| load session, or save/create new session
+  persist       !              enable/disable(!) persistance for session {1}
   config                       open buffer with sample configuration
 
 
-Note: |fzf| means that it needs fzf {1} (the command-line tool, not fzf.vim).
+Note: |fzf| means that it needs fzf {2} (the command-line tool, not fzf.vim).
 
-                                         {1}   https://github.com/junegunn/fzf
+  {1} `tpope/vim-obsession` is also supported, other plugins that manage
+      sessions will probably be incompatible.
+
+  {2} https://github.com/junegunn/fzf
 
 Session commands will use |vim-obsession| if available.
 By default the session directory is `stdpath('data') .. '/session'`, see

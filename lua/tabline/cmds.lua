@@ -9,6 +9,7 @@ local get_bufs = require'tabline.bufs'.get_bufs
 local set_order = require'tabline.bufs'.set_order
 local themes = require'tabline.themes'
 local fzf = require'tabline.fzf.fzf'
+local pers = require("tabline.persist")
 
 local ok, dv = pcall(require, 'nvim-web-devicons')
 if not ok then
@@ -77,7 +78,7 @@ local subcmds = { -- {{{1
   'bufname', 'tabname', 'buficon', 'tabicon', 'bufreset', 'tabreset',
   'reopen', 'resetall', 'purge', 'cleanup', 'minimize', 'fullpath',
   'away', 'left', 'right', 'theme', 'labelstyle', 'filter',
-  'buffers', 'closedtabs', 'session', 'button',
+  'buffers', 'closedtabs', 'session', 'button', 'persist',
 }
 
 local completion = {  -- {{{1
@@ -352,6 +353,8 @@ local function name_buffer(bang, args) -- Name buffer {{{1
     buf.name = args[1]
   end
   vim.cmd('redrawtabline')
+  buf.persist = g.persist and (buf.icon or buf.name or buf.pinned)
+  pers.update_persistance()
 end
 
 local function icon_buffer(bang, args) -- Icon buffer {{{1
@@ -370,6 +373,8 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
   end
   buf.icon = icon
   vim.cmd('redrawtabline')
+  buf.persist = g.persist and (buf.icon or buf.name or buf.pinned)
+  pers.update_persistance()
 end
 
 local function name_tab(bang, args) -- Name tab {{{1
@@ -384,6 +389,7 @@ local function name_tab(bang, args) -- Name tab {{{1
   end
   vim.t.tab = t
   vim.cmd('redrawtabline')
+  pers.update_persistance()
 end
 
 local function icon_tab(bang, args) -- Icon tab {{{1
@@ -403,6 +409,7 @@ local function icon_tab(bang, args) -- Icon tab {{{1
   t.icon = icon
   vim.t.tab = t
   vim.cmd('redrawtabline')
+  pers.update_persistance()
 end
 
 local function reset_buffer() -- Reset buffer {{{1
@@ -410,11 +417,14 @@ local function reset_buffer() -- Reset buffer {{{1
   if not buf then return end
   require'tabline.bufs'.add_buf(bufnr())
   vim.cmd('redrawtabline')
+  buf.persist = nil
+  pers.update_persistance()
 end
 
 local function reset_tab() -- Reset tab {{{1
   vim.t.tab = { ['name'] = false }
   vim.cmd('redrawtabline')
+  pers.update_persistance()
 end
 
 local function reset_all() -- Reset all tabs and buffers {{{1
@@ -423,27 +433,34 @@ local function reset_all() -- Reset all tabs and buffers {{{1
   end
   require'tabline.bufs'.init_bufs()
   set_tabline()
+  pers.remove_persistance()
 end
 
 local function pin_buffer(bang) -- Pin buffer {{{1
-  local b = g.buffers[bufnr()]
-  if not b then return end
+  local buf = g.buffers[bufnr()]
+  if not buf then return end
   if bang then
-    b.pinned = not b.pinned
+    buf.pinned = not buf.pinned
   else
-    b.pinned = true
+    buf.pinned = true
   end
   vim.cmd('redrawtabline')
+  buf.persist = g.persist and (buf.icon or buf.name or buf.pinned)
+  pers.update_persistance()
 end
 
 local function unpin_buffer(bang) -- Unpin buffer(s) {{{1
   if bang then
-    for _, b in pairs(g.buffers) do
-      b.pinned = false
+    for _, buf in pairs(g.buffers) do
+      buf.pinned = false
+      buf.persist = g.persist and (buf.icon or buf.name)
     end
   elseif g.buffers[bufnr()] then
-    g.buffers[bufnr()].pinned = false
+    local buf = g.buffers[bufnr()]
+    buf.pinned = false
+    buf.persist = g.persist and (buf.icon or buf.name)
   end
+  pers.update_persistance()
   vim.cmd('redrawtabline')
 end
 
@@ -570,6 +587,20 @@ local function filter(bang, arg) -- Apply filter for bufferline {{{1
   vim.cmd('redrawtabline')
 end
 
+local function persist(bang) -- Enable or disable persistance for session {{{1
+  if not vim.g.this_session then
+    print("Not in a session.")
+    g.persist = nil
+    return
+  end
+  if bang then
+    pers.disable_persistance()
+  else
+    g.persist = vim.g.this_session
+    pers.update_persistance()
+  end
+end
+
 -- }}}
 
 
@@ -597,6 +628,7 @@ commands = {  -- {{{1
   ['buffers'] = fzf.list_buffers,
   ['closedtabs'] = fzf.closed_tabs,
   ['session'] = session,
+  ['persist'] = persist,
 }
 
 banged = {  -- {{{1
@@ -614,6 +646,7 @@ banged = {  -- {{{1
   ['filter'] = filter,
   ['minimize'] = minimize,
   ['cleanup'] = cleanup,
+  ['persist'] = persist,
 }
 
 -- }}}
