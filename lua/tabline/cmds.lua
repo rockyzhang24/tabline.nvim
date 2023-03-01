@@ -15,7 +15,7 @@ if not ok then
   dv = nil
 end
 
-local function devicon()
+local function devicon(args)
   local devicons = require'tabline.render.icons'.icons
   return dv and devicons[args[1]] or dv.get_icon(args[1])
 end
@@ -362,7 +362,7 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
   elseif icons[args[1]] then
     icon = icons[args[1]]
   else
-    icon = devicon()
+    icon = devicon(args)
     if not icon then return end
   end
   if getbufvar(bufnr(), '&buftype') ~= '' then
