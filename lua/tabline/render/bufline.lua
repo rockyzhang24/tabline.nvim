@@ -40,6 +40,9 @@ local buf_order, buf_bufnr, buf_sel, buf_sep
 local buf_path, buf_icon, buf_label, buf_mod, format_buffer_labels
 local render_buffers, render_args, limit_buffers
 
+local function refresh_icons()
+  devicon = require'tabline.render.icons'.devicon
+end
 
 -------------------------------------------------------------------------------
 -- Bufferline mode
@@ -227,4 +230,5 @@ return {
   render_args = render_args,
   buf_icon = buf_icon,
   buf_path = buf_path,
+  refresh_icons = refresh_icons,
 }

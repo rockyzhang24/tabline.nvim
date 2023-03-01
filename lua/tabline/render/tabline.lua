@@ -28,6 +28,9 @@ local sepactive, sepinactive
 local tab_nr, tab_num, tab_sep, tab_mod_flag, tab_label, tab_hi, tab_icon
 local format_tab_label, render_tabs
 
+local function refresh_icons()
+  devicons = require'tabline.render.icons'.icons
+end
 
 
 
@@ -186,6 +189,7 @@ return {
   tab_label = tab_label,
   format_tab_label = format_tab_label,
   render_tabs = render_tabs,
+  refresh_icons = refresh_icons,
 }
 
 

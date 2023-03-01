@@ -3,7 +3,6 @@ local s = require'tabline.setup'.settings
 local g = require'tabline.setup'.global
 local v = require'tabline.setup'.variables
 local icons = require'tabline.setup'.icons
-local devicons = require'tabline.render.icons'.icons
 local h = require'tabline.helpers'
 local delbufs = require'tabline.delbufs'
 local get_bufs = require'tabline.bufs'.get_bufs
@@ -14,6 +13,11 @@ local fzf = require'tabline.fzf.fzf'
 local ok, dv = pcall(require, 'nvim-web-devicons')
 if not ok then
   dv = nil
+end
+
+local function devicon()
+  local devicons = require'tabline.render.icons'.icons
+  return dv and devicons[args[1]] or dv.get_icon(args[1])
 end
 
 local function get_icons() return vim.tbl_keys(require("tabline.setup").icons) end
@@ -358,7 +362,7 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
   elseif icons[args[1]] then
     icon = icons[args[1]]
   else
-    icon = dv and devicons[args[1]] or dv.get_icon(args[1])
+    icon = devicon()
     if not icon then return end
   end
   if getbufvar(bufnr(), '&buftype') ~= '' then
@@ -393,7 +397,7 @@ local function icon_tab(bang, args) -- Icon tab {{{1
   elseif icons[args[1]] then
     icon = icons[args[1]]
   else
-    icon = dv and devicons[args[1]] or dv.get_icon(args[1])
+    icon = devicon()
     if not icon then return end
   end
   t.icon = icon

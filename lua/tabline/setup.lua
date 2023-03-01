@@ -139,8 +139,11 @@ end
 
 function M.load_theme(reload) -- Load theme {{{1
   if reload then
-    require'tabline.render.icons'.icons = {}
+    package.loaded['nvim-web-devicons'] = nil
+    package.loaded['tabline.render.icons'] = nil
     require'tabline.highlight'.refresh()
+    require'tabline.render.bufline'.refresh_icons()
+    require'tabline.render.tabline'.refresh_icons()
   end
   if M.settings.theme then
     local themes = require'tabline.themes'

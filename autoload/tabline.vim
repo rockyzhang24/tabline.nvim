@@ -19,6 +19,7 @@ function! tabline#init() abort
     augroup tabline
         au!
         au OptionSet termguicolors lua require'tabline.setup'.load_theme(true)
+        au OptionSet background lua require'tabline.setup'.load_theme(true)
         au ColorScheme *  lua require'tabline.setup'.load_theme(true)
         au TabNew      *  lua require'tabline.tabs'.init_tabs()
         au BufAdd      *  lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
