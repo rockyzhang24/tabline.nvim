@@ -353,7 +353,6 @@ local function name_buffer(bang, args) -- Name buffer {{{1
     buf.name = args[1]
   end
   vim.cmd('redrawtabline')
-  buf.persist = g.persist and (buf.icon or buf.name or buf.pinned)
   pers.update_persistance()
 end
 
@@ -373,7 +372,6 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
   end
   buf.icon = icon
   vim.cmd('redrawtabline')
-  buf.persist = g.persist and (buf.icon or buf.name or buf.pinned)
   pers.update_persistance()
 end
 
@@ -417,7 +415,6 @@ local function reset_buffer() -- Reset buffer {{{1
   if not buf then return end
   require'tabline.bufs'.add_buf(bufnr())
   vim.cmd('redrawtabline')
-  buf.persist = nil
   pers.update_persistance()
 end
 
@@ -445,7 +442,6 @@ local function pin_buffer(bang) -- Pin buffer {{{1
     buf.pinned = true
   end
   vim.cmd('redrawtabline')
-  buf.persist = g.persist and (buf.icon or buf.name or buf.pinned)
   pers.update_persistance()
 end
 
@@ -453,12 +449,10 @@ local function unpin_buffer(bang) -- Unpin buffer(s) {{{1
   if bang then
     for _, buf in pairs(g.buffers) do
       buf.pinned = false
-      buf.persist = g.persist and (buf.icon or buf.name)
     end
   elseif g.buffers[bufnr()] then
     local buf = g.buffers[bufnr()]
     buf.pinned = false
-    buf.persist = g.persist and (buf.icon or buf.name)
   end
   pers.update_persistance()
   vim.cmd('redrawtabline')

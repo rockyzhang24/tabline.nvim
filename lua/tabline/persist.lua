@@ -66,7 +66,7 @@ function M.update_persistance()
   end
   local saved = { bufs = {}, tabs = {} }
   for _, buf in pairs(g.buffers) do
-    if buf.persist then
+    if buf.name or buf.icon or buf.pinned then
       saved.bufs[buf.path] = {
         p = buf.pinned,
         i = buf.icon,
