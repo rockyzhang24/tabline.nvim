@@ -52,7 +52,7 @@ function M.restore_persistance()
       fn.settabvar(i, 'tab', t)
     end
     vim.g.tnv_persist = nil
-    g.persist = vim.g.this_session
+    g.persist = vim.v.this_session
     -- must update also session file
     M.update_persistance()
   end
@@ -60,7 +60,7 @@ end
 
 --- Update the session file so that customizations persist.
 function M.update_persistance()
-  if not vim.g.this_session or vim.g.this_session ~= g.persist then
+  if not vim.v.this_session or vim.v.this_session ~= g.persist then
     g.persist = nil
     return
   end
@@ -82,7 +82,8 @@ function M.update_persistance()
   if obsession() then
     obsession_update(saved)
   else
-    local lines = fn.readfile(vim.g.this_session)
+    vim.cmd('mksession! ' .. fn.fnameescape(vim.v.this_session))
+    local lines = fn.readfile(vim.v.this_session)
     for i, line in ipairs(lines) do
       if line:find("^let g:tnv_persist") then
         table.remove(lines, i)
@@ -90,26 +91,26 @@ function M.update_persistance()
       end
     end
     table.insert(lines, #lines - 2, saved)
-    fn.writefile(lines, vim.g.this_session)
+    fn.writefile(lines, vim.v.this_session)
   end
 end
 
 --- Revert changes to session file.
 function M.remove_persistance()
-  if not vim.g.this_session then
+  if not vim.v.this_session then
     return
   elseif obsession() then
     obsession_update()
     return
   end
-  local lines = fn.readfile(vim.g.this_session)
+  local lines = fn.readfile(vim.v.this_session)
   for i, line in ipairs(lines) do
     if line:find("^let g:tnv_persist") then
       table.remove(lines, i)
       break
     end
   end
-  fn.writefile(lines, vim.g.this_session)
+  fn.writefile(lines, vim.v.this_session)
 end
 
 --- Disable persistance and revert changes to session file.

@@ -582,7 +582,7 @@ local function filter(bang, arg) -- Apply filter for bufferline {{{1
 end
 
 local function persist(bang) -- Enable or disable persistance for session {{{1
-  if not vim.g.this_session then
+  if not vim.v.this_session then
     print("Not in a session.")
     g.persist = nil
     return
@@ -590,7 +590,7 @@ local function persist(bang) -- Enable or disable persistance for session {{{1
   if bang then
     pers.disable_persistance()
   else
-    g.persist = vim.g.this_session
+    g.persist = vim.v.this_session
     pers.update_persistance()
   end
 end
