@@ -1,10 +1,10 @@
 local tbl = {}
 
-local remove = table.remove
+local add = table.insert
 
-function tbl.slice(t, first, last, step)
+function tbl.slice(t, first, last)
   local sliced, n = {}, 0
-  for i = first or 1, last or #t, step or 1 do
+  for i = first or 1, last or #t do
     n = n + 1
     sliced[n] = t[i]
   end
@@ -31,28 +31,13 @@ function tbl.reverse(t)
 end
 
 function tbl.filter(t, func)
-  local ix, sz = 1, #t
+  local dst = {}
   for k, v in ipairs(t) do
     if func(k, v) then
-      t[ix] = v
-      ix = ix + 1
+      add(dst, v)
     end
   end
-  for i = ix, sz do t[i] = nil end
-  return t
-end
-
-function tbl.filternew(t, func)
-  local ix, sz, new = 1, #t, {}
-  for k,v in pairs(t) do new[k] = v end
-  for k, v in ipairs(new) do
-    if func(k, v) then
-      new[ix] = v
-      ix = ix + 1
-    end
-  end
-  for i = ix, sz do new[i] = nil end
-  return new
+  return dst
 end
 
 function tbl.map(t, func)
@@ -71,26 +56,11 @@ function tbl.mapnew(t, func)
 end
 
 function tbl.index(t, val)
-  local ix = 1
-  for _, v in ipairs(t) do
+  for i, v in ipairs(t) do
     if v == val then
-      return ix
-    end
-    ix = ix + 1
-  end
-  return nil
-end
-
-function tbl.uniq(t)
-  local seen = {}
-  for k, v in pairs(t) do
-    if seen[v] then
-      remove(t, k)
-    else
-      seen[v] = true
+      return i
     end
   end
-  return t
 end
 
 return tbl

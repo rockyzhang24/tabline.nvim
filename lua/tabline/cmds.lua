@@ -36,7 +36,7 @@ local tbl = require'tabline.table'
 local remove = table.remove
 local insert = table.insert
 local index = tbl.index
-local filternew = tbl.filternew
+local filter = tbl.filter
 --}}}
 
 -------------------------------------------------------------------------------
@@ -111,11 +111,11 @@ local function complete(_, c, _)  -- {{{1
   end
   local res = type(completion[subcmd]) == 'function' and completion[subcmd]() or completion[subcmd]
   if arg and res then
-    return filternew(res, function(_,str) return string.find(str, '^' .. arg) end)
+    return filter(res, function(_,str) return string.find(str, '^' .. arg) end)
   elseif subcmd and res then
     return res
   elseif subcmd then
-    return filternew(
+    return filter(
         subcmds, function(_,str) return string.find(str, '^' .. subcmd) end)
   else
     return subcmds
