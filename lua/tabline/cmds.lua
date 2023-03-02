@@ -419,7 +419,7 @@ local function reset_buffer() -- Reset buffer {{{1
 end
 
 local function reset_tab() -- Reset tab {{{1
-  vim.t.tab = { ['name'] = false }
+  vim.t.tab = {}
   vim.cmd('redrawtabline')
   pers.update_persistance()
 end
