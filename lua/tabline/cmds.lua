@@ -426,7 +426,7 @@ end
 
 local function reset_all() -- Reset all tabs and buffers {{{1
   for i = 1, fn.tabpagenr('$') do
-    fn.settabvar(i, 'tab', require'tabline.tabs'.new_tab(i))
+    fn.settabvar(i, 'tab', {})
   end
   require'tabline.bufs'.init_bufs()
   set_tabline()
@@ -577,7 +577,7 @@ local function session(arg) -- Session load/new/save/delete {{{1
 end
 
 local function filter(bang, arg) -- Apply filter for bufferline {{{1
-  require'tabline.tabs'.set_filter(arg[1], bang)
+  require'tabline.tabs'.set_filter(arg[1] ~= "" and arg[1] or nil, bang)
   vim.cmd('redrawtabline')
 end
 
