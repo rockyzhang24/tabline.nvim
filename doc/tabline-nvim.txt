@@ -6,6 +6,9 @@ TABLINE-NVIM - TABLE OF CONTENTS                                *tabline-nvim*
   Tabline rendering                                       |tnv-rendering|
   Settings                                                |tnv-init|
   Main command                                            |tnv-command|
+    Persistance                                           |tnv-persistance|
+    Clean-up commands                                     |tnv-clean-up|
+    Filtering                                             |tnv-filtering|
   Mappings                                                |tnv-mappings|
   Themes                                                  |tnv-themes|
   Credits                                                 |tnv-credits|
@@ -184,16 +187,13 @@ Some subcommands can be <bang>ed, to toggle setting, for example:
   buffers                      |fzf| choose among valid buffers
   closedtabs                   |fzf| choose closed tab to reopen
   session       load, ...      |fzf| load session, or save/create new session
-  persist       !              enable/disable(!) persistance for session {1}
+  persist       !              enable/disable(!) persistance for session
   config                       open buffer with sample configuration
 
 
-Note: |fzf| means that it needs fzf {2} (the command-line tool, not fzf.vim).
+Note: |fzf| means that it needs fzf {1} (the command-line tool, not fzf.vim).
 
-  {1} `tpope/vim-obsession` is also supported, other plugins that manage
-      sessions will probably be incompatible.
-
-  {2} https://github.com/junegunn/fzf
+  {1} https://github.com/junegunn/fzf
 
 Session commands will use |vim-obsession| if available.
 By default the session directory is `stdpath('data') .. '/session'`, see
@@ -201,8 +201,32 @@ By default the session directory is `stdpath('data') .. '/session'`, see
 
 
 
+
+PERSISTANCE IN SESSIONS                                      *tnv-persistance*
+------------------------------------------------------------------------------
+
+Persistance can be enabled per session, it doesn't need a special setting.
+To enable it for current session: >
+  :Tabline persist
+
+The plugin will start updating the session file with the informations that
+must be remembered: named buffers and tabs, icons for buffers and tabs,
+pinnned buffers.
+
+When the session is loaded, the plugin will automatically resume persistance
+for that session.
+
+To stop tracking a session and disable persistance for it: >
+  :Tabline persist!
+
+`tpope/vim-obsession` is also supported, other plugins that manage sessions
+will probably be incompatible if they overwrite the sessions file.
+
+
+
+
 CLEAN-UP COMMANDS                                               *tnv-clean-up*
-==============================================================================
+------------------------------------------------------------------------------
 
 There is a handful of different commands that do different things:
 
@@ -230,7 +254,7 @@ out. They will still show up in the |unlisted-buffer| list.
 
 
 FILTERING                                                      *tnv-filtering*
-==============================================================================
+------------------------------------------------------------------------------
 
 Filtering only applies to 'buffers' mode.
 
