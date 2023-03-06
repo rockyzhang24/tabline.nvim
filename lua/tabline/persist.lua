@@ -60,7 +60,7 @@ end
 
 --- Update the session file so that customizations persist.
 function M.update_persistance()
-  if not vim.v.this_session or vim.v.this_session ~= g.persist then
+  if vim.v.this_session == "" or vim.v.this_session ~= g.persist then
     g.persist = nil
     return
   end
@@ -97,7 +97,7 @@ end
 
 --- Revert changes to session file.
 function M.remove_persistance()
-  if not vim.v.this_session then
+  if vim.v.this_session == "" then
     return
   elseif obsession() then
     obsession_update()
