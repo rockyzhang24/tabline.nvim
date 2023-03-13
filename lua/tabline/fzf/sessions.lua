@@ -90,7 +90,8 @@ end
 
 local function session_load(line)
   for i = 1, fn.bufnr('$') do
-    if fn.getbufvar(i, '&modified') == 1 then
+    if fn.getbufvar(i, '&modified') == 1 and fn.buflisted(i) == 1 then
+      vim.cmd("redraw!")
       print('Some buffer has unsaved changes')
       return
     end
