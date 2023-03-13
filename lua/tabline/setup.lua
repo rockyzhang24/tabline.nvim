@@ -209,7 +209,7 @@ function M.mappings(maps)
       if MAPPINGS[k] then
         maps[k] = { v, MAPPINGS[k][2], MAPPINGS[k][3] }
       else
-        maps[k] = nil
+        maps[k] = { v, true }
       end
     end
     if M.settings.default_mappings then
@@ -217,7 +217,7 @@ function M.mappings(maps)
     else
       mappings = maps
     end
-  elseif maps or M.settings.default_mappings then
+  elseif maps == true or M.settings.default_mappings then
     mappings = MAPPINGS
   end
 
