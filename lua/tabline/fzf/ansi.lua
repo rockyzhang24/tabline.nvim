@@ -39,11 +39,11 @@ local function ansi(str, group, default, bold)
 end
 
 return {
-  black   = function(str, group) return ansi(str, group or '', 'black')   end,
-  red     = function(str, group) return ansi(str, group or '', 'red')     end,
-  green   = function(str, group) return ansi(str, group or '', 'green')   end,
-  yellow  = function(str, group) return ansi(str, group or '', 'yellow')  end,
-  blue    = function(str, group) return ansi(str, group or '', 'blue')    end,
-  magenta = function(str, group) return ansi(str, group or '', 'magenta') end,
-  cyan    = function(str, group) return ansi(str, group or '', 'cyan')    end,
+  black   = function(str, group) return ansi(str or '', group or '', 'black')   end,
+  red     = function(str, group) return ansi(str or '', group or '', 'red')     end,
+  green   = function(str, group) return ansi(str or '', group or '', 'green')   end,
+  yellow  = function(str, group) return ansi(str or '', group or '', 'yellow')  end,
+  blue    = function(str, group) return ansi(str or '', group or '', 'blue')    end,
+  magenta = function(str, group) return ansi(str or '', group or '', 'magenta') end,
+  cyan    = function(str, group) return ansi(str or '', group or '', 'cyan')    end,
 }

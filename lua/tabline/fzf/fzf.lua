@@ -93,7 +93,15 @@ local function closed_tabs_list() -- {{{1
   local lines = {}
 
   for i, tab in ipairs(require'tabline.tabs'.closed) do
-    insert(lines, string.format('%-5s%-20s%s', a.yellow(tostring(i)), a.cyan(tab.name), tab.wd))
+    insert(
+      lines,
+      string.format(
+        "%-22s%-38s%s",
+        a.yellow(tostring(i)),
+        a.cyan(tab.name or fn.fnamemodify(bufname(tab.buf), ":t")),
+        tab.wd
+      )
+    )
   end
   insert(lines, "Tab\tName\t\t\tWorking Directory")
   return tbl.reverse(lines)
