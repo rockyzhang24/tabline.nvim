@@ -74,10 +74,12 @@ local function sessions_list()
     end
   end
 
-  if not winOs and #sessions > 0 then
+  if not winOs and #sessions > 1 then
     table.sort(sessions, function(a,b) return lastmod(a) < lastmod(b) end)
+    if tbl.index(sessions, vim.v.this_session) then
+      table.insert(sessions, table.remove(sessions, tbl.index(sessions, vim.v.this_session)))
+    end
   end
-  table.insert(sessions, table.remove(sessions, tbl.index(sessions, vim.v.this_session)))
 
   for _, ss in ipairs(sessions) do
     table.insert(lines, 1, desc(ss, fn.fnamemodify(ss, ':t'), data))

@@ -49,6 +49,17 @@ local function mac_no_gnu() -- {{{1
   return false
 end
 
+local function no_sessions()
+  local sessions_path = require'tabline.setup'.settings.sessions_dir or fn.stdpath('data') .. '/session'
+  local sessions = fn.globpath(sessions_path, '*', false, true)
+
+  if #sessions == 0 then
+    print('No saved sessions.')
+    return true
+  end
+  return false
+end
+
 local function statusline(prompt) -- {{{1
   vim.cmd('au FileType fzf ++once setlocal statusline=%#xt_fzf1#\\ >\\ %#xt_fzf2#' .. fn.escape(prompt, ' '))
 end
@@ -143,7 +154,7 @@ local function closed_tabs()
 end
 
 local function load_session()
-  if mac_no_gnu() then return end
+  if mac_no_gnu() or no_sessions() then return end
   statusline("Load Session")
   local curloaded, sessions = require'tabline.fzf.sessions'.sessions_list()
   local options = '--ansi --no-preview --header-lines=' .. (curloaded and '2' or '1')
@@ -156,7 +167,7 @@ local function load_session()
 end
 
 local function delete_session()
-  if mac_no_gnu() then return end
+  if mac_no_gnu() or no_sessions() then return end
   statusline("Delete Session")
   local _, sessions = require'tabline.fzf.sessions'.sessions_list()
   fn['fzf#run']({
