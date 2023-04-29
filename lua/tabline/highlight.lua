@@ -28,79 +28,32 @@ local function rgb2tbl(rgb)
   return { r = r, g = g, b = b }
 end
 
---- Generate default value for 'Normal' highlight.
-local function default_normal()
-  NORMAL = vim.o.termguicolors and {
-    fg = "#FFFFFF",
-    bg = "#000000",
-    rgb_fg = { r = 255, g = 255, b = 255},
-    rgb_bg = { r = 0, g = 0, b = 0},
-  } or {
-    fg = 15,
-    bg = 0
-  }
-end
+local get_hl = vim.version().api_level > 10
+  and function(group) return vim.api.nvim_get_hl(0, {name = group, link = true}) end
+  or function(group) return vim.api.nvim_get_hl_by_name(group, vim.o.termguicolors) end
 
---- Fill the highlight definition with additional information:
---- t.rgb_bg = background in (r, g, b) notation
---- t.rgb_fg = foreground in (r, g, b) notation
---- t.bg = background in #xxxxxx notation
---- t.fg = foreground in #xxxxxx notation
+--- Get the background for a highlight group.
 ---@param group string
----@return table
-if vim.version().api_level > 10 then
-  function M.get_hl(group)
-    if not vim.o.termguicolors then
-      local t = vim.api.nvim_get_hl(0, { name = group, link = true })
-      if t.link then
-        return M.get_hl(t.link)
-      elseif not t.ctermfg and not t.ctermbg then
-        return NORMAL
-      end
-      return {
-        fg = t.ctermfg or NORMAL.fg,
-        bg = t.ctermbg or NORMAL.bg
-      }
-    end
-    local t = vim.api.nvim_get_hl(0, { name = group, link = true })
-    if t.link then
-      return M.get_hl(t.link)
-    elseif not t.fg and not t.bg then
-      return NORMAL
-    end
-    t.rgb_fg = t.fg and rgb2tbl(t.fg) or NORMAL.rgb_fg
-    t.rgb_bg = t.bg and rgb2tbl(t.bg) or NORMAL.rgb_bg
-    local f, b = t.rgb_fg, t.rgb_bg
-    t.fg = f and string.format(XFMT, f.r, f.g, f.b) or NORMAL.fg
-    t.bg = b and string.format(XFMT, b.r, b.g, b.b) or NORMAL.bg
-    return t
+---@return string|number
+function M.get_bg(group)
+  local t = get_hl(group)
+  if t.link then
+    return M.get_bg(t.link)
   end
-else
-  function M.get_hl(group)
-    if not vim.o.termguicolors then
-      local t = vim.api.nvim_get_hl_by_name(group, false)
-      return {
-        fg = t.foreground or NORMAL.fg,
-        bg = t.background or NORMAL.bg,
-      }
-    end
-    local t = vim.api.nvim_get_hl_by_name(group, true)
-    if not t.foreground and not t.background then
-      return NORMAL
-    end
-    t.rgb_fg = t.foreground and rgb2tbl(t.foreground) or NORMAL.rgb_fg
-    t.rgb_bg = t.background and rgb2tbl(t.background) or NORMAL.rgb_bg
-    local f, b = t.rgb_fg, t.rgb_bg
-    t.fg = f and string.format(XFMT, f.r, f.g, f.b) or NORMAL.fg
-    t.bg = b and string.format(XFMT, b.r, b.g, b.b) or NORMAL.bg
-    return t
+  if not vim.o.termguicolors then
+    return t.ctermbg or t.background or NORMAL
   end
+  if not t.bg and not t.background then
+    return NORMAL
+  end
+  local rgb = rgb2tbl(t.bg or t.background)
+  return string.format(XFMT, rgb.r, rgb.g, rgb.b)
 end
 
 --- Reset Normal highlight definition.
 function M.refresh()
-  default_normal()
-  NORMAL = M.get_hl("Normal")
+  NORMAL = vim.o.termguicolors and "#000000" or 0 -- fallback value
+  NORMAL = M.get_bg("Normal")
 end
 M.refresh()
 

@@ -27,7 +27,7 @@ local function make_icons_hi(gcol, tcol)
   local gui = tgc and 'gui' or 'cterm'
   local groups = { 'Special', 'Select', 'Extra', 'Visible', 'Hidden' }
   for _, v in ipairs(groups) do
-    local bg = h.get_hl('T' .. v).bg
+    local bg = h.get_bg('T' .. v)
     local c = tgc and gcol:sub(2) or tcol or require'tabline.term256'.hex2term(gcol:sub(2))
     vim.cmd(printf('hi T%s%s %sbg=%s %sfg=%s', v, c, gui, bg, gui, tgc and gcol or c))
     ret[v] = {}

@@ -5,13 +5,9 @@ local fg
 
 local function make_fmt(group, bold)
   local t = vim.o.termguicolors and 'gui' or 'cterm'
-  local bg = H.get_hl(group).bg
+  local bg = H.get_bg(group)
   bold = bold and 'bold' or 'none'
-  if bg == '' then
-    return printf('%%s %sfg=%s %s=%s', t, fg, t, bold)
-  else
-    return printf('%%s %sbg=%s %sfg=%s %s=%s', t, bg, t, fg, t, bold)
-  end
+  return printf('%%s %sbg=%s %sfg=%s %s=%s', t, bg, t, fg, t, bold)
 end
 
 local function mod(group)
