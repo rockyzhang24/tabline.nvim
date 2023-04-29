@@ -28,6 +28,19 @@ local function rgb2tbl(rgb)
   return { r = r, g = g, b = b }
 end
 
+--- Generate default value for 'Normal' highlight.
+local function default_normal()
+  NORMAL = vim.o.termguicolors and {
+    fg = "#FFFFFF",
+    bg = "#000000",
+    rgb_fg = { r = 255, g = 255, b = 255},
+    rgb_bg = { r = 0, g = 0, b = 0},
+  } or {
+    fg = 15,
+    bg = 0
+  }
+end
+
 --- Fill the highlight definition with additional information:
 --- t.rgb_bg = background in (r, g, b) notation
 --- t.rgb_fg = foreground in (r, g, b) notation
@@ -42,20 +55,18 @@ if vim.version().api_level > 10 then
       if t.link then
         return M.get_hl(t.link)
       elseif not t.ctermfg and not t.ctermbg then
-        return NORMAL or { fg = 15, bg = 0 }
+        return NORMAL
       end
-      return { fg = t.ctermfg or NORMAL.fg or 15, bg = t.ctermbg or NORMAL.bg or 0 }
+      return {
+        fg = t.ctermfg or NORMAL.fg,
+        bg = t.ctermbg or NORMAL.bg
+      }
     end
     local t = vim.api.nvim_get_hl(0, { name = group, link = true })
     if t.link then
       return M.get_hl(t.link)
     elseif not t.fg and not t.bg then
-      return NORMAL or {
-        fg = "#FFFFFF",
-        bg = "#000000",
-        rgb_fg = { r = 255, g = 255, b = 255},
-        rgb_bg = { r = 0, g = 0, b = 0},
-      }
+      return NORMAL
     end
     t.rgb_fg = t.fg and rgb2tbl(t.fg) or NORMAL.rgb_fg
     t.rgb_bg = t.bg and rgb2tbl(t.bg) or NORMAL.rgb_bg
@@ -69,18 +80,13 @@ else
     if not vim.o.termguicolors then
       local t = vim.api.nvim_get_hl_by_name(group, false)
       return {
-        fg = t.foreground or (NORMAL or {}).fg or 15,
-        bg = t.background or (NORMAL or {}).bg or 0,
+        fg = t.foreground or NORMAL.fg,
+        bg = t.background or NORMAL.bg,
       }
     end
     local t = vim.api.nvim_get_hl_by_name(group, true)
     if not t.foreground and not t.background then
-      return NORMAL or {
-        fg = "#FFFFFF",
-        bg = "#000000",
-        rgb_fg = { r = 255, g = 255, b = 255},
-        rgb_bg = { r = 0, g = 0, b = 0},
-      }
+      return NORMAL
     end
     t.rgb_fg = t.foreground and rgb2tbl(t.foreground) or NORMAL.rgb_fg
     t.rgb_bg = t.background and rgb2tbl(t.background) or NORMAL.rgb_bg
@@ -93,6 +99,7 @@ end
 
 --- Reset Normal highlight definition.
 function M.refresh()
+  default_normal()
   NORMAL = M.get_hl("Normal")
 end
 M.refresh()
