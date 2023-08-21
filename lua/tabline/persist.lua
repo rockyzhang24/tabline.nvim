@@ -55,6 +55,10 @@ function M.restore_persistance()
     g.persist = vim.v.this_session
     -- must update also session file
     M.update_persistance()
+  else
+    -- If the session to be loaded has persistance disabled, reset the
+    -- persistance.
+    g.persist = nil
   end
 end
 
@@ -115,7 +119,6 @@ end
 
 --- Disable persistance and revert changes to session file.
 function M.disable_persistance()
-  g.persist = nil
   M.remove_persistance()
 end
 
