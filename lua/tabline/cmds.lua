@@ -351,8 +351,8 @@ local function name_buffer(bang, args) -- Name buffer {{{1
       buf.special = true
     end
     buf.name = args[1]
-    buf.custom = not bang
   end
+  buf.custom = not bang
   vim.cmd('redrawtabline')
   pers.update_persistance()
 end
