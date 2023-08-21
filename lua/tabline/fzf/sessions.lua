@@ -2,6 +2,8 @@ local fn = vim.fn
 local tbl = require'tabline.table'
 local s = require'tabline.setup'.settings
 local ansi = require'tabline.fzf.ansi'
+local g = require'tabline.setup'.global
+local pers = require("tabline.persist")
 
 local winOs = fn.has('win32') == 1
 
@@ -42,18 +44,6 @@ local function desc(fname, name, data) -- Session description {{{1
   local dscr = data[name] or ''
   local time = winOs and '' or get_date(fname)
   return string.format('%-30s\t%s%s%s', ansi.yellow(name), ansi.cyan(time), mark, dscr)
-end
-
-local function update_current_session() -- Update current session {{{1
-  local file = vim.g.this_obsession or vim.v.this_session
-  if fn.filereadable(file) == 0 then return end
-
-  if obsession() then
-    vim.cmd("silent Obsession " .. fn.fnameescape(file))
-    vim.cmd("silent Obsession ")
-  elseif file ~= '' then
-    vim.cmd("silent mksession! " .. fn.fnameescape(file))
-  end
 end
 
 -- }}}
@@ -109,9 +99,9 @@ local function session_load(line)
     return
   end
 
-  if fn.exists('g:this_session') == 1 then
+  if vim.v.this_session ~= "" then
     if confirm("Current session will be unloaded. Confirm?") then
-      update_current_session()
+      pers.update_persistance()
     else
       return
     end
@@ -143,7 +133,7 @@ local function session_save(new)
 
   if confirm(string.format('%s session %s?', new and 'New' or 'Save', name)) then
     if _name ~= '' and name ~= _name then
-      update_current_session()
+      pers.update_persistance()
     end
 
     if new then
@@ -179,6 +169,12 @@ local function session_delete(line)
   else
     fn.delete(file)
   end
+
+  -- If the current session is the one to be deleted, reset persistance.
+  if file == vim.v.this_session then
+    g.persist = nil
+  end
+
   print('Session ' .. file .. ' has been deleted')
 end
 
