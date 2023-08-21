@@ -351,6 +351,7 @@ local function name_buffer(bang, args) -- Name buffer {{{1
       buf.special = true
     end
     buf.name = args[1]
+    buf.custom = not bang
   end
   vim.cmd('redrawtabline')
   pers.update_persistance()
@@ -371,6 +372,7 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
     buf.special = true
   end
   buf.icon = icon
+  buf.custom = not bang
   vim.cmd('redrawtabline')
   pers.update_persistance()
 end

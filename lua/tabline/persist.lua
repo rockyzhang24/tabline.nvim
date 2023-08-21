@@ -41,15 +41,18 @@ function M.restore_persistance()
           buf.pinned = v.p
           buf.icon = v.i
           buf.name = v.n
+          buf.custom = v.c
           break
         end
       end
     end
     for i, tab in ipairs(saved.tabs) do
       local t = fn.gettabvar(i, 'tab', false)
-      t.name = tab.name
-      t.icon = tab.icon
-      fn.settabvar(i, 'tab', t)
+      if t then
+        t.name = tab.name
+        t.icon = tab.icon
+        fn.settabvar(i, 'tab', t)
+      end
     end
     vim.g.tnv_persist = nil
     g.persist = vim.v.this_session
@@ -69,11 +72,12 @@ function M.update_persistance()
   end
   local saved = { bufs = {}, tabs = {} }
   for _, buf in pairs(g.buffers) do
-    if buf.name or buf.icon or buf.pinned then
+    if buf.custom or buf.pinned then
       saved.bufs[buf.path] = {
         p = buf.pinned,
         i = buf.icon,
         n = buf.name,
+        c = buf.custom,
       }
     end
     for i = 1, fn.tabpagenr("$") do
