@@ -203,11 +203,15 @@ end
 
 -------------------------------------------------------------------------------
 -- Function: M.remove_buf
+-- Skip removal if vim is exiting, because it would break persistance, when this
+-- is enabled.
 --
 -- @param bnr: the buffer number
 -------------------------------------------------------------------------------
 function M.remove_buf(bnr)
-  g.buffers[bnr] = nil
+  if vim.v.exiting == vim.NIL then
+    g.buffers[bnr] = nil
+  end
 end
 
 -------------------------------------------------------------------------------
@@ -258,6 +262,9 @@ end
 --- Remove buffers that are no longer valid.
 -------------------------------------------------------------------------------
 function M.session_post_clean_up()
+  if M.session_post_busy then
+    return
+  end
   for i = 1, bufnr('$') do
     if g.buffers[i] then
       if not buflisted(i) or (buflisted(i) and bufname(i) == '') then
@@ -269,6 +276,12 @@ function M.session_post_clean_up()
     end
   end
   require("tabline.persist").restore_persistance()
+  -- SessionLoadPost seems to trigger several times in a row, probably a bug
+  -- debounce the thing
+  M.session_post_busy = true
+  vim.defer_fn(function()
+    M.session_post_busy = false
+  end, 1000)
 end
 
 -------------------------------------------------------------------------------

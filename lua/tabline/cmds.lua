@@ -588,7 +588,6 @@ local function persist(bang) -- Enable or disable persistance for session {{{1
     return
   end
   if bang then
-    g.persist = nil
     pers.disable_persistance()
   else
     g.persist = vim.v.this_session

@@ -56,8 +56,7 @@ function M.restore_persistance()
     -- must update also session file
     M.update_persistance()
   else
-    -- If the session to be loaded has persistance disabled, reset the
-    -- persistance.
+    -- the loaded session has persistance disabled, reset it
     g.persist = nil
   end
 end
@@ -119,6 +118,7 @@ end
 
 --- Disable persistance and revert changes to session file.
 function M.disable_persistance()
+  g.persist = nil
   M.remove_persistance()
 end
 
