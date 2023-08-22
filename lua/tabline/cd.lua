@@ -6,12 +6,17 @@ local fn = vim.fn
 local getcwd = fn.getcwd
 local locdir = fn.haslocaldir
 
+-- pattern used for finddir/findfile
+-- it means: search first from the current file path, and upwards
+-- if nothing is found, search from the current cwd, and upwards
+local FindPat = './;,;'
+
 local roots = { -- {{{1
-  { ".git", true },
-  { "Makefile", false },
-  { "src", true },
-  { "lua", true },
-  { "plugin", true },
+  { '.git', true },
+  { 'Makefile', false },
+  { 'src', true },
+  { 'lua', true },
+  { 'plugin', true },
 }
 
 -- }}}
@@ -20,14 +25,15 @@ local function find_root() -- find root {{{1
   local root, name, isdir = '', '', false
   for _, candidate in pairs(roots) do
     name, isdir = unpack(candidate)
-    local found = isdir and fn.finddir(name, "./;") or fn.findfile(name, "./;")
+    local found = isdir and fn.finddir(name, FindPat)
+      or fn.findfile(name, FindPat)
     if found ~= '' then
       root = found
       break
     end
   end
   local mod = isdir and ':p:h:h' or ':p:h'
-  return root ~= '' and fn.fnamemodify(root, mod) or getcwd()
+  return root ~= '' and fn.fnamemodify(root, mod)
 end
 
 local function same_wd(typ, dir) -- is same directory and same type {{{1
@@ -169,7 +175,11 @@ function M.info()
   -- tag files
   if #fn.tagfiles() > 0 then
     all = all
-      .. string.format('%-20s %s\n', 'Tag files:', fn.string(fn.tagfiles()))
+      .. string.format(
+        '%-20s %s\n',
+        'Tag files:',
+        table.concat(fn.tagfiles(), ', ')
+      )
   end
 
   print(all)
