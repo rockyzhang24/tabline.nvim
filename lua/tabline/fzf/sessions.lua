@@ -101,7 +101,7 @@ local function session_load(line)
 
   if vim.v.this_session ~= "" then
     if confirm("Current session will be unloaded. Confirm?") then
-      pers.update_persistance()
+      pers.update_persistence()
     else
       return
     end
@@ -133,7 +133,7 @@ local function session_save(new)
 
   if confirm(string.format('%s session %s?', new and 'New' or 'Save', name)) then
     if _name ~= '' and name ~= _name then
-      pers.update_persistance()
+      pers.update_persistence()
     end
 
     if new then
@@ -170,7 +170,7 @@ local function session_delete(line)
     fn.delete(file)
   end
 
-  -- If the current session is the one to be deleted, reset persistance.
+  -- If the current session is the one to be deleted, reset persistence.
   if file == vim.v.this_session then
     g.persist = nil
   end

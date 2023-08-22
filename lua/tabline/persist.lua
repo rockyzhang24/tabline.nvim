@@ -9,8 +9,8 @@ local function obsession()
   return vim.g.this_obsession and vim.g.loaded_obsession
 end
 
---- Enable or disable persistance with obsession.
---- If saved is nil, persistance is disabled if previously enabled.
+--- Enable or disable persistence with obsession.
+--- If saved is nil, persistence is disabled if previously enabled.
 ---@param saved string|nil
 local function obsession_update(saved)
   local ob = vim.g.obsession_append
@@ -31,8 +31,8 @@ local function obsession_update(saved)
   vim.cmd("silent Obsession " .. fn.fnameescape(vim.g.this_obsession))
 end
 
---- Restore values from persistance table.
-function M.restore_persistance()
+--- Restore values from persistence table.
+function M.restore_persistence()
   if vim.g.tnv_persist then
     local saved = load(vim.g.tnv_persist)()
     for path, v in pairs(saved.bufs) do
@@ -57,15 +57,15 @@ function M.restore_persistance()
     vim.g.tnv_persist = nil
     g.persist = vim.v.this_session
     -- must update also session file
-    M.update_persistance()
+    M.update_persistence()
   else
-    -- the loaded session has persistance disabled, reset it
+    -- the loaded session has persistence disabled, reset it
     g.persist = nil
   end
 end
 
 --- Update the session file so that customizations persist.
-function M.update_persistance()
+function M.update_persistence()
   if vim.v.this_session == "" or vim.v.this_session ~= g.persist then
     g.persist = nil
     return
@@ -103,7 +103,7 @@ function M.update_persistance()
 end
 
 --- Revert changes to session file.
-function M.remove_persistance()
+function M.remove_persistence()
   if vim.v.this_session == "" then
     return
   elseif obsession() then
@@ -120,10 +120,10 @@ function M.remove_persistance()
   fn.writefile(lines, vim.v.this_session)
 end
 
---- Disable persistance and revert changes to session file.
-function M.disable_persistance()
+--- Disable persistence and revert changes to session file.
+function M.disable_persistence()
   g.persist = nil
-  M.remove_persistance()
+  M.remove_persistence()
 end
 
 return M

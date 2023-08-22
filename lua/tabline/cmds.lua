@@ -354,7 +354,7 @@ local function name_buffer(bang, args) -- Name buffer {{{1
   end
   buf.custom = not bang
   vim.cmd('redrawtabline')
-  pers.update_persistance()
+  pers.update_persistence()
 end
 
 local function icon_buffer(bang, args) -- Icon buffer {{{1
@@ -374,7 +374,7 @@ local function icon_buffer(bang, args) -- Icon buffer {{{1
   buf.icon = icon
   buf.custom = not bang
   vim.cmd('redrawtabline')
-  pers.update_persistance()
+  pers.update_persistence()
 end
 
 local function name_tab(bang, args) -- Name tab {{{1
@@ -389,7 +389,7 @@ local function name_tab(bang, args) -- Name tab {{{1
   end
   vim.t.tab = t
   vim.cmd('redrawtabline')
-  pers.update_persistance()
+  pers.update_persistence()
 end
 
 local function icon_tab(bang, args) -- Icon tab {{{1
@@ -409,7 +409,7 @@ local function icon_tab(bang, args) -- Icon tab {{{1
   t.icon = icon
   vim.t.tab = t
   vim.cmd('redrawtabline')
-  pers.update_persistance()
+  pers.update_persistence()
 end
 
 local function reset_buffer() -- Reset buffer {{{1
@@ -417,13 +417,13 @@ local function reset_buffer() -- Reset buffer {{{1
   if not buf then return end
   require'tabline.bufs'.add_buf(bufnr())
   vim.cmd('redrawtabline')
-  pers.update_persistance()
+  pers.update_persistence()
 end
 
 local function reset_tab() -- Reset tab {{{1
   vim.t.tab = {}
   vim.cmd('redrawtabline')
-  pers.update_persistance()
+  pers.update_persistence()
 end
 
 local function reset_all() -- Reset all tabs and buffers {{{1
@@ -432,7 +432,7 @@ local function reset_all() -- Reset all tabs and buffers {{{1
   end
   require'tabline.bufs'.init_bufs()
   set_tabline()
-  pers.remove_persistance()
+  pers.remove_persistence()
 end
 
 local function pin_buffer(bang) -- Pin buffer {{{1
@@ -444,7 +444,7 @@ local function pin_buffer(bang) -- Pin buffer {{{1
     buf.pinned = true
   end
   vim.cmd('redrawtabline')
-  pers.update_persistance()
+  pers.update_persistence()
 end
 
 local function unpin_buffer(bang) -- Unpin buffer(s) {{{1
@@ -456,7 +456,7 @@ local function unpin_buffer(bang) -- Unpin buffer(s) {{{1
     local buf = g.buffers[bufnr()]
     buf.pinned = false
   end
-  pers.update_persistance()
+  pers.update_persistence()
   vim.cmd('redrawtabline')
 end
 
@@ -583,17 +583,17 @@ local function filter(bang, arg) -- Apply filter for bufferline {{{1
   vim.cmd('redrawtabline')
 end
 
-local function persist(bang) -- Enable or disable persistance for session {{{1
+local function persist(bang) -- Enable or disable persistence for session {{{1
   if vim.v.this_session == '' then
     print("Not in a session.")
     g.persist = nil
     return
   end
   if bang then
-    pers.disable_persistance()
+    pers.disable_persistence()
   else
     g.persist = vim.v.this_session
-    pers.update_persistance()
+    pers.update_persistence()
   end
 end
 

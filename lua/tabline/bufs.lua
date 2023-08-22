@@ -203,7 +203,7 @@ end
 
 -------------------------------------------------------------------------------
 -- Function: M.remove_buf
--- Skip removal if vim is exiting, because it would break persistance, when this
+-- Skip removal if vim is exiting, because it would break persistence, when this
 -- is enabled.
 --
 -- @param bnr: the buffer number
@@ -275,7 +275,7 @@ function M.session_post_clean_up()
       end
     end
   end
-  require("tabline.persist").restore_persistance()
+  require("tabline.persist").restore_persistence()
   -- SessionLoadPost seems to trigger several times in a row, probably a bug
   -- debounce the thing
   M.session_post_busy = true

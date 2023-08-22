@@ -32,7 +32,7 @@ function! tabline#init() abort
         au TermEnter   *  lua require'tabline.bufs'.add_buf(tonumber(vim.fn.expand('<abuf>')))
         au TabLeave    *  lua require'tabline.tabs'.store()
         au TabClosed   *  lua require'tabline.tabs'.save()
-        au VimLeavePre *  lua require'tabline.persist'.update_persistance()
+        au VimLeavePre *  lua require'tabline.persist'.update_persistence()
         au SessionLoadPost * lua require'tabline.bufs'.session_post_clean_up()
     augroup END
     if !v:vim_did_enter
