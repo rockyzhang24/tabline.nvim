@@ -1,7 +1,7 @@
 local fn = vim.fn
 local h = require('tabline.helpers')
 
-local M, last = { closed = {} }, {}
+local M = { closed = {}, last = false }
 
 -------------------------------------------------------------------------------
 -- Tab initializer
@@ -38,7 +38,7 @@ end
 --- this point all windows in the tab have been closed, except one.
 function M.store()
   local ldir = h.localdir()
-  last = {
+  M.last = {
     buf = fn.bufnr(),
     cmd = ldir == 1 and 'tcd' or ldir == 2 and 'lcd' or 'cd',
     wd = fn.getcwd(),
@@ -51,8 +51,9 @@ end
 --- This is called on TabClosed: we add the closed tab informations to the list
 --- of closed tabs.
 function M.save()
-  if last then
-    table.insert(M.closed, last)
+  if M.last then
+    table.insert(M.closed, M.last)
+    M.last = false
   end
 end
 
