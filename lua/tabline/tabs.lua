@@ -1,5 +1,5 @@
 local fn = vim.fn
-local h = require'tabline.helpers'
+local h = require('tabline.helpers')
 
 local M, last = { closed = {} }, {}
 
@@ -51,20 +51,25 @@ end
 --- This is called on TabClosed: we add the closed tab informations to the list
 --- of closed tabs.
 function M.save()
-  if last then table.insert(M.closed, last) end
+  if last then
+    table.insert(M.closed, last)
+  end
 end
 
 -------------------------------------------------------------------------------
 --- ":Tabline reopen" command.
 ---@param ix number: index in M.closed of tab to reopen
 function M.reopen(ix)
-  if #M.closed == 0 then return end
-  local tab = table.remove(M.closed, ix and math.max(ix, #M.closed) or #M.closed)
+  if #M.closed == 0 then
+    return
+  end
+  local tab =
+    table.remove(M.closed, ix and math.max(ix, #M.closed) or #M.closed)
   local cmd = fn.bufexists(tab.buf) == 1 and ('b ' .. tab.buf) or 'bnext'
   vim.cmd('tabnew +set\\ bufhidden=wipe')
   vim.cmd(cmd)
   vim.cmd(tab.cmd .. ' ' .. tab.wd)
-  fn.settabvar(fn.tabpagenr(), "tab", {
+  fn.settabvar(fn.tabpagenr(), 'tab', {
     name = tab.name,
     icon = tab.icon,
   })

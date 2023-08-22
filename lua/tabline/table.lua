@@ -13,7 +13,7 @@ end
 
 function tbl.copy(t)
   local t2 = {}
-  for k,v in pairs(t) do
+  for k, v in pairs(t) do
     t2[k] = v
   end
   return t2
@@ -42,7 +42,7 @@ end
 
 function tbl.map(t, func)
   for k, v in pairs(t) do
-    t[k] = func(k,v)
+    t[k] = func(k, v)
   end
   return t
 end
@@ -50,7 +50,7 @@ end
 function tbl.mapnew(t, func)
   local new = {}
   for k, v in pairs(t) do
-    new[k] = func(k,v)
+    new[k] = func(k, v)
   end
   return new
 end

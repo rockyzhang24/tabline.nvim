@@ -1,9 +1,9 @@
 local fn = vim.fn
-local tbl = require'tabline.table'
-local s = require'tabline.setup'.settings
-local ansi = require'tabline.fzf.ansi'
-local g = require'tabline.setup'.global
-local pers = require("tabline.persist")
+local tbl = require('tabline.table')
+local s = require('tabline.setup').settings
+local ansi = require('tabline.fzf.ansi')
+local g = require('tabline.setup').global
+local pers = require('tabline.persist')
 
 local winOs = fn.has('win32') == 1
 
@@ -17,13 +17,19 @@ local stat_cmd = fn.has('mac') == 1 and 'gstat' or 'stat'
 -- Local functions
 -------------------------------------------------------------------------------
 
-local lastmod = function(f) return fn.str2nr(fn.system(date_cmd .. ' -r ' .. f .. ' +%s')) end
-local confirm = function(str) return fn.confirm(str, '&Yes\n&No') == 1 end
-local obsession = function() return fn.exists('g:loaded_obsession') == 1 end
+local lastmod = function(f)
+  return fn.str2nr(fn.system(date_cmd .. ' -r ' .. f .. ' +%s'))
+end
+local confirm = function(str)
+  return fn.confirm(str, '&Yes\n&No') == 1
+end
+local obsession = function()
+  return fn.exists('g:loaded_obsession') == 1
+end
 
 local function sdata() -- Read sessions data file {{{1
   if fn.filereadable(sessions_data) == 0 then
-    fn.writefile({'{}'}, sessions_data)
+    fn.writefile({ '{}' }, sessions_data)
     return {}
   else
     return fn.json_decode(fn.readfile(sessions_data)[1])
@@ -34,16 +40,24 @@ local function get_date(f) -- 'date' shell command {{{1
   return fn.systemlist(
     string.format(
       'date=`%s -c %%Y %s` && %s -d@"$date" +%%Y.%%m.%%d',
-      stat_cmd, fn.fnameescape(f), date_cmd
-      )
-    )[1]
+      stat_cmd,
+      fn.fnameescape(f),
+      date_cmd
+    )
+  )[1]
 end
 
 local function desc(fname, name, data) -- Session description {{{1
   local mark = fname == vim.v.this_session and ansi.green(' [%]  ') or '      '
   local dscr = data[name] or ''
   local time = winOs and '' or get_date(fname)
-  return string.format('%-30s\t%s%s%s', ansi.yellow(name), ansi.cyan(time), mark, dscr)
+  return string.format(
+    '%-30s\t%s%s%s',
+    ansi.yellow(name),
+    ansi.cyan(time),
+    mark,
+    dscr
+  )
 end
 
 -- }}}
@@ -65,16 +79,21 @@ local function sessions_list()
   end
 
   if not winOs and #sessions > 1 then
-    table.sort(sessions, function(a,b) return lastmod(a) < lastmod(b) end)
+    table.sort(sessions, function(a, b)
+      return lastmod(a) < lastmod(b)
+    end)
     if tbl.index(sessions, vim.v.this_session) then
-      table.insert(sessions, table.remove(sessions, tbl.index(sessions, vim.v.this_session)))
+      table.insert(
+        sessions,
+        table.remove(sessions, tbl.index(sessions, vim.v.this_session))
+      )
     end
   end
 
   for _, ss in ipairs(sessions) do
     table.insert(lines, 1, desc(ss, fn.fnamemodify(ss, ':t'), data))
   end
-  table.insert(lines, 1, "Session\t\t\tTimestamp\tDescription")
+  table.insert(lines, 1, 'Session\t\t\tTimestamp\tDescription')
   return tbl.index(sessions, vim.v.this_session), lines
 end
 
@@ -83,7 +102,7 @@ end
 local function session_load(line)
   for i = 1, fn.bufnr('$') do
     if fn.getbufvar(i, '&modified') == 1 and fn.buflisted(i) == 1 then
-      vim.cmd("redraw!")
+      vim.cmd('redraw!')
       print('Some buffer has unsaved changes')
       return
     end
@@ -92,15 +111,15 @@ local function session_load(line)
   local this = string.gsub(vim.v.this_session, '\\', '/')
 
   if fn.filereadable(file) == 0 then
-    print('Session file doesn\'t exist.')
+    print("Session file doesn't exist.")
     return
   elseif file == this then
     print('Session is already loaded.')
     return
   end
 
-  if vim.v.this_session ~= "" then
-    if confirm("Current session will be unloaded. Confirm?") then
+  if vim.v.this_session ~= '' then
+    if confirm('Current session will be unloaded. Confirm?') then
       pers.update_persistence()
     else
       return
@@ -123,15 +142,23 @@ local function session_save(new)
   end
 
   local data = sdata()
-  local _name = (new or vim.v.this_session == '') and '' or fn.fnamemodify(vim.v.this_session, ':t')
+  local _name = (new or vim.v.this_session == '') and ''
+    or fn.fnamemodify(vim.v.this_session, ':t')
   local dscr = data[_name] or ''
 
-  local name = fn.input('Enter a name for ' .. (new and 'the new' or 'this') .. ' session: ', _name)
-  if name == '' then return end
+  local name = fn.input(
+    'Enter a name for ' .. (new and 'the new' or 'this') .. ' session: ',
+    _name
+  )
+  if name == '' then
+    return
+  end
 
   data[name] = fn.input('Enter an optional description: ', dscr)
 
-  if confirm(string.format('%s session %s?', new and 'New' or 'Save', name)) then
+  if
+    confirm(string.format('%s session %s?', new and 'New' or 'Save', name))
+  then
     if _name ~= '' and name ~= _name then
       pers.update_persistence()
     end
@@ -142,25 +169,29 @@ local function session_save(new)
     end
 
     -- finalize session save
-    fn.writefile({fn.json_encode(data)}, sessions_data)
+    fn.writefile({ fn.json_encode(data) }, sessions_data)
     local file = sessions_path .. '/' .. name
     if obsession() then
-      vim.cmd("silent Obsession " .. fn.fnameescape(file))
+      vim.cmd('silent Obsession ' .. fn.fnameescape(file))
     elseif file ~= '' then
-      vim.cmd("silent mksession! " .. fn.fnameescape(file))
+      vim.cmd('silent mksession! ' .. fn.fnameescape(file))
     end
     print("Session '" .. file .. "' has been saved.")
   end
 end
 
-local function session_new() session_save(true) end
+local function session_new()
+  session_save(true)
+end
 
 ------------------------------------------------------------------------------
 
 local function session_delete(line)
   local file = sessions_path .. '/' .. string.gsub(line, ' *\t.*', '')
 
-  if fn.filereadable(file) == 0 or not confirm('Delete session ' .. file .. '?') then
+  if
+    fn.filereadable(file) == 0 or not confirm('Delete session ' .. file .. '?')
+  then
     return
   end
 

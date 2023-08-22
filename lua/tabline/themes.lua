@@ -1,5 +1,5 @@
 local printf = string.format
-local index = require'tabline.table'.index
+local index = require('tabline.table').index
 
 local M = {}
 
@@ -15,7 +15,7 @@ M.available = {
   'slate',
   'paper',
   'paramount',
-  'eightbit'
+  'eightbit',
 }
 
 function M.refresh()
@@ -25,7 +25,7 @@ function M.refresh()
 end
 
 function M.apply(theme, reload)
-  local s = require'tabline.setup'.settings
+  local s = require('tabline.setup').settings
   if M.restore_settings then
     for k, v in pairs(M.restore_settings) do
       s[k] = v
@@ -36,7 +36,7 @@ function M.apply(theme, reload)
     theme = theme.reload()
   end
   M.current = theme
-  local skip = {'name', 'settings', 'reload'}
+  local skip = { 'name', 'settings', 'reload' }
   for k, v in pairs(theme) do
     if not index(skip, k) then
       vim.cmd(string.format('hi! ' .. v, k))
@@ -53,7 +53,7 @@ end
 
 function M.add(theme)
   if not theme.name then
-    print('Error adding tabline theme: theme doesn\'t have a name')
+    print("Error adding tabline theme: theme doesn't have a name")
     return
   end
   M.themes[theme.name] = theme
@@ -63,10 +63,16 @@ end
 function M.fmt(arg)
   local ctermfg, ctermbg, guifg, guibg, bold = unpack(arg)
   local b = bold and 'bold' or 'NONE'
-  return '%s ' .. printf(
-    'cterm=%s gui=%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
-    b, b, ctermfg, ctermbg, guifg, guibg
-  )
+  return '%s '
+    .. printf(
+      'cterm=%s gui=%s ctermfg=%s ctermbg=%s guifg=%s guibg=%s',
+      b,
+      b,
+      ctermfg,
+      ctermbg,
+      guifg,
+      guibg
+    )
 end
 
 M.refresh()

@@ -19,12 +19,12 @@ M.variables = { -- internal variables {{{1
   label_style = 'sep',
 }
 
-M.settings = {  -- user settings {{{1
+M.settings = { -- user settings {{{1
   main_cmd_name = 'Tabline',
   filtering = false,
   cwd_badge = true,
   mode_badge = { args = 'args' },
-  tabs_badge = { fraction = true, left = true, visibility = {'buffers'} },
+  tabs_badge = { fraction = true, left = true, visibility = { 'buffers' } },
   label_style = 'sep',
   show_full_path = false,
   show_unnamed = true,
@@ -43,58 +43,76 @@ M.settings = {  -- user settings {{{1
   overflow_arrows = false,
   colored_icons = true,
   icon_spacing = '  ',
-  separators = {'▎', '▏'},
+  separators = { '▎', '▏' },
   fzf_layout = { down = '30%' },
 }
 
 M.icons = { -- icons {{{1
-  ['pin'] =      '📌', ['star'] =   '★',   ['book'] =     '📖',  ['lock'] =    '🔒',
-  ['hammer'] =   '🔨', ['tick'] =   '✔',   ['cross'] =    '✖',   ['warning'] = '⚠',
-  ['menu'] =     '☰',  ['apple'] =  '🍎',  ['linux'] =    '🐧',  ['windows'] = '❖',
-  ['git'] =      '',  ['git2'] =   '⎇ ',  ['palette'] =  '🎨',  ['lens'] =    '🔍',
-  ['flag'] =     '⚑',  ['flag2'] =  '🏁',  ['fire'] =     '🔥',  ['bomb'] =    '💣',
-  ['home'] =     '🏠', ['mail'] =   '✉ ',  ['disk'] =     '🖪 ',  ['arrow'] =   '➤',
+  ['pin'] = '📌',
+  ['star'] = '★',
+  ['book'] = '📖',
+  ['lock'] = '🔒',
+  ['hammer'] = '🔨',
+  ['tick'] = '✔',
+  ['cross'] = '✖',
+  ['warning'] = '⚠',
+  ['menu'] = '☰',
+  ['apple'] = '🍎',
+  ['linux'] = '🐧',
+  ['windows'] = '❖',
+  ['git'] = '',
+  ['git2'] = '⎇ ',
+  ['palette'] = '🎨',
+  ['lens'] = '🔍',
+  ['flag'] = '⚑',
+  ['flag2'] = '🏁',
+  ['fire'] = '🔥',
+  ['bomb'] = '💣',
+  ['home'] = '🏠',
+  ['mail'] = '✉ ',
+  ['disk'] = '🖪 ',
+  ['arrow'] = '➤',
   ['terminal'] = '',
-  ['tab'] = {"📂", "📁"},
+  ['tab'] = { '📂', '📁' },
 }
 
 M.indicators = { -- indicators {{{1
-  ['modified'] = M.settings.ascii_only and '[+]'  or '●',
+  ['modified'] = M.settings.ascii_only and '[+]' or '●',
   ['readonly'] = M.settings.ascii_only and '[RO]' or ' 🔒',
-  ['pinned'] = M.settings.ascii_only and   '[^]'  or ' 📌',
-  ['close'] = M.settings.ascii_only and    ' X '  or '  ',
+  ['pinned'] = M.settings.ascii_only and '[^]' or ' 📌',
+  ['close'] = M.settings.ascii_only and ' X ' or '  ',
 }
 
 local MAPPINGS = { -- default mappings {{{1
   -- { mapping, <CR> instead of <Space>, add count }
-  ['mode next'] =        { '<F5>', true },
-  ['next'] =             { ']b', true, true },
-  ['prev'] =             { '[b', true, true },
-  ['away'] =             { M.settings.mapleader .. 'a', true },
-  ['left'] =             { nil, true, true },
-  ['right'] =            { nil, true, true },
-  ['filtering!'] =       { M.settings.mapleader .. 'f', true },
-  ['fullpath!'] =        { M.settings.mapleader .. '/', true },
-  ['close'] =            { M.settings.mapleader .. 'q', true },
-  ['pin!'] =             { M.settings.mapleader .. 'p', true },
-  ['unpin!'] =           { nil, true },
-  ['bufname'] =          { nil, false },
-  ['tabname'] =          { nil, false },
-  ['buficon'] =          { nil, false },
-  ['tabicon'] =          { nil, false },
-  ['bufreset'] =         { nil, true },
-  ['tabreset'] =         { nil, true },
-  ['resetall'] =         { nil, true },
-  ['reopen'] =           { M.settings.mapleader .. 'u', true },
-  ['closedtabs'] =       { M.settings.mapleader .. 'U', true },
-  ['purge'] =            { M.settings.mapleader .. 'x', true },
-  ['cleanup'] =          { M.settings.mapleader .. 'X', true },
-  ['minimize'] =         { nil, true },
-  ['buffers'] =          { M.settings.mapleader .. 'b', true },
-  ['session load'] =     { M.settings.mapleader .. 'sl', true },
-  ['session new'] =      { M.settings.mapleader .. 'sn', true },
-  ['session save'] =     { M.settings.mapleader .. 'ss', true },
-  ['session delete'] =   { M.settings.mapleader .. 'sd', true },
+  ['mode next'] = { '<F5>', true },
+  ['next'] = { ']b', true, true },
+  ['prev'] = { '[b', true, true },
+  ['away'] = { M.settings.mapleader .. 'a', true },
+  ['left'] = { nil, true, true },
+  ['right'] = { nil, true, true },
+  ['filtering!'] = { M.settings.mapleader .. 'f', true },
+  ['fullpath!'] = { M.settings.mapleader .. '/', true },
+  ['close'] = { M.settings.mapleader .. 'q', true },
+  ['pin!'] = { M.settings.mapleader .. 'p', true },
+  ['unpin!'] = { nil, true },
+  ['bufname'] = { nil, false },
+  ['tabname'] = { nil, false },
+  ['buficon'] = { nil, false },
+  ['tabicon'] = { nil, false },
+  ['bufreset'] = { nil, true },
+  ['tabreset'] = { nil, true },
+  ['resetall'] = { nil, true },
+  ['reopen'] = { M.settings.mapleader .. 'u', true },
+  ['closedtabs'] = { M.settings.mapleader .. 'U', true },
+  ['purge'] = { M.settings.mapleader .. 'x', true },
+  ['cleanup'] = { M.settings.mapleader .. 'X', true },
+  ['minimize'] = { nil, true },
+  ['buffers'] = { M.settings.mapleader .. 'b', true },
+  ['session load'] = { M.settings.mapleader .. 'sl', true },
+  ['session new'] = { M.settings.mapleader .. 'sn', true },
+  ['session save'] = { M.settings.mapleader .. 'ss', true },
+  ['session delete'] = { M.settings.mapleader .. 'sd', true },
 }
 
 -- }}}
@@ -110,12 +128,12 @@ local function set_mappings(mappings) -- Define mappings {{{1
       if v[1] and fn.mapcheck(v[1]) == '' then
         vim.cmd(string.format(
           'nnoremap %s :<c-u>%s %s%s%s',
-          v[1],                                 -- mapping
-          c,                                    -- :Tabline ex command
-          k,                                    -- subcommand
+          v[1], -- mapping
+          c, -- :Tabline ex command
+          k, -- subcommand
           v[3] and ' <c-r>=v:count1<cr>' or '', -- count
-          v[2] and '<cr>' or '<space>'          -- final character
-          ))
+          v[2] and '<cr>' or '<space>' -- final character
+        ))
       end
     end
   end
@@ -123,7 +141,9 @@ end
 
 local function set_cd_mappings() -- Define cd mappings {{{1
   local cmd = "lua require'tabline.cd'."
-  if not M.settings.cd_mappings then return end
+  if not M.settings.cd_mappings then
+    return
+  end
   for _, v in ipairs({ 'cdc', 'cdl', 'cdt', 'cdw' }) do
     if fn.maparg(v) == '' then
       vim.cmd(string.format('nnoremap <silent> %s :<c-u>%s%s()<cr>', v, cmd, v))
@@ -134,8 +154,7 @@ end
 
 local function define_main_cmd() -- Define main command {{{1
   vim.cmd([[
-  command! -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]] ..
-  M.settings.main_cmd_name .. [[ exe "lua require'tabline.cmds'.command(" string(<q-args>) . ")"
+  command! -nargs=1 -complete=customlist,v:lua.require'tabline.cmds'.complete ]] .. M.settings.main_cmd_name .. [[ exe "lua require'tabline.cmds'.command(" string(<q-args>) . ")"
   ]])
 end
 
@@ -143,12 +162,12 @@ function M.load_theme(reload) -- Load theme {{{1
   if reload then
     package.loaded['nvim-web-devicons'] = nil
     package.loaded['tabline.render.icons'] = nil
-    require'tabline.highlight'.refresh()
-    require'tabline.render.bufline'.refresh_icons()
-    require'tabline.render.tabline'.refresh_icons()
+    require('tabline.highlight').refresh()
+    require('tabline.render.bufline').refresh_icons()
+    require('tabline.render.tabline').refresh_icons()
   end
   if M.settings.theme then
-    local themes = require'tabline.themes'
+    local themes = require('tabline.themes')
     local theme = themes.themes[M.settings.theme]
     if theme then
       themes.apply(theme, reload)
@@ -168,17 +187,16 @@ end
 
 -- }}}
 
-
 -------------------------------------------------------------------------------
 -- Module functions
 -------------------------------------------------------------------------------
 
 function M.setup(opts)
   if not M.global.buffers then
-    require'tabline.bufs'.init_bufs()
+    require('tabline.bufs').init_bufs()
   end
   if not M.global.tabs then
-    require'tabline.tabs'.init_tabs()
+    require('tabline.tabs').init_tabs()
   end
   for k, v in pairs(opts or {}) do
     M.settings[k] = v

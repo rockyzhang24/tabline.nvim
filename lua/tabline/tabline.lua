@@ -1,15 +1,15 @@
 local o = vim.o
-local v = require'tabline.setup'.variables
-local s = require'tabline.setup'.settings
-local i = require'tabline.setup'.indicators
-local h = require'tabline.helpers'
+local v = require('tabline.setup').variables
+local s = require('tabline.setup').settings
+local i = require('tabline.setup').indicators
+local h = require('tabline.helpers')
 
 -- vim functions {{{1
 local tabpagenr = vim.fn.tabpagenr
 local strwidth = vim.api.nvim_strwidth
 
 -- table functions {{{1
-local tbl = require'tabline.table'
+local tbl = require('tabline.table')
 local remove = table.remove
 local concat = table.concat
 local map = tbl.map
@@ -17,20 +17,27 @@ local index = tbl.index
 --}}}
 
 local strsub = string.sub
-local subst  = string.gsub
+local subst = string.gsub
 local printf = string.format
 
-local render_tabs = require'tabline.render.tabline'.render_tabs
-local render_buffers = require'tabline.render.bufline'.render_buffers
-local render_args = require'tabline.render.bufline'.render_args
+local render_tabs = require('tabline.render.tabline').render_tabs
+local render_buffers = require('tabline.render.bufline').render_buffers
+local render_args = require('tabline.render.bufline').render_args
 
 local fit_tabline, render
 
-local format_right_corner = require'tabline.render.corners'.format_right_corner
-local mode_label = require'tabline.render.corners'.mode_label
+local format_right_corner =
+  require('tabline.render.corners').format_right_corner
+local mode_label = require('tabline.render.corners').mode_label
 
-local function bufwidth(str) str = subst(str, '%%#%w+#', '') return strwidth(str) end
-local function tabwidth(str) str = subst(subst(str, '%%#%w+#', ''), '%%%d+T', '') return strwidth(str) end
+local function bufwidth(str)
+  str = subst(str, '%%#%w+#', '')
+  return strwidth(str)
+end
+local function tabwidth(str)
+  str = subst(subst(str, '%%#%w+#', ''), '%%%d+T', '')
+  return strwidth(str)
+end
 
 -- button to close buffer
 local BUTTON = '@CloseButtonClick@' .. i.close .. '%X'
@@ -54,7 +61,6 @@ function render()
     return fit_tabline(render_buffers())
   end
 end
-
 
 -------------------------------------------------------------------------------
 -- Make all tabs fit
@@ -88,8 +94,13 @@ local function clickable_label(tab)
 end
 
 local function clickable_button(tab)
-  return '%' .. tab.n .. '@BuflineClick@' .. tab.label
-  .. '%X%' .. tab.n .. BUTTON
+  return '%'
+    .. tab.n
+    .. '@BuflineClick@'
+    .. tab.label
+    .. '%X%'
+    .. tab.n
+    .. BUTTON
 end
 
 -- }}}
@@ -140,9 +151,19 @@ function fit_tabline(center, tabs)
   -- no more tabs, or no more room
   if limit == 0 or #tabs == 0 then
     if s.tabs_badge and s.tabs_badge.left then
-      return tabsbadge .. modebadge .. LEFT .. '%#TFill#%=' .. cwdbadge .. '%999X'
+      return tabsbadge
+        .. modebadge
+        .. LEFT
+        .. '%#TFill#%='
+        .. cwdbadge
+        .. '%999X'
     else
-      return modebadge .. LEFT .. '%#TFill#%=' .. tabsbadge .. cwdbadge .. '%999X'
+      return modebadge
+        .. LEFT
+        .. '%#TFill#%='
+        .. tabsbadge
+        .. cwdbadge
+        .. '%999X'
     end
   end
 
@@ -174,8 +195,8 @@ function fit_tabline(center, tabs)
 
   local left_has_been_cut, right_has_been_cut, arrow = false, false, 0
 
-  if ( L.width + R.width ) > limit then
-    while next(tabs) and limit - ( L.width + R.width + arrow ) < 0 do
+  if (L.width + R.width) > limit then
+    while next(tabs) and limit - (L.width + R.width + arrow) < 0 do
       -- remove a tab from the biggest side
       if L.width <= R.width then
         right_has_been_cut = true
@@ -193,12 +214,17 @@ function fit_tabline(center, tabs)
       -- adapt the tabs to the available space
       local n, used = 1, L.width + R.width + arrow
       while used < limit do
-        if n > ntabs then n = 1 end
+        if n > ntabs then
+          n = 1
+        end
         tabs[n].label = tabs[n].label .. ' '
         n, used = n + 1, used + 1
       end
       if s.overflow_arrows and not s.show_button and right_has_been_cut then
-        tabs[ntabs].label = printf('%s%%#DiffDelete# > ', strsub(tabs[ntabs].label, 1, #tabs[ntabs].label - 4))
+        tabs[ntabs].label = printf(
+          '%s%%#DiffDelete# > ',
+          strsub(tabs[ntabs].label, 1, #tabs[ntabs].label - 4)
+        )
       end
     end
   else
@@ -220,7 +246,9 @@ function fit_tabline(center, tabs)
     end
   end
 
-  local labels = map(tabs, function(_,val) return val.label end)
+  local labels = map(tabs, function(_, val)
+    return val.label
+  end)
   if h.tabs_mode() then
     for n, l in ipairs(labels) do
       labels[n] = '%' .. n .. 'T' .. l
@@ -228,13 +256,22 @@ function fit_tabline(center, tabs)
   end
   labels = LEFT .. concat(labels, '')
   if s.tabs_badge and s.tabs_badge.left then
-    return tabsbadge .. modebadge .. labels .. '%#TFill#%=' .. cwdbadge .. '%999X'
+    return tabsbadge
+      .. modebadge
+      .. labels
+      .. '%#TFill#%='
+      .. cwdbadge
+      .. '%999X'
   else
-    return modebadge .. labels .. '%#TFill#%=' .. tabsbadge .. cwdbadge .. '%999X'
+    return modebadge
+      .. labels
+      .. '%#TFill#%='
+      .. tabsbadge
+      .. cwdbadge
+      .. '%999X'
   end
 end
 
 -- }}}
-
 
 return { render = render }

@@ -1,5 +1,5 @@
 local v = require'tabline.setup'.variables
-local s = require'tabline.setup'.settings
+local s = require('tabline.setup').settings
 
 -- vim functions {{{1
 local fn = vim.fn
@@ -52,8 +52,8 @@ function M.tabbufs(tnr) -- {{{1
   return tabpagebuflist(tnr or tabpagenr())
 end
 
-function M.validbuf(b, wd)  -- {{{1
-  return b and ( not s.filtering or find(b, wd, 1, true) )
+function M.validbuf(b, wd) -- {{{1
+  return b and (not s.filtering or find(b, wd, 1, true))
 end
 
 --}}}

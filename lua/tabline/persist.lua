@@ -1,5 +1,5 @@
 local fn = vim.fn
-local g = require'tabline.setup'.global
+local g = require('tabline.setup').global
 
 local M = {}
 
@@ -14,9 +14,9 @@ end
 ---@param saved string|nil
 local function obsession_update(saved)
   local ob = vim.g.obsession_append
-  if ob and type(ob) == "table" then
+  if ob and type(ob) == 'table' then
     for i, v in ipairs(ob) do
-      if v:find("^let g:tnv_persist") then
+      if v:find('^let g:tnv_persist') then
         table.remove(ob, i)
         break
       end
@@ -28,7 +28,7 @@ local function obsession_update(saved)
   elseif saved then
     vim.g.obsession_append = { saved }
   end
-  vim.cmd("silent Obsession " .. fn.fnameescape(vim.g.this_obsession))
+  vim.cmd('silent Obsession ' .. fn.fnameescape(vim.g.this_obsession))
 end
 
 --- Restore values from persistence table.
@@ -66,7 +66,7 @@ end
 
 --- Update the session file so that customizations persist.
 function M.update_persistence()
-  if vim.v.this_session == "" or vim.v.this_session ~= g.persist then
+  if vim.v.this_session == '' or vim.v.this_session ~= g.persist then
     g.persist = nil
     return
   end
@@ -80,19 +80,21 @@ function M.update_persistence()
         c = buf.custom,
       }
     end
-    for i = 1, fn.tabpagenr("$") do
-      local tab = fn.gettabvar(i, "tab")
+    for i = 1, fn.tabpagenr('$') do
+      local tab = fn.gettabvar(i, 'tab')
       saved.tabs[i] = { name = tab.name, icon = tab.icon }
     end
   end
-  saved = "let g:tnv_persist = 'return " .. vim.inspect(saved):gsub("%s+", "") .. "'"
+  saved = "let g:tnv_persist = 'return "
+    .. vim.inspect(saved):gsub('%s+', '')
+    .. "'"
   if obsession() then
     obsession_update(saved)
   else
     vim.cmd('mksession! ' .. fn.fnameescape(vim.v.this_session))
     local lines = fn.readfile(vim.v.this_session)
     for i, line in ipairs(lines) do
-      if line:find("^let g:tnv_persist") then
+      if line:find('^let g:tnv_persist') then
         table.remove(lines, i)
         break
       end
@@ -104,7 +106,7 @@ end
 
 --- Revert changes to session file.
 function M.remove_persistence()
-  if vim.v.this_session == "" then
+  if vim.v.this_session == '' then
     return
   elseif obsession() then
     obsession_update()
@@ -112,7 +114,7 @@ function M.remove_persistence()
   end
   local lines = fn.readfile(vim.v.this_session)
   for i, line in ipairs(lines) do
-    if line:find("^let g:tnv_persist") then
+    if line:find('^let g:tnv_persist') then
       table.remove(lines, i)
       break
     end

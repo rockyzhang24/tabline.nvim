@@ -12,7 +12,7 @@ local gsub = string.gsub
 local M = {}
 
 local pathpat = fn.has('win32') == 1 and '([/\\]?%.?[^/\\])[^/\\]-[/\\]'
-                                         or '(/?%.?[^/])[^/]-/'
+  or '(/?%.?[^/])[^/]-/'
 
 local slash = fn.has('win32') == 1 and '[/\\]' or '/'
 local slashchar = fn.has('win32') == 1 and '\\' or '/'

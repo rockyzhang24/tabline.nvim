@@ -1,9 +1,9 @@
 local g = require'tabline.setup'.global
-local s = require'tabline.setup'.settings
-local h = require'tabline.helpers'
+local s = require('tabline.setup').settings
+local h = require('tabline.helpers')
 local fn = vim.fn
 
-local icons = require'tabline.setup'.icons
+local icons = require('tabline.setup').icons
 
 -- proxy functions {{{1
 local strfind = string.find
@@ -11,10 +11,10 @@ local gsub = string.gsub
 local insert = table.insert
 local remove = table.remove
 local sort = table.sort
-local index = require'tabline.table'.index
-local copy = require'tabline.table'.copy
-local filter = require'tabline.table'.filter
-local get_tab = require'tabline.tabs'.get_tab
+local index = require('tabline.table').index
+local copy = require('tabline.table').copy
+local filter = require('tabline.table').filter
+local get_tab = require('tabline.tabs').get_tab
 local validbuf = h.validbuf
 
 -- vim functions {{{1
@@ -45,15 +45,15 @@ local execute = fn.execute
 local M = {}
 
 local special_ft = {
-  ['GV']        = { name = 'GV', icon = icons.git },
+  ['GV'] = { name = 'GV', icon = icons.git },
   ['gitcommit'] = { name = 'Commit', icon = icons.git },
-  ['magit']     = { name = 'Magit', icon = icons.git },
-  ['git']       = { name = 'Git', icon = icons.git },
-  ['fugitive']  = { name = 'Status', icon = icons.git },
-  ['netrw']     = { name = 'Netrw', icon = icons.disk, doubleicon = true },
-  ['dirvish']   = { name = 'Dirvish', icon = icons.disk, doubleicon = true },
-  ['startify']  = { name = 'Startify', icon = icons.flag2, doubleicon = true },
-  ['ctrlsf']    = { name = 'CtrlSF', icon = icons.lens, doubleicon = true },
+  ['magit'] = { name = 'Magit', icon = icons.git },
+  ['git'] = { name = 'Git', icon = icons.git },
+  ['fugitive'] = { name = 'Status', icon = icons.git },
+  ['netrw'] = { name = 'Netrw', icon = icons.disk, doubleicon = true },
+  ['dirvish'] = { name = 'Dirvish', icon = icons.disk, doubleicon = true },
+  ['startify'] = { name = 'Startify', icon = icons.flag2, doubleicon = true },
+  ['ctrlsf'] = { name = 'CtrlSF', icon = icons.lens, doubleicon = true },
 }
 
 --------------------------------------------------------------------------------
@@ -70,7 +70,9 @@ local function new_buf(bnr) -- {{{1
     ext = fnamemodify(bname, ':e')
     if ext == '' then
       ext = getbufvar(bnr, '&filetype')
-      if ext == '' then ext = nil end
+      if ext == '' then
+        ext = nil
+      end
     end
     path = fixedpath(bname, ':p')
     basename = fnamemodify(bname, ':t')
@@ -104,7 +106,6 @@ local function special_or_listed(bnr) -- {{{1
     buf.name = 'HELP'
     buf.icon = icons.book
     buf.special = true
-
   elseif getbufvar(bnr, '&buftype') == 'terminal' then
     if buf.path == nil then
       buf.name = 'TERMINAL'
@@ -117,20 +118,18 @@ local function special_or_listed(bnr) -- {{{1
       buf.name = 'TERMINAL' .. (pid and ' [' .. pid .. ']' or '')
     end
     buf.special = true
-
   elseif special_ft[ft] then
     buf.name = special_ft[ft].name
     buf.icon = special_ft[ft].icon
     buf.doubleicon = special_ft[ft].doubleicon
     buf.special = true
-
   elseif bufname(bnr) ~= '' and bt ~= '' then
     buf.name = fnamemodify(bufname(bnr), ':t')
     buf.special = true
     buf.icon = icons.menu
   end
 
-  if buf.special or ( buflisted(bnr) > 0 and bt == '' ) then
+  if buf.special or (buflisted(bnr) > 0 and bt == '') then
     return buf
   end
 end -- }}}
@@ -155,7 +154,6 @@ local function slice_recent(tbl, bufs) -- {{{1
   end
   return sliced
 end -- }}}
-
 
 --------------------------------------------------------------------------------
 -- Module functions
@@ -254,7 +252,7 @@ end
 --- @return table: buffer object or nil
 -------------------------------------------------------------------------------
 function M.get_buf(bnr)
-    return g.buffers[bnr] or M.add_buf(bnr)
+  return g.buffers[bnr] or M.add_buf(bnr)
 end
 
 -------------------------------------------------------------------------------
@@ -275,7 +273,7 @@ function M.session_post_clean_up()
       end
     end
   end
-  require("tabline.persist").restore_persistence()
+  require('tabline.persist').restore_persistence()
   -- SessionLoadPost seems to trigger several times in a row, probably a bug
   -- debounce the thing
   M.session_post_busy = true
@@ -319,9 +317,13 @@ end
 function M.recent_bufs()
   local recent, cur = copy(g.valid), bufnr()
   if #recent > s.max_recent then
-    sort(recent, function(a,b) return g.buffers[a].recent > g.buffers[b].recent end)
+    sort(recent, function(a, b)
+      return g.buffers[a].recent > g.buffers[b].recent
+    end)
     recent = slice_recent(recent, g.buffers)
-    sort(recent, function(a,b) return g.buffers[a].nr < g.buffers[b].nr end)
+    sort(recent, function(a, b)
+      return g.buffers[a].nr < g.buffers[b].nr
+    end)
   end
   if g.buffers[cur] and not index(recent, cur) then
     insert(recent, cur)
@@ -354,7 +356,9 @@ function M.ordered_bufs(recent, cwd)
   elseif not cwd then
     order = g.order.unfiltered
   end
-  order = filter(order, function(_,v) return index(recent, v) end)
+  order = filter(order, function(_, v)
+    return index(recent, v)
+  end)
   for _, b in ipairs(recent) do
     if not index(order, b) then
       insert(order, b)
@@ -402,7 +406,7 @@ end
 --- @param mod:    modifier key
 -------------------------------------------------------------------------------
 function M.click(nr, _, button, mod)
-  local cmd = require'tabline.cmds'
+  local cmd = require('tabline.cmds')
   local n, cur = g.current_buffers[nr], bufnr()
   if button == 'r' then
     if strfind(mod, 's') then
@@ -412,7 +416,7 @@ function M.click(nr, _, button, mod)
         vim.cmd('bdelete ' .. n)
       end
     else
-      cmd.away({nr})
+      cmd.away({ nr })
       vim.cmd('buffer ' .. cur)
     end
   elseif button == 'l' then
@@ -436,7 +440,7 @@ function M.close(nr, _, button, _)
       print('Cannot delete, buffer is modified')
     else
       if bufnr() == n then
-        require'tabline.cmds'.next_tab({1, false})
+        require('tabline.cmds').next_tab({ 1, false })
       end
       vim.cmd('bdelete ' .. n)
     end

@@ -9,13 +9,13 @@
 local M = {}
 
 -- Format string for html notation
-local XFMT = "#%02x%02x%02x"
+local XFMT = '#%02x%02x%02x'
 local NORMAL
 
 -------------------------------------------------------------------------------
 -- Highlight helpers
 -------------------------------------------------------------------------------
-local bit = require("bit")
+local bit = require('bit')
 local rs, ls, band = bit.rshift, bit.lshift, bit.band
 
 --- Translate an rgb integer to the (r, g, b) notation.
@@ -29,8 +29,12 @@ local function rgb2tbl(rgb)
 end
 
 local get_hl = vim.version().api_level > 10
-  and function(group) return vim.api.nvim_get_hl(0, {name = group, link = true}) end
-  or function(group) return vim.api.nvim_get_hl_by_name(group, vim.o.termguicolors) end
+    and function(group)
+      return vim.api.nvim_get_hl(0, { name = group, link = true })
+    end
+  or function(group)
+    return vim.api.nvim_get_hl_by_name(group, vim.o.termguicolors)
+  end
 
 --- Get the background for a highlight group.
 ---@param group string
@@ -52,8 +56,8 @@ end
 
 --- Reset Normal highlight definition.
 function M.refresh()
-  NORMAL = vim.o.termguicolors and "#000000" or 0 -- fallback value
-  NORMAL = M.get_bg("Normal")
+  NORMAL = vim.o.termguicolors and '#000000' or 0 -- fallback value
+  NORMAL = M.get_bg('Normal')
 end
 M.refresh()
 
