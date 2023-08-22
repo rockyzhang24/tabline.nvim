@@ -145,11 +145,9 @@ local function set_cd_mappings() -- Define cd mappings {{{1
     return
   end
   for _, v in ipairs({ 'cdc', 'cdl', 'cdt', 'cdw' }) do
-    if fn.maparg(v) == '' then
-      vim.cmd(string.format('nnoremap <silent> %s :<c-u>%s%s()<cr>', v, cmd, v))
-    end
+    vim.cmd(string.format('nnoremap <silent> %s <cmd>%s%s()<cr>', v, cmd, v))
   end
-  vim.cmd(string.format('nnoremap <silent> cd? :<c-u>%sinfo()<cr>', cmd))
+  vim.cmd(string.format('nnoremap <silent> cd? <cmd>%sinfo()<cr>', cmd))
 end
 
 local function define_main_cmd() -- Define main command {{{1

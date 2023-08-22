@@ -7,24 +7,27 @@ local getcwd = fn.getcwd
 local locdir = fn.haslocaldir
 
 local roots = { -- {{{1
-  git = '.git',
+  { ".git", true },
+  { "Makefile", false },
+  { "src", true },
+  { "lua", true },
+  { "plugin", true },
 }
 
 -- }}}
 
 local function find_root() -- find root {{{1
-  local dir, file
-  for _, v in pairs(roots) do
-    dir = fn.finddir(v, '.;')
-    if dir ~= '' then
-      return fn.fnamemodify(dir, ':p:h')
-    end
-    file = fn.findfile(v, ',;')
-    if file ~= '' then
-      return fn.fnamemodify(file, ':p:h')
+  local root, name, isdir = '', '', false
+  for _, candidate in pairs(roots) do
+    name, isdir = unpack(candidate)
+    local found = isdir and fn.finddir(name, "./;") or fn.findfile(name, "./;")
+    if found ~= '' then
+      root = found
+      break
     end
   end
-  return nil
+  local mod = isdir and ':p:h:h' or ':p:h'
+  return root ~= '' and fn.fnamemodify(root, mod) or getcwd()
 end
 
 local function same_wd(typ, dir) -- is same directory and same type {{{1
