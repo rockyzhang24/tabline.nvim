@@ -3,6 +3,11 @@ local g = require('tabline.setup').global
 
 local M = {}
 
+--- Generate line with the global variable assignment.
+local function info2var(data)
+  return string.format("let g:Tnv_persist = '%s'", data)
+end
+
 --- Check if obsession is loaded and running.
 ---@return bool
 local function obsession()
@@ -16,25 +21,25 @@ local function obsession_update(saved)
   local ob = vim.g.obsession_append
   if ob and type(ob) == 'table' then
     for i, v in ipairs(ob) do
-      if v:find('^let g:tnv_persist') then
+      if v:find('^let g:Tnv_persist') then
         table.remove(ob, i)
         break
       end
     end
     if saved then
-      table.insert(ob, saved)
+      table.insert(ob, info2var(saved))
     end
     vim.g.obsession_append = ob
   elseif saved then
-    vim.g.obsession_append = { saved }
+    vim.g.obsession_append = { info2var(saved) }
   end
   vim.cmd('silent Obsession ' .. fn.fnameescape(vim.g.this_obsession))
 end
 
 --- Restore values from persistence table.
 function M.restore_persistence()
-  if vim.g.tnv_persist then
-    local saved = load(vim.g.tnv_persist)()
+  if vim.g.Tnv_persist then
+    local saved = load(vim.g.Tnv_persist)()
     for path, v in pairs(saved.bufs) do
       for _, buf in pairs(g.buffers) do
         if buf.path == path then
@@ -54,10 +59,7 @@ function M.restore_persistence()
         fn.settabvar(i, 'tab', t)
       end
     end
-    vim.g.tnv_persist = nil
     g.persist = vim.v.this_session
-    -- must update also session file
-    M.update_persistence()
   else
     -- the loaded session has persistence disabled, reset it
     g.persist = nil
@@ -85,22 +87,13 @@ function M.update_persistence()
       saved.tabs[i] = { name = tab.name, icon = tab.icon }
     end
   end
-  saved = "let g:tnv_persist = 'return "
-    .. vim.inspect(saved):gsub('%s+', '')
-    .. "'"
+  saved = 'return ' .. vim.inspect(saved):gsub('%s+', '')
   if obsession() then
     obsession_update(saved)
   else
+    vim.g.Tnv_persist = saved
     vim.cmd('mksession! ' .. fn.fnameescape(vim.v.this_session))
-    local lines = fn.readfile(vim.v.this_session)
-    for i, line in ipairs(lines) do
-      if line:find('^let g:tnv_persist') then
-        table.remove(lines, i)
-        break
-      end
-    end
-    table.insert(lines, #lines - 2, saved)
-    fn.writefile(lines, vim.v.this_session)
+    vim.g.Tnv_persist = nil
   end
 end
 
@@ -111,15 +104,10 @@ function M.remove_persistence()
   elseif obsession() then
     obsession_update()
     return
+  else
+    vim.g.Tnv_persist = nil
+    vim.cmd('mksession! ' .. fn.fnameescape(vim.v.this_session))
   end
-  local lines = fn.readfile(vim.v.this_session)
-  for i, line in ipairs(lines) do
-    if line:find('^let g:tnv_persist') then
-      table.remove(lines, i)
-      break
-    end
-  end
-  fn.writefile(lines, vim.v.this_session)
 end
 
 --- Disable persistence and revert changes to session file.

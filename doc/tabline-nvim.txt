@@ -227,8 +227,11 @@ for that session.
 To stop tracking a session and disable persistence for it: >
   :Tabline persist!
 
-`tpope/vim-obsession` is also supported, other plugins that manage sessions
-will probably be incompatible if they overwrite the sessions file.
+`tpope/vim-obsession` is supported without needing adjustments.
+If you use other session managers (or none at all), you need in your vimrc:
+>
+  set sessionoptions+=globals
+<
 
 
 
