@@ -93,7 +93,6 @@ function M.update_persistence()
   else
     vim.g.Tnv_persist = saved
     vim.cmd('mksession! ' .. fn.fnameescape(vim.v.this_session))
-    vim.g.Tnv_persist = nil
   end
 end
 
