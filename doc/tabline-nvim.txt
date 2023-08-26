@@ -226,6 +226,8 @@ for that session.
 
 To stop tracking a session and disable persistence for it: >
   :Tabline persist!
+<
+IMPORTANT: ~
 
 `tpope/vim-obsession` is supported without needing adjustments.
 If you use other session managers (or none at all), you need in your vimrc:
@@ -379,12 +381,26 @@ THEMES                                                            *tnv-themes*
 
 Theme can be changed with `:Tabline theme {theme name}`
 
-Available themes are:
+Command-line completion can be used to list them. Available themes are:
 
   `default`       adaptive, uses vim highlight groups
-  `apprentice`    dark theme
   `themer`        adaptive, needs `themer.lua` {1}, uses its highlight groups
 
+Plus some non-adaptive themes:
+>
+  apprentice
+  codedark
+  default
+  dracula
+  eightbit
+  molokai
+  paper
+  paramount
+  seoul
+  slate
+  themer
+  tomorrow
+<
                                   {1} https://github.com/ThemerCorp/themer.lua
 
 Otherwise you can create your own, but it's not that straightforward, since
