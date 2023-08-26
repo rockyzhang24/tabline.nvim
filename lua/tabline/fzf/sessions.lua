@@ -118,6 +118,9 @@ local function session_load(line)
 
   vim.cmd('silent! %bdelete')
   vim.cmd('source ' .. fn.fnameescape(file))
+  if obsession() then
+    vim.cmd('silent Obsession ' .. fn.fnameescape(file))
+  end
 end
 
 ------------------------------------------------------------------------------
