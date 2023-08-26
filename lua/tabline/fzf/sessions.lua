@@ -10,15 +10,12 @@ local winOs = fn.has('win32') == 1
 local sessions_path = s.sessions_dir or fn.stdpath('data') .. '/session'
 local sessions_data = fn.stdpath('data') .. '/.tabline_sessions'
 
-local date_cmd = fn.has('mac') == 1 and 'gdate' or 'date'
-local stat_cmd = fn.has('mac') == 1 and 'gstat' or 'stat'
-
 -------------------------------------------------------------------------------
 -- Local functions
 -------------------------------------------------------------------------------
 
 local lastmod = function(f)
-  return fn.str2nr(fn.system(date_cmd .. ' -r ' .. f .. ' +%s'))
+  return fn.getftime(f)
 end
 local confirm = function(str)
   return fn.confirm(str, '&Yes\n&No') == 1
@@ -37,20 +34,13 @@ local function sdata() -- Read sessions data file {{{1
 end
 
 local function get_date(f) -- 'date' shell command {{{1
-  return fn.systemlist(
-    string.format(
-      'date=`%s -c %%Y %s` && %s -d@"$date" +%%Y.%%m.%%d',
-      stat_cmd,
-      fn.fnameescape(f),
-      date_cmd
-    )
-  )[1]
+  return fn.strftime("%Y.%m.%d", fn.getftime(f))
 end
 
 local function desc(fname, name, data) -- Session description {{{1
   local mark = fname == vim.v.this_session and ansi.green(' [%]  ') or '      '
   local dscr = data[name] or ''
-  local time = winOs and '' or get_date(fname)
+  local time = get_date(fname)
   return string.format(
     '%-30s\t%s%s%s',
     ansi.yellow(name),
