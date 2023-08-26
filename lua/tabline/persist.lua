@@ -40,6 +40,10 @@ end
 function M.restore_persistence()
   if vim.g.Tnv_persist then
     local saved = load(vim.g.Tnv_persist)()
+    if saved.session ~= vim.v.this_session then
+      M.disable_persistence()
+      return
+    end
     for path, v in pairs(saved.bufs) do
       for _, buf in pairs(g.buffers) do
         if buf.path == path then
@@ -63,6 +67,7 @@ function M.restore_persistence()
   else
     -- the loaded session has persistence disabled, reset it
     g.persist = nil
+    g.Tnv_persist = nil
   end
 end
 
@@ -72,7 +77,7 @@ function M.update_persistence()
     g.persist = nil
     return
   end
-  local saved = { bufs = {}, tabs = {} }
+  local saved = { session = vim.v.this_session, bufs = {}, tabs = {} }
   for _, buf in pairs(g.buffers) do
     if buf.custom or buf.pinned then
       saved.bufs[buf.path] = {
@@ -112,6 +117,7 @@ end
 --- Disable persistence and revert changes to session file.
 function M.disable_persistence()
   g.persist = nil
+  vim.g.Tnv_persist = nil
   M.remove_persistence()
 end
 
