@@ -47,13 +47,11 @@ local M = {}
 local special_ft = {
   ['GV'] = { name = 'GV', icon = icons.git },
   ['gitcommit'] = { name = 'Commit', icon = icons.git },
-  ['magit'] = { name = 'Magit', icon = icons.git },
   ['git'] = { name = 'Git', icon = icons.git },
   ['fugitive'] = { name = 'Status', icon = icons.git },
-  ['netrw'] = { name = 'Netrw', icon = icons.disk, doubleicon = true },
-  ['dirvish'] = { name = 'Dirvish', icon = icons.disk, doubleicon = true },
-  ['startify'] = { name = 'Startify', icon = icons.flag2, doubleicon = true },
-  ['ctrlsf'] = { name = 'CtrlSF', icon = icons.lens, doubleicon = true },
+  ['netrw'] = { name = 'Netrw', icon = icons.files },
+  ['dirvish'] = { name = 'Dirvish', icon = icons.files },
+  ['oil'] = { name = 'Oil', icon = icons.files },
 }
 
 --------------------------------------------------------------------------------
@@ -112,7 +110,7 @@ local function special_or_listed(bnr) -- {{{1
     elseif strfind(buf.path, ';#FZF') then
       buf.name = 'FZF'
       buf.basename = 'fzf'
-      buf.doubleicon = true
+      buf.doubleicon = nil
     else
       local pid = string.match(buf.path, '//(%d+):')
       buf.name = 'TERMINAL' .. (pid and ' [' .. pid .. ']' or '')

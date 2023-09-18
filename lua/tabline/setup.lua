@@ -48,39 +48,18 @@ M.settings = { -- user settings {{{1
 }
 
 M.icons = { -- icons {{{1
-  ['pin'] = '📌',
-  ['star'] = '★',
-  ['book'] = '📖',
-  ['lock'] = '🔒',
-  ['hammer'] = '🔨',
-  ['tick'] = '✔',
-  ['cross'] = '✖',
-  ['warning'] = '⚠',
-  ['menu'] = '☰',
-  ['apple'] = '🍎',
-  ['linux'] = '🐧',
-  ['windows'] = '❖',
-  ['git'] = '',
-  ['git2'] = '⎇ ',
-  ['palette'] = '🎨',
-  ['lens'] = '🔍',
-  ['flag'] = '⚑',
-  ['flag2'] = '🏁',
-  ['fire'] = '🔥',
-  ['bomb'] = '💣',
-  ['home'] = '🏠',
-  ['mail'] = '✉ ',
-  ['disk'] = '🖪 ',
-  ['arrow'] = '➤',
-  ['terminal'] = '',
-  ['tab'] = { '📂', '📁' },
+  ['book'] = '',
+  ['menu'] = '',
+  ['git'] = '',
+  ['files'] = '',
+  ['tab'] = '',
 }
 
 M.indicators = { -- indicators {{{1
   ['modified'] = M.settings.ascii_only and '[+]' or '●',
-  ['readonly'] = M.settings.ascii_only and '[RO]' or ' 🔒',
-  ['pinned'] = M.settings.ascii_only and '[^]' or ' 📌',
-  ['close'] = M.settings.ascii_only and ' X ' or '  ',
+  ['readonly'] = M.settings.ascii_only and '[RO]' or '',
+  ['pinned'] = M.settings.ascii_only and '[^]' or '',
+  ['close'] = M.settings.ascii_only and 'X '  or ' ',
 }
 
 local MAPPINGS = { -- default mappings {{{1
